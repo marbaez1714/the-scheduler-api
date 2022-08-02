@@ -1,0 +1,37 @@
+{
+  "name": "the-scheduler-api",
+  "version": "1.0.0",
+  "description": "api for the-scheduler frontend",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.11.3",
+    "@graphql-codegen/introspection": "2.2.0",
+    "@graphql-codegen/typescript": "2.7.2",
+    "@graphql-codegen/typescript-operations": "^2.5.2",
+    "@graphql-codegen/typescript-resolvers": "2.7.2",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1",
+    "prisma": "^4.1.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.1.1",
+    "apollo-server": "^3.10.0",
+    "dotenv": "^16.0.1",
+    "graphql": "^16.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.1.4"
+  },
+  "scripts": {
+    "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/server.ts",
+    "graphql:generate": "graphql-codegen --config codegen.yml",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:generate": "prisma generate"
+  }
+}

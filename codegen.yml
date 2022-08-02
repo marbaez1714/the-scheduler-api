@@ -1,0 +1,14 @@
+overwrite: true
+schema: ./src/typeDefs.ts
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+      - "typescript-operations"
+    config:
+      inputMaybeValue: undefined | T
+      contextType: ../context#Context

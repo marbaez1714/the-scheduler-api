@@ -1,0 +1,212 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id             String @id @default(uuid())
+  name           String @unique
+  primaryAddress String
+  primaryEmail   String
+  primaryPhone   String
+  notes          String
+
+  builders    Builder[]
+  communities Community[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model Area {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  nameSpanish String
+  notes       String?
+
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model Builder {
+  id           String  @id @default(uuid())
+  name         String
+  primaryPhone String
+  primaryEmail String?
+  companyId    String
+  notes        String?
+
+  company    Company     @relation(fields: [companyId], references: [id])
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+
+  @@unique([name, companyId])
+}
+
+model Community {
+  id        String  @id @default(uuid())
+  name      String
+  companyId String
+  notes     String?
+
+  company    Company     @relation(fields: [companyId], references: [id])
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+
+  @@unique([name, companyId])
+}
+
+model Contractor {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  primaryPhone String
+  notes        String?
+
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model LineItemLegacy {
+  id          String @id @default(uuid())
+  orderNumber String
+  supplierId  String
+  jobId       String
+
+  supplier  Supplier  @relation(fields: [supplierId], references: [id])
+  jobLegacy JobLegacy @relation(fields: [jobId], references: [id])
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model Reporter {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  primaryPhone String
+  primaryEmail String?
+  notes        String?
+
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model Scope {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  nameSpanish String
+  description String?
+  notes       String?
+
+  jobsLegacy JobLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model Supplier {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  primaryPhone String?
+  notes        String?
+
+  lineItemsLegacy LineItemLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
+
+model JobLegacy {
+  id            String    @id @default(uuid())
+  name          String
+  active        Boolean   @default(false)
+  inProgress    Boolean   @default(false)
+  isImportant   Boolean   @default(false)
+  areaId        String?
+  builderId     String?
+  communityId   String?
+  contractorId  String?
+  reporterId    String?
+  scopeId       String?
+  completedDate DateTime?
+  startDate     DateTime?
+  notes         String?
+
+  area       Area?       @relation(fields: [areaId], references: [id])
+  builder    Builder?    @relation(fields: [builderId], references: [id])
+  community  Community?  @relation(fields: [communityId], references: [id])
+  contractor Contractor? @relation(fields: [contractorId], references: [id])
+  reporter   Reporter?   @relation(fields: [reporterId], references: [id])
+  scope      Scope?      @relation(fields: [scopeId], references: [id])
+
+  lineItems LineItemLegacy[]
+
+  updatedBy   String
+  createdBy   String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  archived Boolean @default(false)
+  legacy   Boolean @default(false)
+}
