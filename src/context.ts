@@ -3,20 +3,39 @@ import { ContextFunction, AuthenticationError } from 'apollo-server-core';
 import { ExpressContext } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
+import { AuthenticationClient } from 'auth0';
+
+type DecodedToken = {
+  permissions?: string[];
+};
+
+type User = {
+  email?: string;
+};
 
 export interface Context {
   prisma: PrismaClient;
+  user: DecodedToken & User;
 }
+
+// Creates the prisma client
+const prisma = new PrismaClient();
+
+// Create auth0 authentication client
+const auth0Client = new AuthenticationClient({
+  domain: process.env.AUTH0_DOMAIN ?? '',
+  clientId: process.env.AUTH0_CLIENT_ID,
+});
 
 // Creates the jwksClient for jwt verification
 const authClient = jwksClient({
-  jwksUri: `https://${process.env.AUTH0_DOMAIN ?? ''}/.well-known/jwks.json`,
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
 });
 
 // Sets the options for decoding jwt tokens
 const authOptions: jwt.VerifyOptions = {
-  audience: process.env.AUTH0_AUDIENCE ?? '',
-  issuer: `https://${process.env.AUTH0_DOMAIN ?? ''}/`,
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
 };
 
@@ -28,22 +47,27 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
 };
 
 export const context: ContextFunction<ExpressContext, Context> = async ({ req }) => {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization?.split(' ');
+  const token = authHeader?.[1];
 
   if (!token) {
     throw new AuthenticationError('No token provided.');
   }
 
-  const result = await new Promise((resolve, reject) => {
+  const decodedToken = await new Promise<DecodedToken>((resolve, reject) => {
     jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
       err && reject(err);
-      decoded && resolve(decoded);
+      decoded && resolve(decoded as DecodedToken);
     });
   });
 
-  console.log(result);
+  const profile: User = await auth0Client.getProfile(token);
 
   return {
-    prisma: new PrismaClient(),
+    prisma,
+    user: {
+      permissions: decodedToken.permissions ?? [],
+      email: profile.email ?? '',
+    },
   };
 };
