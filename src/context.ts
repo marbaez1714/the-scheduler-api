@@ -6,11 +6,11 @@ import jwksClient from 'jwks-rsa';
 import { AuthenticationClient } from 'auth0';
 
 type DecodedToken = {
-  permissions?: string[];
+  permissions: string[];
 };
 
 type User = {
-  email?: string;
+  email: string;
 };
 
 export interface Context {
@@ -63,11 +63,21 @@ export const context: ContextFunction<ExpressContext, Context> = async ({ req })
 
   const profile: User = await auth0Client.getProfile(token);
 
+  if (!decodedToken.permissions) {
+    throw new AuthenticationError('No permissions given.');
+  }
+
+  if (!profile.email) {
+    throw new AuthenticationError('No email provided');
+  }
+
+  console.log('here');
+
   return {
     prisma,
     user: {
-      permissions: decodedToken.permissions ?? [],
-      email: profile.email ?? '',
+      permissions: decodedToken.permissions,
+      email: profile.email,
     },
   };
 };

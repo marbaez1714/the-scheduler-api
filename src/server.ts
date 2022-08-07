@@ -8,6 +8,7 @@ export const server = new ApolloServer({
   typeDefs,
   resolvers,
   context,
+  introspection: true,
   csrfPrevention: true,
 });
 

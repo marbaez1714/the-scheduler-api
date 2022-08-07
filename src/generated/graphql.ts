@@ -17,40 +17,76 @@ export type Scalars = {
 
 export type Area = {
   __typename?: 'Area';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   nameSpanish: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type Builder = {
   __typename?: 'Builder';
+  archived: Scalars['Boolean'];
   companyId: Scalars['String'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
   primaryPhone: Scalars['String'];
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type Community = {
   __typename?: 'Community';
+  archived: Scalars['Boolean'];
   companyId: Scalars['String'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
+};
+
+export type Company = {
+  __typename?: 'Company';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
+  id: Scalars['ID'];
+  legacy: Scalars['Boolean'];
+  name: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  primaryAddress?: Maybe<Scalars['String']>;
+  primaryEmail?: Maybe<Scalars['String']>;
+  primaryPhone?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type Contractor = {
   __typename?: 'Contractor';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryPhone: Scalars['String'];
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type CreateAreaInput = {
@@ -71,6 +107,14 @@ export type CreateCommunityInput = {
   companyId: Scalars['String'];
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateCompanyInput = {
+  name: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  primaryAddress?: InputMaybe<Scalars['String']>;
+  primaryEmail?: InputMaybe<Scalars['String']>;
+  primaryPhone?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateContractorInput = {
@@ -115,29 +159,39 @@ export type CreateSupplierInput = {
 export type JobLegacy = {
   __typename?: 'JobLegacy';
   active: Scalars['Boolean'];
+  archived: Scalars['Boolean'];
   areaId?: Maybe<Scalars['String']>;
   builderId?: Maybe<Scalars['String']>;
   communityId?: Maybe<Scalars['String']>;
   completedDate?: Maybe<Scalars['String']>;
   contractorId?: Maybe<Scalars['String']>;
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
   inProgress: Scalars['Boolean'];
   isImportant: Scalars['Boolean'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   reporterId?: Maybe<Scalars['String']>;
   scopeId?: Maybe<Scalars['String']>;
   startDate?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type LineItemLegacy = {
   __typename?: 'LineItemLegacy';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
   jobId: Scalars['String'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   orderNumber: Scalars['String'];
   supplierId: Scalars['String'];
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type LineItemLegacyInput = {
@@ -145,26 +199,62 @@ export type LineItemLegacyInput = {
   supplierId: Scalars['String'];
 };
 
-export type Metadata = {
-  __typename?: 'Metadata';
-  archived: Scalars['Boolean'];
-  createdBy: Scalars['String'];
-  createdTime: Scalars['String'];
-  legacy: Scalars['Boolean'];
-  updatedBy: Scalars['String'];
-  updatedTime: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
+  archiveArea?: Maybe<Scalars['Boolean']>;
+  archiveBuilder?: Maybe<Scalars['Boolean']>;
+  archiveCommunity?: Maybe<Scalars['Boolean']>;
+  archiveCompany?: Maybe<Scalars['Boolean']>;
+  archiveContractor?: Maybe<Scalars['Boolean']>;
+  archiveJobLegacy?: Maybe<Scalars['Boolean']>;
+  archiveReporter?: Maybe<Scalars['Boolean']>;
+  archiveScope?: Maybe<Scalars['Boolean']>;
+  archiveSupplier?: Maybe<Scalars['Boolean']>;
   createArea?: Maybe<Area>;
   createBuilder?: Maybe<Builder>;
   createCommunity?: Maybe<Community>;
+  createCompany?: Maybe<Company>;
   createContractor?: Maybe<Contractor>;
   createJobLegacy?: Maybe<JobLegacy>;
   createReporter?: Maybe<Reporter>;
   createScope?: Maybe<Scope>;
   createSupplier?: Maybe<Supplier>;
+};
+
+export type MutationArchiveAreaArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveBuilderArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveCommunityArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveCompanyArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveContractorArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveJobLegacyArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveReporterArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveScopeArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationArchiveSupplierArgs = {
+  id: Scalars['ID'];
 };
 
 export type MutationCreateAreaArgs = {
@@ -177,6 +267,10 @@ export type MutationCreateBuilderArgs = {
 
 export type MutationCreateCommunityArgs = {
   data: CreateCommunityInput;
+};
+
+export type MutationCreateCompanyArgs = {
+  data: CreateCompanyInput;
 };
 
 export type MutationCreateContractorArgs = {
@@ -201,83 +295,104 @@ export type MutationCreateSupplierArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  area?: Maybe<Area>;
-  areas: Array<Area>;
-  builder?: Maybe<Builder>;
-  builders: Array<Builder>;
-  communities: Array<Community>;
-  community?: Maybe<Community>;
-  contractor?: Maybe<Contractor>;
-  contractors: Array<Contractor>;
-  jobLegacy?: Maybe<JobLegacy>;
-  jobsLegacy: Array<JobLegacy>;
-  reporter?: Maybe<Reporter>;
-  reporters: Array<Reporter>;
-  scope?: Maybe<Scope>;
-  scopes: Array<Scope>;
-  supplier?: Maybe<Supplier>;
-  suppliers: Array<Supplier>;
+  areaById?: Maybe<Area>;
+  areasAll: Array<Area>;
+  builderById?: Maybe<Builder>;
+  buildersAll: Array<Builder>;
+  communitiesAll: Array<Community>;
+  communityById?: Maybe<Community>;
+  companiesAll: Array<Company>;
+  companyById?: Maybe<Company>;
+  contractorById?: Maybe<Contractor>;
+  contractorsAll: Array<Contractor>;
+  jobLegacyById?: Maybe<JobLegacy>;
+  jobsLegacyAll: Array<JobLegacy>;
+  reporterById?: Maybe<Reporter>;
+  reportersAll: Array<Reporter>;
+  scopeById?: Maybe<Scope>;
+  scopesAll: Array<Scope>;
+  supplierById?: Maybe<Supplier>;
+  suppliersAll: Array<Supplier>;
 };
 
-export type QueryAreaArgs = {
+export type QueryAreaByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryBuilderArgs = {
+export type QueryBuilderByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryCommunityArgs = {
+export type QueryCommunityByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryContractorArgs = {
+export type QueryCompanyByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryJobLegacyArgs = {
+export type QueryContractorByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryReporterArgs = {
+export type QueryJobLegacyByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryScopeArgs = {
+export type QueryReporterByIdArgs = {
   id: Scalars['ID'];
 };
 
-export type QuerySupplierArgs = {
+export type QueryScopeByIdArgs = {
+  id: Scalars['ID'];
+};
+
+export type QuerySupplierByIdArgs = {
   id: Scalars['ID'];
 };
 
 export type Reporter = {
   __typename?: 'Reporter';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
   primaryPhone: Scalars['String'];
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type Scope = {
   __typename?: 'Scope';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   nameSpanish: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type Supplier = {
   __typename?: 'Supplier';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
   id: Scalars['ID'];
-  metadata: Metadata;
+  legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryPhone?: Maybe<Scalars['String']>;
+  updatedBy: Scalars['String'];
+  updatedTime: Scalars['String'];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -356,10 +471,12 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Builder: ResolverTypeWrapper<Builder>;
   Community: ResolverTypeWrapper<Community>;
+  Company: ResolverTypeWrapper<Company>;
   Contractor: ResolverTypeWrapper<Contractor>;
   CreateAreaInput: CreateAreaInput;
   CreateBuilderInput: CreateBuilderInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreateCompanyInput: CreateCompanyInput;
   CreateContractorInput: CreateContractorInput;
   CreateJobLegacyInput: CreateJobLegacyInput;
   CreateReporterInput: CreateReporterInput;
@@ -369,7 +486,6 @@ export type ResolversTypes = {
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
   LineItemLegacy: ResolverTypeWrapper<LineItemLegacy>;
   LineItemLegacyInput: LineItemLegacyInput;
-  Metadata: ResolverTypeWrapper<Metadata>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Reporter: ResolverTypeWrapper<Reporter>;
@@ -384,10 +500,12 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Builder: Builder;
   Community: Community;
+  Company: Company;
   Contractor: Contractor;
   CreateAreaInput: CreateAreaInput;
   CreateBuilderInput: CreateBuilderInput;
   CreateCommunityInput: CreateCommunityInput;
+  CreateCompanyInput: CreateCompanyInput;
   CreateContractorInput: CreateContractorInput;
   CreateJobLegacyInput: CreateJobLegacyInput;
   CreateReporterInput: CreateReporterInput;
@@ -397,7 +515,6 @@ export type ResolversParentTypes = {
   JobLegacy: JobLegacy;
   LineItemLegacy: LineItemLegacy;
   LineItemLegacyInput: LineItemLegacyInput;
-  Metadata: Metadata;
   Mutation: {};
   Query: {};
   Reporter: Reporter;
@@ -410,11 +527,16 @@ export type AreaResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Area'] = ResolversParentTypes['Area']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nameSpanish?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -422,13 +544,18 @@ export type BuilderResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Builder'] = ResolversParentTypes['Builder']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   companyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -436,11 +563,35 @@ export type CommunityResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   companyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CompanyResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Company'] = ResolversParentTypes['Company']
+> = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -448,11 +599,16 @@ export type ContractorResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Contractor'] = ResolversParentTypes['Contractor']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -461,20 +617,25 @@ export type JobLegacyResolvers<
   ParentType extends ResolversParentTypes['JobLegacy'] = ResolversParentTypes['JobLegacy']
 > = {
   active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   areaId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   builderId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   communityId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   completedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   contractorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   inProgress?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isImportant?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   reporterId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   scopeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -482,22 +643,14 @@ export type LineItemLegacyResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['LineItemLegacy'] = ResolversParentTypes['LineItemLegacy']
 > = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  jobId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
-  orderNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  supplierId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MetadataResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['Metadata'] = ResolversParentTypes['Metadata']
-> = {
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  jobId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  orderNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  supplierId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -507,6 +660,60 @@ export type MutationResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
+  archiveArea?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveAreaArgs, 'id'>
+  >;
+  archiveBuilder?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveBuilderArgs, 'id'>
+  >;
+  archiveCommunity?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveCommunityArgs, 'id'>
+  >;
+  archiveCompany?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveCompanyArgs, 'id'>
+  >;
+  archiveContractor?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveContractorArgs, 'id'>
+  >;
+  archiveJobLegacy?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveJobLegacyArgs, 'id'>
+  >;
+  archiveReporter?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveReporterArgs, 'id'>
+  >;
+  archiveScope?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveScopeArgs, 'id'>
+  >;
+  archiveSupplier?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationArchiveSupplierArgs, 'id'>
+  >;
   createArea?: Resolver<
     Maybe<ResolversTypes['Area']>,
     ParentType,
@@ -524,6 +731,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationCreateCommunityArgs, 'data'>
+  >;
+  createCompany?: Resolver<
+    Maybe<ResolversTypes['Company']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateCompanyArgs, 'data'>
   >;
   createContractor?: Resolver<
     Maybe<ResolversTypes['Contractor']>,
@@ -561,59 +774,81 @@ export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
-  area?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType, RequireFields<QueryAreaArgs, 'id'>>;
-  areas?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
-  builder?: Resolver<Maybe<ResolversTypes['Builder']>, ParentType, ContextType, RequireFields<QueryBuilderArgs, 'id'>>;
-  builders?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
-  communities?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
-  community?: Resolver<
+  areaById?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType, RequireFields<QueryAreaByIdArgs, 'id'>>;
+  areasAll?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
+  builderById?: Resolver<
+    Maybe<ResolversTypes['Builder']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryBuilderByIdArgs, 'id'>
+  >;
+  buildersAll?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
+  communitiesAll?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
+  communityById?: Resolver<
     Maybe<ResolversTypes['Community']>,
     ParentType,
     ContextType,
-    RequireFields<QueryCommunityArgs, 'id'>
+    RequireFields<QueryCommunityByIdArgs, 'id'>
   >;
-  contractor?: Resolver<
+  companiesAll?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
+  companyById?: Resolver<
+    Maybe<ResolversTypes['Company']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryCompanyByIdArgs, 'id'>
+  >;
+  contractorById?: Resolver<
     Maybe<ResolversTypes['Contractor']>,
     ParentType,
     ContextType,
-    RequireFields<QueryContractorArgs, 'id'>
+    RequireFields<QueryContractorByIdArgs, 'id'>
   >;
-  contractors?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
-  jobLegacy?: Resolver<
+  contractorsAll?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  jobLegacyById?: Resolver<
     Maybe<ResolversTypes['JobLegacy']>,
     ParentType,
     ContextType,
-    RequireFields<QueryJobLegacyArgs, 'id'>
+    RequireFields<QueryJobLegacyByIdArgs, 'id'>
   >;
-  jobsLegacy?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
-  reporter?: Resolver<
+  jobsLegacyAll?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
+  reporterById?: Resolver<
     Maybe<ResolversTypes['Reporter']>,
     ParentType,
     ContextType,
-    RequireFields<QueryReporterArgs, 'id'>
+    RequireFields<QueryReporterByIdArgs, 'id'>
   >;
-  reporters?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
-  scope?: Resolver<Maybe<ResolversTypes['Scope']>, ParentType, ContextType, RequireFields<QueryScopeArgs, 'id'>>;
-  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
-  supplier?: Resolver<
+  reportersAll?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
+  scopeById?: Resolver<
+    Maybe<ResolversTypes['Scope']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryScopeByIdArgs, 'id'>
+  >;
+  scopesAll?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
+  supplierById?: Resolver<
     Maybe<ResolversTypes['Supplier']>,
     ParentType,
     ContextType,
-    RequireFields<QuerySupplierArgs, 'id'>
+    RequireFields<QuerySupplierByIdArgs, 'id'>
   >;
-  suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
+  suppliersAll?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
 };
 
 export type ReporterResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Reporter'] = ResolversParentTypes['Reporter']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -621,12 +856,17 @@ export type ScopeResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Scope'] = ResolversParentTypes['Scope']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nameSpanish?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -634,11 +874,16 @@ export type SupplierResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Supplier'] = ResolversParentTypes['Supplier']
 > = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['Metadata'], ParentType, ContextType>;
+  legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -646,10 +891,10 @@ export type Resolvers<ContextType = Context> = {
   Area?: AreaResolvers<ContextType>;
   Builder?: BuilderResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
+  Company?: CompanyResolvers<ContextType>;
   Contractor?: ContractorResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
-  Metadata?: MetadataResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reporter?: ReporterResolvers<ContextType>;

@@ -13,10 +13,10 @@ datasource db {
 model Company {
   id             String @id @default(uuid())
   name           String @unique
-  primaryAddress String
-  primaryEmail   String
-  primaryPhone   String
-  notes          String
+  primaryAddress String?
+  primaryEmail   String?
+  primaryPhone   String?
+  notes          String?
 
   builders    Builder[]
   communities Community[]
