@@ -102,7 +102,7 @@ export const queryResolvers: QueryResolvers = {
     checkPermission(Permissions.Admin, context);
 
     // Get all areas
-    const docList = await context.prisma.jobLegacy.findMany();
+    const docList = await context.prisma.jobLegacy.findMany({ include: { lineItems: true } });
 
     // return all areas
     return docList.map(formatJobLegacy);
@@ -225,7 +225,7 @@ export const queryResolvers: QueryResolvers = {
     checkPermission(Permissions.Admin, context);
 
     // Find area
-    const doc = await context.prisma.jobLegacy.findUnique({ where: { id: args.id } });
+    const doc = await context.prisma.jobLegacy.findUnique({ where: { id: args.id }, include: { lineItems: true } });
 
     // If no idea is found, throw an error
     if (!doc) {

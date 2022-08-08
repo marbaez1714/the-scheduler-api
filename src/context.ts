@@ -71,8 +71,6 @@ export const context: ContextFunction<ExpressContext, Context> = async ({ req })
     throw new AuthenticationError('No email provided');
   }
 
-  console.log('here');
-
   return {
     prisma,
     user: {

@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  # Documents
   type Area {
     id: ID!
     name: String!
@@ -148,6 +149,7 @@ export const typeDefs = gql`
     completedDate: String
     startDate: String
     notes: String
+    lineItems: [LineItemLegacy!]!
 
     updatedBy: String!
     createdBy: String!
@@ -157,6 +159,7 @@ export const typeDefs = gql`
     legacy: Boolean!
   }
 
+  # Inputs
   input CreateAreaInput {
     name: String!
     nameSpanish: String!
@@ -226,7 +229,7 @@ export const typeDefs = gql`
     scopeId: String
     startDate: String
     notes: String
-    lineItems: [LineItemLegacyInput]!
+    lineItems: [LineItemLegacyInput!]!
   }
 
   input UpdateAreaInput {
@@ -263,7 +266,14 @@ export const typeDefs = gql`
     notes: String
   }
 
+  # Responses
+  type MessageResponse {
+    message: String!
+  }
+
+  # Queries
   type Query {
+    # Query all
     areasAll: [Area!]!
     buildersAll: [Builder!]!
     communitiesAll: [Community!]!
@@ -273,7 +283,7 @@ export const typeDefs = gql`
     scopesAll: [Scope!]!
     suppliersAll: [Supplier!]!
     jobsLegacyAll: [JobLegacy!]!
-
+    # Query by id
     areaById(id: ID!): Area
     builderById(id: ID!): Builder
     communityById(id: ID!): Community
@@ -285,25 +295,29 @@ export const typeDefs = gql`
     jobLegacyById(id: ID!): JobLegacy
   }
 
+  # Mutations
   type Mutation {
-    createArea(data: CreateAreaInput!): Area
-    createBuilder(data: CreateBuilderInput!): Builder
-    createCommunity(data: CreateCommunityInput!): Community
-    createCompany(data: CreateCompanyInput!): Company
-    createContractor(data: CreateContractorInput!): Contractor
-    createReporter(data: CreateReporterInput!): Reporter
-    createScope(data: CreateScopeInput!): Scope
-    createSupplier(data: CreateSupplierInput!): Supplier
-    createJobLegacy(data: CreateJobLegacyInput!): JobLegacy
-
-    archiveArea(id: ID!): Boolean
-    archiveBuilder(id: ID!): Boolean
-    archiveCommunity(id: ID!): Boolean
-    archiveCompany(id: ID!): Boolean
-    archiveContractor(id: ID!): Boolean
-    archiveReporter(id: ID!): Boolean
-    archiveScope(id: ID!): Boolean
-    archiveSupplier(id: ID!): Boolean
-    archiveJobLegacy(id: ID!): Boolean
+    # Create
+    createArea(data: CreateAreaInput!): MessageResponse!
+    createBuilder(data: CreateBuilderInput!): MessageResponse!
+    createCommunity(data: CreateCommunityInput!): MessageResponse!
+    createCompany(data: CreateCompanyInput!): MessageResponse!
+    createContractor(data: CreateContractorInput!): MessageResponse!
+    createReporter(data: CreateReporterInput!): MessageResponse!
+    createScope(data: CreateScopeInput!): MessageResponse!
+    createSupplier(data: CreateSupplierInput!): MessageResponse!
+    createJobLegacy(data: CreateJobLegacyInput!): MessageResponse!
+    # Archive
+    archiveArea(id: ID!): MessageResponse!
+    archiveBuilder(id: ID!): MessageResponse!
+    archiveCommunity(id: ID!): MessageResponse!
+    archiveCompany(id: ID!): MessageResponse!
+    archiveContractor(id: ID!): MessageResponse!
+    archiveReporter(id: ID!): MessageResponse!
+    archiveScope(id: ID!): MessageResponse!
+    archiveSupplier(id: ID!): MessageResponse!
+    archiveJobLegacy(id: ID!): MessageResponse!
+    # Delete
+    deleteLineItemLegacy(id: ID!): MessageResponse!
   }
 `;
