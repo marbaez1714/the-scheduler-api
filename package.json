@@ -34,6 +34,7 @@
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/server.ts",
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "prisma:migrate": "prisma migrate dev --name init",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "generate": "graphql-codegen --config codegen.yml"
   }
 }

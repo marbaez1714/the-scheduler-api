@@ -12,7 +12,7 @@ import {
   formatJobLegacy,
 } from './utils';
 
-import { QueryResolvers } from './../generated/graphql';
+import { QueryResolvers } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-core';
 
 export const queryResolvers: QueryResolvers = {

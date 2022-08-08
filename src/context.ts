@@ -46,12 +46,12 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<ExpressContext, Context> = async ({ req }) => {
+export const context: ContextFunction<ExpressContext, Context | {}> = async ({ req }) => {
   const authHeader = req.headers.authorization?.split(' ');
   const token = authHeader?.[1];
 
   if (!token) {
-    throw new AuthenticationError('No token provided.');
+    return {};
   }
 
   const decodedToken = await new Promise<DecodedToken>((resolve, reject) => {
