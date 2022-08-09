@@ -40,7 +40,7 @@ export type Builder = {
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone?: Maybe<Scalars['String']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -671,7 +671,7 @@ export type BuilderResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

@@ -50,7 +50,7 @@ model Area {
 model Builder {
   id           String  @id @default(uuid())
   name         String
-  primaryPhone String
+  primaryPhone String?
   primaryEmail String?
   companyId    String
   notes        String?

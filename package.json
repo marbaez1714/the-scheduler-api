@@ -35,6 +35,7 @@
     "graphql:generate": "graphql-codegen --config codegen.yml",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:generate": "prisma generate",
-    "generate": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "postinstall": "yarn prisma:generate && yarn generate"
   }
 }

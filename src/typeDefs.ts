@@ -25,7 +25,7 @@ export const typeDefs = gql`
   type Builder {
     id: ID!
     name: String!
-    primaryPhone: String!
+    primaryPhone: String
     primaryEmail: String
     companyId: String!
     notes: String
