@@ -304,38 +304,58 @@ export type MutationDeleteLineItemLegacyArgs = {
   id: Scalars['ID'];
 };
 
+export type PaginationOptions = {
+  page: Scalars['Int'];
+  pageSize: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   areaById?: Maybe<Area>;
-  areasAll: Array<Area>;
+  areas: Array<Area>;
   builderById?: Maybe<Builder>;
-  buildersAll: Array<Builder>;
-  communitiesAll: Array<Community>;
+  builders: Array<Builder>;
+  communities: Array<Community>;
   communityById?: Maybe<Community>;
-  companiesAll: Array<Company>;
+  companies: Array<Company>;
   companyById?: Maybe<Company>;
   contractorById?: Maybe<Contractor>;
-  contractorsAll: Array<Contractor>;
+  contractors: Array<Contractor>;
   jobLegacyById?: Maybe<JobLegacy>;
-  jobsLegacyAll: Array<JobLegacy>;
   reporterById?: Maybe<Reporter>;
-  reportersAll: Array<Reporter>;
+  reporters: Array<Reporter>;
   scopeById?: Maybe<Scope>;
-  scopesAll: Array<Scope>;
+  scopes: Array<Scope>;
   supplierById?: Maybe<Supplier>;
-  suppliersAll: Array<Supplier>;
+  suppliers: Array<Supplier>;
 };
 
 export type QueryAreaByIdArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryAreasArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
 export type QueryBuilderByIdArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryBuildersArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
+export type QueryCommunitiesArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
 export type QueryCommunityByIdArgs = {
   id: Scalars['ID'];
+};
+
+export type QueryCompaniesArgs = {
+  options?: InputMaybe<QueryOptions>;
 };
 
 export type QueryCompanyByIdArgs = {
@@ -346,6 +366,10 @@ export type QueryContractorByIdArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryContractorsArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
 export type QueryJobLegacyByIdArgs = {
   id: Scalars['ID'];
 };
@@ -354,12 +378,30 @@ export type QueryReporterByIdArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryReportersArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
 export type QueryScopeByIdArgs = {
   id: Scalars['ID'];
 };
 
+export type QueryScopesArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
 export type QuerySupplierByIdArgs = {
   id: Scalars['ID'];
+};
+
+export type QuerySuppliersArgs = {
+  options?: InputMaybe<QueryOptions>;
+};
+
+export type QueryOptions = {
+  archived?: InputMaybe<Scalars['Boolean']>;
+  pagination?: InputMaybe<PaginationOptions>;
+  sorting?: InputMaybe<SortingOptions>;
 };
 
 export type Reporter = {
@@ -390,6 +432,16 @@ export type Scope = {
   notes?: Maybe<Scalars['String']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
+};
+
+export enum SortOrder {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+export type SortingOptions = {
+  field: Scalars['String'];
+  order: SortOrder;
 };
 
 export type Supplier = {
@@ -528,14 +580,19 @@ export type ResolversTypes = {
   CreateScopeInput: CreateScopeInput;
   CreateSupplierInput: CreateSupplierInput;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
   LineItemLegacy: ResolverTypeWrapper<LineItemLegacy>;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
   Mutation: ResolverTypeWrapper<{}>;
+  PaginationOptions: PaginationOptions;
   Query: ResolverTypeWrapper<{}>;
+  QueryOptions: QueryOptions;
   Reporter: ResolverTypeWrapper<Reporter>;
   Scope: ResolverTypeWrapper<Scope>;
+  SortOrder: SortOrder;
+  SortingOptions: SortingOptions;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   UpdateAreaInput: UpdateAreaInput;
@@ -563,14 +620,18 @@ export type ResolversParentTypes = {
   CreateScopeInput: CreateScopeInput;
   CreateSupplierInput: CreateSupplierInput;
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   JobLegacy: JobLegacy;
   LineItemLegacy: LineItemLegacy;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: MessageResponse;
   Mutation: {};
+  PaginationOptions: PaginationOptions;
   Query: {};
+  QueryOptions: QueryOptions;
   Reporter: Reporter;
   Scope: Scope;
+  SortingOptions: SortingOptions;
   String: Scalars['String'];
   Supplier: Supplier;
   UpdateAreaInput: UpdateAreaInput;
@@ -847,22 +908,22 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
   areaById?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType, RequireFields<QueryAreaByIdArgs, 'id'>>;
-  areasAll?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
+  areas?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType, Partial<QueryAreasArgs>>;
   builderById?: Resolver<
     Maybe<ResolversTypes['Builder']>,
     ParentType,
     ContextType,
     RequireFields<QueryBuilderByIdArgs, 'id'>
   >;
-  buildersAll?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
-  communitiesAll?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
+  builders?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType, Partial<QueryBuildersArgs>>;
+  communities?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType, Partial<QueryCommunitiesArgs>>;
   communityById?: Resolver<
     Maybe<ResolversTypes['Community']>,
     ParentType,
     ContextType,
     RequireFields<QueryCommunityByIdArgs, 'id'>
   >;
-  companiesAll?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
+  companies?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType, Partial<QueryCompaniesArgs>>;
   companyById?: Resolver<
     Maybe<ResolversTypes['Company']>,
     ParentType,
@@ -875,35 +936,34 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryContractorByIdArgs, 'id'>
   >;
-  contractorsAll?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  contractors?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType, Partial<QueryContractorsArgs>>;
   jobLegacyById?: Resolver<
     Maybe<ResolversTypes['JobLegacy']>,
     ParentType,
     ContextType,
     RequireFields<QueryJobLegacyByIdArgs, 'id'>
   >;
-  jobsLegacyAll?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
   reporterById?: Resolver<
     Maybe<ResolversTypes['Reporter']>,
     ParentType,
     ContextType,
     RequireFields<QueryReporterByIdArgs, 'id'>
   >;
-  reportersAll?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
+  reporters?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType, Partial<QueryReportersArgs>>;
   scopeById?: Resolver<
     Maybe<ResolversTypes['Scope']>,
     ParentType,
     ContextType,
     RequireFields<QueryScopeByIdArgs, 'id'>
   >;
-  scopesAll?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
+  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType, Partial<QueryScopesArgs>>;
   supplierById?: Resolver<
     Maybe<ResolversTypes['Supplier']>,
     ParentType,
     ContextType,
     RequireFields<QuerySupplierByIdArgs, 'id'>
   >;
-  suppliersAll?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
+  suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType, Partial<QuerySuppliersArgs>>;
 };
 
 export type ReporterResolvers<

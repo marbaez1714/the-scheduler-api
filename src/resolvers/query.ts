@@ -1,112 +1,11 @@
-import {
-  Permissions,
-  checkPermission,
-  formatArea,
-  formatBuilder,
-  formatCommunity,
-  formatCompany,
-  formatContractor,
-  formatReporter,
-  formatScope,
-  formatSupplier,
-  formatJobLegacy,
-} from './utils';
-
-import { QueryResolvers } from '../generated/graphql';
+import { QueryResolvers, SortOrder } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-core';
+import { Prisma } from '@prisma/client';
+
+import { checkPermission, formatResponse, formatJobLegacy, getPaginationOptions, getSortingOptions } from './utils';
+import { Permissions } from './types';
 
 export const queryResolvers: QueryResolvers = {
-  // Query All
-  areasAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.area.findMany();
-
-    // return all areas
-    return docList.map(formatArea);
-  },
-  buildersAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.builder.findMany();
-
-    // return all areas
-    return docList.map(formatBuilder);
-  },
-  communitiesAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.community.findMany();
-
-    // return all areas
-    return docList.map(formatCommunity);
-  },
-  companiesAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.company.findMany();
-
-    // return all areas
-    return docList.map(formatCompany);
-  },
-  contractorsAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.contractor.findMany();
-
-    // return all areas
-    return docList.map(formatContractor);
-  },
-  reportersAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.reporter.findMany();
-
-    // return all areas
-    return docList.map(formatReporter);
-  },
-  scopesAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.scope.findMany();
-
-    // return all areas
-    return docList.map(formatScope);
-  },
-  suppliersAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.supplier.findMany();
-
-    // return all areas
-    return docList.map(formatSupplier);
-  },
-  jobsLegacyAll: async (_, __, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    // Get all areas
-    const docList = await context.prisma.jobLegacy.findMany({ include: { lineItems: true } });
-
-    // return all areas
-    return docList.map(formatJobLegacy);
-  },
   // Query by Id
   areaById: async (_, args, context) => {
     // Check for admin permissions
@@ -120,7 +19,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatArea(doc);
+    return formatResponse(doc);
   },
   builderById: async (_, args, context) => {
     // Check for admin permissions
@@ -134,7 +33,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatBuilder(doc);
+    return formatResponse(doc);
   },
   communityById: async (_, args, context) => {
     // Check for admin permissions
@@ -148,7 +47,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatCommunity(doc);
+    return formatResponse(doc);
   },
   companyById: async (_, args, context) => {
     // Check for admin permissions
@@ -162,7 +61,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatCompany(doc);
+    return formatResponse(doc);
   },
   contractorById: async (_, args, context) => {
     // Check for admin permissions
@@ -176,7 +75,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatContractor(doc);
+    return formatResponse(doc);
   },
   reporterById: async (_, args, context) => {
     // Check for admin permissions
@@ -190,7 +89,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatReporter(doc);
+    return formatResponse(doc);
   },
   scopeById: async (_, args, context) => {
     // Check for admin permissions
@@ -204,7 +103,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatScope(doc);
+    return formatResponse(doc);
   },
   supplierById: async (_, args, context) => {
     // Check for admin permissions
@@ -218,7 +117,7 @@ export const queryResolvers: QueryResolvers = {
       throw new UserInputError(`${args.id} does not exist.`);
     }
 
-    return formatSupplier(doc);
+    return formatResponse(doc);
   },
   jobLegacyById: async (_, args, context) => {
     // Check for admin permissions
@@ -233,5 +132,118 @@ export const queryResolvers: QueryResolvers = {
     }
 
     return formatJobLegacy(doc);
+  },
+  // Paginated Queries
+  areas: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.AreaFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.area.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  builders: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.BuilderFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.builder.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  communities: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.CommunityFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.community.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  companies: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.CompanyFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.company.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  contractors: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.ContractorFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.contractor.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  reporters: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.ReporterFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.reporter.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  scopes: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.ScopeFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.scope.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
+  },
+  suppliers: async (_, { options }, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findManyArgs: Prisma.SupplierFindManyArgs = {
+      where: { archived: !!options?.archived },
+      ...getPaginationOptions(options?.pagination),
+      ...getSortingOptions(options?.sorting),
+    };
+
+    const docList = await context.prisma.supplier.findMany(findManyArgs);
+
+    return docList.map(formatResponse);
   },
 };

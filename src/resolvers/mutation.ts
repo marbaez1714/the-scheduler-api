@@ -1,4 +1,5 @@
-import { checkPermission, Permissions, messageResponses } from './utils';
+import { checkPermission, messageResponses } from './utils';
+import { Permissions } from './types';
 import { MutationResolvers } from '../generated/graphql';
 
 export const mutationResolvers: MutationResolvers = {

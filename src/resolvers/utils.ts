@@ -1,43 +1,10 @@
 import { AuthenticationError } from 'apollo-server-core';
+import { Prisma, JobLegacy as JobLegacyPrisma, LineItemLegacy as LineItemLegacyPrisma } from '@prisma/client';
+
 import { Context } from './../context';
-import {
-  Area,
-  Builder,
-  Community,
-  Company,
-  Contractor,
-  Reporter,
-  Scope,
-  Supplier,
-  JobLegacy,
-  LineItemLegacy,
-  MessageResponse,
-} from './../generated/graphql';
-import {
-  Area as AreaPrisma,
-  Builder as BuilderPrisma,
-  Community as CommunityPrisma,
-  Company as CompanyPrisma,
-  Contractor as ContractorPrisma,
-  Reporter as ReporterPrisma,
-  Scope as ScopePrisma,
-  Supplier as SupplierPrisma,
-  JobLegacy as JobLegacyPrisma,
-  LineItemLegacy as LineItemLegacyPrisma,
-} from '@prisma/client';
+import { Permissions, BaseDocument } from './types';
 
-type BaseDocument = {
-  name: string;
-  id: string;
-};
-
-export enum Permissions {
-  Admin = 'admin',
-}
-
-const formatTimestamps = (data: { createdTime: Date; updatedTime: Date }) => {
-  return { createdTime: data.createdTime.toJSON(), updatedTime: data.updatedTime.toJSON() };
-};
+import { JobLegacy, PaginationOptions, SortingOptions } from './../generated/graphql';
 
 export const checkPermission = (permission: Permissions, context: Context) => {
   if (!context.user.permissions?.includes(permission)) {
@@ -51,43 +18,19 @@ export const messageResponses = {
   deleted: (model: string, doc: BaseDocument) => ({ message: `${model} ${doc.name}[${doc.id}] deleted.` }),
 };
 
-export const formatArea = (data: AreaPrisma): Area => {
-  return { ...data, ...formatTimestamps(data) };
+export const getPaginationOptions = (options?: PaginationOptions) => {
+  const page = options?.page ?? 0;
+  const pageSize = options?.pageSize ?? 0;
+
+  return options ? { take: pageSize, skip: page > 0 ? (page - 1) * pageSize : 0 } : {};
 };
 
-export const formatBuilder = (data: BuilderPrisma): Builder => {
-  return { ...data, ...formatTimestamps(data) };
+export const getSortingOptions = (options?: SortingOptions) => {
+  return options ? { [options.field]: options.order } : {};
 };
 
-export const formatCommunity = (data: CommunityPrisma): Community => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatCompany = (data: CompanyPrisma): Company => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatContractor = (data: ContractorPrisma): Contractor => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatReporter = (data: ReporterPrisma): Reporter => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatScope = (data: ScopePrisma): Scope => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatSupplier = (data: SupplierPrisma): Supplier => {
-  return { ...data, ...formatTimestamps(data) };
-};
-
-export const formatLineItemLegacy = (data: LineItemLegacyPrisma): LineItemLegacy => {
-  return {
-    ...data,
-    ...formatTimestamps(data),
-  };
+export const formatResponse = <T extends { createdTime: Date; updatedTime: Date }>(data: T) => {
+  return { ...data, createdTime: data.createdTime.toJSON(), updatedTime: data.updatedTime.toJSON() };
 };
 
 export const formatJobLegacy = (
@@ -96,10 +39,9 @@ export const formatJobLegacy = (
   }
 ): JobLegacy => {
   return {
-    ...data,
-    lineItems: data.lineItems.map((lineItem) => formatLineItemLegacy(lineItem)),
+    ...formatResponse(data),
+    lineItems: data.lineItems.map((lineItem) => formatResponse(lineItem)),
     completedDate: data.completedDate?.toJSON(),
     startDate: data.startDate?.toJSON(),
-    ...formatTimestamps(data),
   };
 };
