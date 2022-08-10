@@ -1,32 +1,27 @@
 import { AuthenticationError } from 'apollo-server-core';
-import { Prisma, JobLegacy as JobLegacyPrisma, LineItemLegacy as LineItemLegacyPrisma } from '@prisma/client';
+import { JobLegacy as JobLegacyPrisma, LineItemLegacy as LineItemLegacyPrisma } from '@prisma/client';
+
+import { JobLegacy, PaginationOptions, SortingOptions } from './../generated/graphql';
 
 import { Context } from './../context';
 import { Permissions, BaseDocument } from './types';
 
-import { JobLegacy, PaginationOptions, SortingOptions } from './../generated/graphql';
-
+/******************************/
+/* Authentication             */
+/******************************/
 export const checkPermission = (permission: Permissions, context: Context) => {
   if (!context.user.permissions?.includes(permission)) {
     throw new AuthenticationError('Missing permissions');
   }
 };
 
+/******************************/
+/* Responses                  */
+/******************************/
 export const messageResponses = {
   create: (model: string, doc: BaseDocument) => ({ message: `${model} ${doc.name}[${doc.id}] added.` }),
   archive: (model: string, doc: BaseDocument) => ({ message: `${model} ${doc.name}[${doc.id}] archived.` }),
   deleted: (model: string, doc: BaseDocument) => ({ message: `${model} ${doc.name}[${doc.id}] deleted.` }),
-};
-
-export const getPaginationOptions = (options?: PaginationOptions) => {
-  const page = options?.page ?? 0;
-  const pageSize = options?.pageSize ?? 0;
-
-  return options ? { take: pageSize, skip: page > 0 ? (page - 1) * pageSize : 0 } : {};
-};
-
-export const getSortingOptions = (options?: SortingOptions) => {
-  return options ? { [options.field]: options.order } : {};
 };
 
 export const formatResponse = <T extends { createdTime: Date; updatedTime: Date }>(data: T) => {
@@ -44,4 +39,21 @@ export const formatJobLegacy = (
     completedDate: data.completedDate?.toJSON(),
     startDate: data.startDate?.toJSON(),
   };
+};
+
+/******************************/
+/* Request Inputs             */
+/******************************/
+export const getPaginationOptions = (options?: PaginationOptions) => {
+  if (!options) {
+    return {};
+  }
+
+  const { page, pageSize } = options;
+
+  return { take: pageSize, skip: Math.min(page - 1, 0) * pageSize };
+};
+
+export const getSortingOptions = (options?: SortingOptions) => {
+  return options ? { [options.field]: options.order } : {};
 };

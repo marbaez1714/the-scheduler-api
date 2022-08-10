@@ -1,3 +1,4 @@
+import { JobLegacy } from './generated/graphql';
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
@@ -155,6 +156,13 @@ export const typeDefs = gql`
     completedDate: String
     startDate: String
     notes: String
+
+    area: Area
+    builder: Builder
+    community: Community
+    contractor: Contractor
+    reporter: Reporter
+    scope: Scope
     lineItems: [LineItemLegacy!]!
 
     updatedBy: String!
@@ -305,6 +313,7 @@ export const typeDefs = gql`
     scopeById(id: ID!): Scope
     supplierById(id: ID!): Supplier
     jobLegacyById(id: ID!): JobLegacy
+
     # Query paginated and sorted
     areas(options: QueryOptions): [Area!]!
     builders(options: QueryOptions): [Builder!]!
