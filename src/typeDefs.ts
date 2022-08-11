@@ -1,4 +1,3 @@
-import { JobLegacy } from './generated/graphql';
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
@@ -31,6 +30,8 @@ export const typeDefs = gql`
     companyId: String!
     notes: String
 
+    company: Company!
+
     updatedBy: String!
     createdBy: String!
     createdTime: String!
@@ -44,6 +45,8 @@ export const typeDefs = gql`
     name: String!
     companyId: String!
     notes: String
+
+    company: Company!
 
     updatedBy: String!
     createdBy: String!
@@ -74,6 +77,8 @@ export const typeDefs = gql`
     name: String!
     primaryPhone: String!
     notes: String
+
+    jobsLegacy: [JobLegacy!]!
 
     updatedBy: String!
     createdBy: String!

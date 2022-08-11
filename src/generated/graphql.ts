@@ -32,6 +32,7 @@ export type Area = {
 export type Builder = {
   __typename?: 'Builder';
   archived: Scalars['Boolean'];
+  company: Company;
   companyId: Scalars['String'];
   createdBy: Scalars['String'];
   createdTime: Scalars['String'];
@@ -48,6 +49,7 @@ export type Builder = {
 export type Community = {
   __typename?: 'Community';
   archived: Scalars['Boolean'];
+  company: Company;
   companyId: Scalars['String'];
   createdBy: Scalars['String'];
   createdTime: Scalars['String'];
@@ -81,6 +83,7 @@ export type Contractor = {
   createdBy: Scalars['String'];
   createdTime: Scalars['String'];
   id: Scalars['ID'];
+  jobsLegacy: Array<JobLegacy>;
   legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
@@ -160,10 +163,14 @@ export type JobLegacy = {
   __typename?: 'JobLegacy';
   active: Scalars['Boolean'];
   archived: Scalars['Boolean'];
+  area?: Maybe<Area>;
   areaId?: Maybe<Scalars['String']>;
+  builder?: Maybe<Builder>;
   builderId?: Maybe<Scalars['String']>;
+  community?: Maybe<Community>;
   communityId?: Maybe<Scalars['String']>;
   completedDate?: Maybe<Scalars['String']>;
+  contractor?: Maybe<Contractor>;
   contractorId?: Maybe<Scalars['String']>;
   createdBy: Scalars['String'];
   createdTime: Scalars['String'];
@@ -174,7 +181,9 @@ export type JobLegacy = {
   lineItems: Array<LineItemLegacy>;
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
+  reporter?: Maybe<Reporter>;
   reporterId?: Maybe<Scalars['String']>;
+  scope?: Maybe<Scope>;
   scopeId?: Maybe<Scalars['String']>;
   startDate?: Maybe<Scalars['String']>;
   updatedBy: Scalars['String'];
@@ -663,6 +672,7 @@ export type BuilderResolvers<
   ParentType extends ResolversParentTypes['Builder'] = ResolversParentTypes['Builder']
 > = {
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  company?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
   companyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -682,6 +692,7 @@ export type CommunityResolvers<
   ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']
 > = {
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  company?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
   companyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -721,6 +732,7 @@ export type ContractorResolvers<
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  jobsLegacy?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -736,10 +748,14 @@ export type JobLegacyResolvers<
 > = {
   active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  area?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType>;
   areaId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  builder?: Resolver<Maybe<ResolversTypes['Builder']>, ParentType, ContextType>;
   builderId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType>;
   communityId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   completedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  contractor?: Resolver<Maybe<ResolversTypes['Contractor']>, ParentType, ContextType>;
   contractorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -750,7 +766,9 @@ export type JobLegacyResolvers<
   lineItems?: Resolver<Array<ResolversTypes['LineItemLegacy']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  reporter?: Resolver<Maybe<ResolversTypes['Reporter']>, ParentType, ContextType>;
   reporterId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  scope?: Resolver<Maybe<ResolversTypes['Scope']>, ParentType, ContextType>;
   scopeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
