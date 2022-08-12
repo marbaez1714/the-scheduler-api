@@ -9,7 +9,7 @@ import {
   suppliers,
   scopes,
   jobsLegacy,
-} from './legacyData';
+} from './mockData';
 
 const prisma = new PrismaClient();
 
