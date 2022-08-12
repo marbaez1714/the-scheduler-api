@@ -8,11 +8,12 @@ import {
   Contractor,
   JobLegacy,
   LineItemLegacy,
-  PaginationOptions,
   Reporter,
   Scope,
-  SortingOptions,
+  Supplier,
   MessageResponse,
+  QueryOptions,
+  SortOrder,
 } from './../generated/graphql';
 
 import { Context } from './../context';
@@ -28,27 +29,8 @@ export const checkPermission = (permission: Permissions, context: Context) => {
 };
 
 /******************************/
-/* Responses                  */
+/* Data Transfer Objects      */
 /******************************/
-export const messageDTO = (operation: 'create' | 'archive' | 'delete', data: BaseDocument): MessageResponse => {
-  const { name, id } = data;
-  let message: string;
-
-  switch (operation) {
-    case 'archive':
-      message = `${name} archived. [id: ${id}]`;
-      break;
-    case 'create':
-      message = `${name} created. [id: ${id}]`;
-      break;
-    case 'delete':
-      message = `${name} deleted. [id: ${id}]`;
-      break;
-  }
-
-  return { message };
-};
-
 export const areaDTO = (data: PrismaData['Area']): Area => {
   const { createdTime, updatedTime, ...rest } = data;
 
@@ -121,6 +103,25 @@ export const lineItemLegacyDTO = (data: PrismaData['LineItemLegacy']): LineItemL
   };
 };
 
+export const messageDTO = (operation: 'create' | 'archive' | 'delete', data: BaseDocument): MessageResponse => {
+  const { name, id } = data;
+  let message: string;
+
+  switch (operation) {
+    case 'archive':
+      message = `${name} archived. [id: ${id}]`;
+      break;
+    case 'create':
+      message = `${name} created. [id: ${id}]`;
+      break;
+    case 'delete':
+      message = `${name} deleted. [id: ${id}]`;
+      break;
+  }
+
+  return { message };
+};
+
 export const reporterDTO = (data: PrismaData['Reporter']): Reporter => {
   const { createdTime, updatedTime, ...rest } = data;
 
@@ -154,16 +155,26 @@ export const supplierDTO = (data: PrismaData['Supplier']): Supplier => {
 /******************************/
 /* Request Inputs             */
 /******************************/
-export const getPaginationOptions = (options?: PaginationOptions) => {
-  if (!options) {
-    return {};
+export const getQueryOptions = (data?: QueryOptions) => {
+  const options: {
+    where: { archived: boolean };
+    skip?: number;
+    take?: number;
+    orderBy?: { [field: string]: SortOrder };
+  } = {
+    where: { archived: !!data?.archived },
+  };
+
+  if (data?.pagination) {
+    const { page, pageSize } = data.pagination;
+    options.take = pageSize;
+    options.skip = Math.min(page - 1, 0) * pageSize;
   }
 
-  const { page, pageSize } = options;
+  if (data?.sorting) {
+    const { field, order } = data.sorting;
+    options.orderBy = { [field]: order };
+  }
 
-  return { take: pageSize, skip: Math.min(page - 1, 0) * pageSize };
-};
-
-export const getSortingOptions = (options?: SortingOptions) => {
-  return options ? { [options.field]: options.order } : {};
+  return options;
 };

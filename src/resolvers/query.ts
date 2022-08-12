@@ -1,7 +1,7 @@
 import { QueryResolvers } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-core';
-import { Prisma } from '@prisma/client';
 
+import { Permissions } from './types';
 import {
   checkPermission,
   areaDTO,
@@ -13,10 +13,8 @@ import {
   scopeDTO,
   supplierDTO,
   jobLegacyDTO,
-  getPaginationOptions,
-  getSortingOptions,
+  getQueryOptions,
 } from './utils';
-import { Permissions } from './types';
 
 export const queryResolvers: QueryResolvers = {
   // Query by Id
@@ -154,13 +152,9 @@ export const queryResolvers: QueryResolvers = {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.AreaFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
-
-    const docList = await context.prisma.area.findMany(findManyArgs);
+    const docList = await context.prisma.area.findMany({
+      ...getQueryOptions(options),
+    });
 
     return docList.map(areaDTO);
   },
@@ -168,14 +162,10 @@ export const queryResolvers: QueryResolvers = {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.BuilderFindManyArgs = {
-      where: { archived: !!options?.archived },
+    const docList = await context.prisma.builder.findMany({
       include: { company: true },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
-
-    const docList = await context.prisma.builder.findMany(findManyArgs);
+      ...getQueryOptions(options),
+    });
 
     return docList.map(builderDTO);
   },
@@ -183,84 +173,54 @@ export const queryResolvers: QueryResolvers = {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.CommunityFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.community.findMany({
+      include: { company: true },
+      ...getQueryOptions(options),
+    });
 
-    const docList = await context.prisma.community.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(communityDTO);
   },
   companies: async (_, { options }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.CompanyFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.company.findMany({ ...getQueryOptions(options) });
 
-    const docList = await context.prisma.company.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(companyDTO);
   },
   contractors: async (_, { options }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.ContractorFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.contractor.findMany({
+      include: { jobsLegacy: { include: { lineItems: true } } },
+      ...getQueryOptions(options),
+    });
 
-    const docList = await context.prisma.contractor.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(contractorDTO);
   },
   reporters: async (_, { options }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.ReporterFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.reporter.findMany({ ...getQueryOptions(options) });
 
-    const docList = await context.prisma.reporter.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(reporterDTO);
   },
   scopes: async (_, { options }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.ScopeFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.scope.findMany({ ...getQueryOptions(options) });
 
-    const docList = await context.prisma.scope.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(scopeDTO);
   },
   suppliers: async (_, { options }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findManyArgs: Prisma.SupplierFindManyArgs = {
-      where: { archived: !!options?.archived },
-      ...getPaginationOptions(options?.pagination),
-      ...getSortingOptions(options?.sorting),
-    };
+    const docList = await context.prisma.supplier.findMany({ ...getQueryOptions(options) });
 
-    const docList = await context.prisma.supplier.findMany(findManyArgs);
-
-    return docList.map(formatResponse);
+    return docList.map(supplierDTO);
   },
 };
