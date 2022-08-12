@@ -38,8 +38,5 @@
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
     "postinstall": "yarn prisma:generate && yarn generate"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }
