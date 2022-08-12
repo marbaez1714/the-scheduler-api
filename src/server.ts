@@ -13,6 +13,8 @@ export const server = new ApolloServer({
   csrfPrevention: true,
 });
 
-server.listen({ port: 4000 }).then(({ url }) => {
+const port = process.env.PORT || 4000;
+
+server.listen({ port }).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });
