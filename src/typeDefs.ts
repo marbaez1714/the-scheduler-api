@@ -1,6 +1,12 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  # Enums
+  enum SortOrder {
+    asc
+    desc
+  }
+
   # Documents
   type Area {
     id: ID!
@@ -19,10 +25,12 @@ export const typeDefs = gql`
   type Builder {
     id: ID!
     name: String!
-    primaryPhone: String!
+    primaryPhone: String
     primaryEmail: String
     companyId: String!
     notes: String
+
+    company: Company!
 
     updatedBy: String!
     createdBy: String!
@@ -37,6 +45,8 @@ export const typeDefs = gql`
     name: String!
     companyId: String!
     notes: String
+
+    company: Company!
 
     updatedBy: String!
     createdBy: String!
@@ -67,6 +77,8 @@ export const typeDefs = gql`
     name: String!
     primaryPhone: String!
     notes: String
+
+    jobsLegacy: [JobLegacy!]!
 
     updatedBy: String!
     createdBy: String!
@@ -149,6 +161,13 @@ export const typeDefs = gql`
     completedDate: String
     startDate: String
     notes: String
+
+    area: Area
+    builder: Builder
+    community: Community
+    contractor: Contractor
+    reporter: Reporter
+    scope: Scope
     lineItems: [LineItemLegacy!]!
 
     updatedBy: String!
@@ -266,6 +285,22 @@ export const typeDefs = gql`
     notes: String
   }
 
+  input PaginationOptions {
+    page: Int!
+    pageSize: Int!
+  }
+
+  input SortingOptions {
+    field: String!
+    order: SortOrder!
+  }
+
+  input QueryOptions {
+    pagination: PaginationOptions
+    sorting: SortingOptions
+    archived: Boolean
+  }
+
   # Responses
   type MessageResponse {
     message: String!
@@ -273,16 +308,6 @@ export const typeDefs = gql`
 
   # Queries
   type Query {
-    # Query all
-    areasAll: [Area!]!
-    buildersAll: [Builder!]!
-    communitiesAll: [Community!]!
-    companiesAll: [Company!]!
-    contractorsAll: [Contractor!]!
-    reportersAll: [Reporter!]!
-    scopesAll: [Scope!]!
-    suppliersAll: [Supplier!]!
-    jobsLegacyAll: [JobLegacy!]!
     # Query by id
     areaById(id: ID!): Area
     builderById(id: ID!): Builder
@@ -293,6 +318,16 @@ export const typeDefs = gql`
     scopeById(id: ID!): Scope
     supplierById(id: ID!): Supplier
     jobLegacyById(id: ID!): JobLegacy
+
+    # Query paginated and sorted
+    areas(options: QueryOptions): [Area!]!
+    builders(options: QueryOptions): [Builder!]!
+    communities(options: QueryOptions): [Community!]!
+    companies(options: QueryOptions): [Company!]!
+    contractors(options: QueryOptions): [Contractor!]!
+    reporters(options: QueryOptions): [Reporter!]!
+    scopes(options: QueryOptions): [Scope!]!
+    suppliers(options: QueryOptions): [Supplier!]!
   }
 
   # Mutations

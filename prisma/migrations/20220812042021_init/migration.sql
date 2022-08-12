@@ -1,9 +1,54 @@
--- AlterTable
-ALTER TABLE "Area" ALTER COLUMN "notes" DROP NOT NULL;
+-- CreateTable
+CREATE TABLE "Company" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "primaryAddress" TEXT,
+    "primaryEmail" TEXT,
+    "primaryPhone" TEXT,
+    "notes" TEXT,
+    "updatedBy" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL,
+    "createdTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedTime" TIMESTAMP(3) NOT NULL,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
+    "legacy" BOOLEAN NOT NULL DEFAULT false,
 
--- AlterTable
-ALTER TABLE "Builder" ALTER COLUMN "primaryEmail" DROP NOT NULL,
-ALTER COLUMN "notes" DROP NOT NULL;
+    CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Area" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "nameSpanish" TEXT NOT NULL,
+    "notes" TEXT,
+    "updatedBy" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL,
+    "createdTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedTime" TIMESTAMP(3) NOT NULL,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
+    "legacy" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Area_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Builder" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "primaryPhone" TEXT,
+    "primaryEmail" TEXT,
+    "companyId" TEXT NOT NULL,
+    "notes" TEXT,
+    "updatedBy" TEXT NOT NULL,
+    "createdBy" TEXT NOT NULL,
+    "createdTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedTime" TIMESTAMP(3) NOT NULL,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
+    "legacy" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Builder_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Community" (
@@ -130,6 +175,15 @@ CREATE TABLE "JobLegacy" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Company_name_key" ON "Company"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Area_name_key" ON "Area"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Builder_name_companyId_key" ON "Builder"("name", "companyId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Community_name_companyId_key" ON "Community"("name", "companyId");
 
 -- CreateIndex
@@ -143,6 +197,9 @@ CREATE UNIQUE INDEX "Scope_name_key" ON "Scope"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Supplier_name_key" ON "Supplier"("name");
+
+-- AddForeignKey
+ALTER TABLE "Builder" ADD CONSTRAINT "Builder_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Community" ADD CONSTRAINT "Community_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

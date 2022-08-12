@@ -31,10 +31,15 @@
     "jwks-rsa": "^2.1.4"
   },
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/server.js",
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/server.ts",
-    "graphql:generate": "graphql-codegen --config codegen.yml",
-    "prisma:migrate": "prisma migrate dev --name init",
+    "generate": "graphql-codegen --config codegen.yml",
     "prisma:generate": "prisma generate",
-    "generate": "graphql-codegen --config codegen.yml"
+    "prisma:deploy": "prisma migrate deploy",
+    "postinstall": "yarn prisma:generate && yarn generate"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

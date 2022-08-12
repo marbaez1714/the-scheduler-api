@@ -1,4 +1,5 @@
-import { checkPermission, Permissions, messageResponses } from './utils';
+import { checkPermission, messageDTO } from './utils';
+import { Permissions } from './types';
 import { MutationResolvers } from '../generated/graphql';
 
 export const mutationResolvers: MutationResolvers = {
@@ -15,7 +16,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Area', newDoc);
+    return messageDTO('create', newDoc);
   },
   createBuilder: async (_, { data }, context) => {
     // Check for admin permissions
@@ -29,7 +30,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Builder', newDoc);
+    return messageDTO('create', newDoc);
   },
   createCommunity: async (_, { data }, context) => {
     // Check for admin permissions
@@ -43,7 +44,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Community', newDoc);
+    return messageDTO('create', newDoc);
   },
   createCompany: async (_, { data }, context) => {
     // Check for admin permissions
@@ -57,7 +58,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Company', newDoc);
+    return messageDTO('create', newDoc);
   },
   createContractor: async (_, { data }, context) => {
     // Check for admin permissions
@@ -71,7 +72,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Contractor', newDoc);
+    return messageDTO('create', newDoc);
   },
   createReporter: async (_, { data }, context) => {
     // Check for admin permissions
@@ -85,7 +86,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Reporter', newDoc);
+    return messageDTO('create', newDoc);
   },
   createScope: async (_, { data }, context) => {
     // Check for admin permissions
@@ -99,7 +100,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Scope', newDoc);
+    return messageDTO('create', newDoc);
   },
   createSupplier: async (_, { data }, context) => {
     // Check for admin permissions
@@ -113,7 +114,7 @@ export const mutationResolvers: MutationResolvers = {
       },
     });
 
-    return messageResponses.create('Supplier', newDoc);
+    return messageDTO('create', newDoc);
   },
   createJobLegacy: async (_, { data }, context) => {
     // Check for admin permissions
@@ -140,7 +141,7 @@ export const mutationResolvers: MutationResolvers = {
       await context.prisma.lineItemLegacy.createMany({ data: lineItemsFormatted });
     }
 
-    return messageResponses.create('Job (Legacy)', newJob);
+    return messageDTO('create', newJob);
   },
   // Archive
   archiveArea: async (_, { id }, context) => {
@@ -149,7 +150,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.area.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Area', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveBuilder: async (_, { id }, context) => {
     // Check for admin permissions
@@ -157,7 +158,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.builder.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Builder', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveCommunity: async (_, { id }, context) => {
     // Check for admin permissions
@@ -165,7 +166,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.community.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Community', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveCompany: async (_, { id }, context) => {
     // Check for admin permissions
@@ -173,7 +174,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.company.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Company', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveContractor: async (_, { id }, context) => {
     // Check for admin permissions
@@ -181,7 +182,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.contractor.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Contractor', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveReporter: async (_, { id }, context) => {
     // Check for admin permissions
@@ -189,7 +190,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.reporter.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Reporter', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveScope: async (_, { id }, context) => {
     // Check for admin permissions
@@ -197,7 +198,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.scope.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Scope', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveSupplier: async (_, { id }, context) => {
     // Check for admin permissions
@@ -205,7 +206,7 @@ export const mutationResolvers: MutationResolvers = {
 
     const updatedDoc = await context.prisma.supplier.update({ where: { id: id }, data: { archived: true } });
 
-    return messageResponses.archive('Supplier', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   archiveJobLegacy: async (_, { id }, context) => {
     // Check for admin permissions
@@ -217,7 +218,7 @@ export const mutationResolvers: MutationResolvers = {
     // Archive it's line items
     await context.prisma.lineItemLegacy.updateMany({ where: { jobId: updatedDoc.id }, data: { archived: true } });
 
-    return messageResponses.archive('Job (Legacy)', updatedDoc);
+    return messageDTO('archive', updatedDoc);
   },
   // Delete
   deleteLineItemLegacy: async (_, { id }, context) => {
@@ -226,6 +227,6 @@ export const mutationResolvers: MutationResolvers = {
 
     const deletedDoc = await context.prisma.lineItemLegacy.delete({ where: { id: id } });
 
-    return messageResponses.archive('Line Item (Legacy)', { name: deletedDoc.orderNumber, id: deletedDoc.id });
+    return messageDTO('delete', { name: deletedDoc.orderNumber, id: deletedDoc.id });
   },
 };
