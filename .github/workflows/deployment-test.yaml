@@ -8,19 +8,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Run Prisma Deploy
-        uses: borales/actions-yarn@v2.0.0
-
-        with:
-          cmd: prisma:deploy
+        run: yarn prisma:deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
 
