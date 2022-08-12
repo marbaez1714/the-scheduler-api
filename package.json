@@ -31,9 +31,12 @@
     "jwks-rsa": "^2.1.4"
   },
   "scripts": {
+    "build": "prisma generate && tsc",
+    "start": "node dist/src/index.js",
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/server.ts",
     "generate": "graphql-codegen --config codegen.yml",
     "prisma:generate": "prisma generate",
+    "prisma:deploy": "prisma migrate deploy",
     "postinstall": "yarn prisma:generate && yarn generate"
   },
   "prisma": {
