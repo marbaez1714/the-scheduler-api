@@ -30,6 +30,10 @@
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.1.4"
   },
+  "engines": {
+    "node": "18.x",
+    "yarn": "1.x"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/server.js",
