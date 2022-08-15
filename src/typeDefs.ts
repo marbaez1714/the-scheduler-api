@@ -306,6 +306,65 @@ export const typeDefs = gql`
     message: String!
   }
 
+  type SortingResponse {
+    field: String!
+    order: SortOrder!
+  }
+
+  type PaginationResponse {
+    page: Int
+    pageSize: Int
+    totalCount: Int!
+  }
+
+  type AreasResponse {
+    areas: [Area!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type BuildersResponse {
+    builders: [Builder!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type CommunitiesResponse {
+    communities: [Community!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type CompaniesResponse {
+    companies: [Company!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type ContractorsResponse {
+    contractors: [Contractor!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type ReportersResponse {
+    reporters: [Reporter!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type ScopesResponse {
+    scopes: [Scope!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
+  type SuppliersResponse {
+    suppliers: [Supplier!]!
+    pagination: PaginationResponse!
+    sorting: SortingResponse
+  }
+
   # Queries
   type Query {
     # Query by id
@@ -320,14 +379,14 @@ export const typeDefs = gql`
     jobLegacyById(id: ID!): JobLegacy
 
     # Query paginated and sorted
-    areas(options: QueryOptions): [Area!]!
-    builders(options: QueryOptions): [Builder!]!
-    communities(options: QueryOptions): [Community!]!
-    companies(options: QueryOptions): [Company!]!
-    contractors(options: QueryOptions): [Contractor!]!
-    reporters(options: QueryOptions): [Reporter!]!
-    scopes(options: QueryOptions): [Scope!]!
-    suppliers(options: QueryOptions): [Supplier!]!
+    areas(options: QueryOptions): AreasResponse!
+    builders(options: QueryOptions): BuildersResponse!
+    communities(options: QueryOptions): CommunitiesResponse!
+    companies(options: QueryOptions): CompaniesResponse!
+    contractors(options: QueryOptions): ContractorsResponse!
+    reporters(options: QueryOptions): ReportersResponse!
+    scopes(options: QueryOptions): ScopesResponse!
+    suppliers(options: QueryOptions): SuppliersResponse!
   }
 
   # Mutations
@@ -354,5 +413,11 @@ export const typeDefs = gql`
     archiveJobLegacy(id: ID!): MessageResponse!
     # Delete
     deleteLineItemLegacy(id: ID!): MessageResponse!
+    # Update
+    updateArea(id: ID!, data: UpdateAreaInput!): MessageResponse!
+    updateBuilder(id: ID!, data: UpdateBuilderInput!): MessageResponse!
+    updateCommunity(id: ID!, data: UpdateCommunityInput!): MessageResponse!
+    updateCompany(id: ID!, data: UpdateCompanyInput!): MessageResponse!
+    updateContactor(id: ID!, data: UpdateContractorInput!): MessageResponse!
   }
 `;

@@ -29,6 +29,13 @@ export type Area = {
   updatedTime: Scalars['String'];
 };
 
+export type AreasResponse = {
+  __typename?: 'AreasResponse';
+  areas: Array<Area>;
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
+};
+
 export type Builder = {
   __typename?: 'Builder';
   archived: Scalars['Boolean'];
@@ -46,6 +53,20 @@ export type Builder = {
   updatedTime: Scalars['String'];
 };
 
+export type BuildersResponse = {
+  __typename?: 'BuildersResponse';
+  builders: Array<Builder>;
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
+};
+
+export type CommunitiesResponse = {
+  __typename?: 'CommunitiesResponse';
+  communities: Array<Community>;
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
+};
+
 export type Community = {
   __typename?: 'Community';
   archived: Scalars['Boolean'];
@@ -59,6 +80,13 @@ export type Community = {
   notes?: Maybe<Scalars['String']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
+};
+
+export type CompaniesResponse = {
+  __typename?: 'CompaniesResponse';
+  companies: Array<Company>;
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
 };
 
 export type Company = {
@@ -90,6 +118,13 @@ export type Contractor = {
   primaryPhone: Scalars['String'];
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
+};
+
+export type ContractorsResponse = {
+  __typename?: 'ContractorsResponse';
+  contractors: Array<Contractor>;
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
 };
 
 export type CreateAreaInput = {
@@ -235,6 +270,11 @@ export type Mutation = {
   createScope: MessageResponse;
   createSupplier: MessageResponse;
   deleteLineItemLegacy: MessageResponse;
+  updateArea: MessageResponse;
+  updateBuilder: MessageResponse;
+  updateCommunity: MessageResponse;
+  updateCompany: MessageResponse;
+  updateContactor: MessageResponse;
 };
 
 export type MutationArchiveAreaArgs = {
@@ -313,30 +353,62 @@ export type MutationDeleteLineItemLegacyArgs = {
   id: Scalars['ID'];
 };
 
+export type MutationUpdateAreaArgs = {
+  data: UpdateAreaInput;
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateBuilderArgs = {
+  data: UpdateBuilderInput;
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateCommunityArgs = {
+  data: UpdateCommunityInput;
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateCompanyArgs = {
+  data: UpdateCompanyInput;
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateContactorArgs = {
+  data: UpdateContractorInput;
+  id: Scalars['ID'];
+};
+
 export type PaginationOptions = {
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
 
+export type PaginationResponse = {
+  __typename?: 'PaginationResponse';
+  page?: Maybe<Scalars['Int']>;
+  pageSize?: Maybe<Scalars['Int']>;
+  totalCount: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   areaById?: Maybe<Area>;
-  areas: Array<Area>;
+  areas: AreasResponse;
   builderById?: Maybe<Builder>;
-  builders: Array<Builder>;
-  communities: Array<Community>;
+  builders: BuildersResponse;
+  communities: CommunitiesResponse;
   communityById?: Maybe<Community>;
-  companies: Array<Company>;
+  companies: CompaniesResponse;
   companyById?: Maybe<Company>;
   contractorById?: Maybe<Contractor>;
-  contractors: Array<Contractor>;
+  contractors: ContractorsResponse;
   jobLegacyById?: Maybe<JobLegacy>;
   reporterById?: Maybe<Reporter>;
-  reporters: Array<Reporter>;
+  reporters: ReportersResponse;
   scopeById?: Maybe<Scope>;
-  scopes: Array<Scope>;
+  scopes: ScopesResponse;
   supplierById?: Maybe<Supplier>;
-  suppliers: Array<Supplier>;
+  suppliers: SuppliersResponse;
 };
 
 export type QueryAreaByIdArgs = {
@@ -428,6 +500,13 @@ export type Reporter = {
   updatedTime: Scalars['String'];
 };
 
+export type ReportersResponse = {
+  __typename?: 'ReportersResponse';
+  pagination: PaginationResponse;
+  reporters: Array<Reporter>;
+  sorting?: Maybe<SortingResponse>;
+};
+
 export type Scope = {
   __typename?: 'Scope';
   archived: Scalars['Boolean'];
@@ -443,12 +522,25 @@ export type Scope = {
   updatedTime: Scalars['String'];
 };
 
+export type ScopesResponse = {
+  __typename?: 'ScopesResponse';
+  pagination: PaginationResponse;
+  scopes: Array<Scope>;
+  sorting?: Maybe<SortingResponse>;
+};
+
 export enum SortOrder {
   Asc = 'asc',
   Desc = 'desc',
 }
 
 export type SortingOptions = {
+  field: Scalars['String'];
+  order: SortOrder;
+};
+
+export type SortingResponse = {
+  __typename?: 'SortingResponse';
   field: Scalars['String'];
   order: SortOrder;
 };
@@ -465,6 +557,13 @@ export type Supplier = {
   primaryPhone?: Maybe<Scalars['String']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
+};
+
+export type SuppliersResponse = {
+  __typename?: 'SuppliersResponse';
+  pagination: PaginationResponse;
+  sorting?: Maybe<SortingResponse>;
+  suppliers: Array<Supplier>;
 };
 
 export type UpdateAreaInput = {
@@ -574,11 +673,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Area: ResolverTypeWrapper<Area>;
+  AreasResponse: ResolverTypeWrapper<AreasResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Builder: ResolverTypeWrapper<Builder>;
+  BuildersResponse: ResolverTypeWrapper<BuildersResponse>;
+  CommunitiesResponse: ResolverTypeWrapper<CommunitiesResponse>;
   Community: ResolverTypeWrapper<Community>;
+  CompaniesResponse: ResolverTypeWrapper<CompaniesResponse>;
   Company: ResolverTypeWrapper<Company>;
   Contractor: ResolverTypeWrapper<Contractor>;
+  ContractorsResponse: ResolverTypeWrapper<ContractorsResponse>;
   CreateAreaInput: CreateAreaInput;
   CreateBuilderInput: CreateBuilderInput;
   CreateCommunityInput: CreateCommunityInput;
@@ -596,14 +700,19 @@ export type ResolversTypes = {
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginationOptions: PaginationOptions;
+  PaginationResponse: ResolverTypeWrapper<PaginationResponse>;
   Query: ResolverTypeWrapper<{}>;
   QueryOptions: QueryOptions;
   Reporter: ResolverTypeWrapper<Reporter>;
+  ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
   Scope: ResolverTypeWrapper<Scope>;
+  ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
   SortOrder: SortOrder;
   SortingOptions: SortingOptions;
+  SortingResponse: ResolverTypeWrapper<SortingResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
+  SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
   UpdateAreaInput: UpdateAreaInput;
   UpdateBuilderInput: UpdateBuilderInput;
   UpdateCommunityInput: UpdateCommunityInput;
@@ -614,11 +723,16 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Area: Area;
+  AreasResponse: AreasResponse;
   Boolean: Scalars['Boolean'];
   Builder: Builder;
+  BuildersResponse: BuildersResponse;
+  CommunitiesResponse: CommunitiesResponse;
   Community: Community;
+  CompaniesResponse: CompaniesResponse;
   Company: Company;
   Contractor: Contractor;
+  ContractorsResponse: ContractorsResponse;
   CreateAreaInput: CreateAreaInput;
   CreateBuilderInput: CreateBuilderInput;
   CreateCommunityInput: CreateCommunityInput;
@@ -636,13 +750,18 @@ export type ResolversParentTypes = {
   MessageResponse: MessageResponse;
   Mutation: {};
   PaginationOptions: PaginationOptions;
+  PaginationResponse: PaginationResponse;
   Query: {};
   QueryOptions: QueryOptions;
   Reporter: Reporter;
+  ReportersResponse: ReportersResponse;
   Scope: Scope;
+  ScopesResponse: ScopesResponse;
   SortingOptions: SortingOptions;
+  SortingResponse: SortingResponse;
   String: Scalars['String'];
   Supplier: Supplier;
+  SuppliersResponse: SuppliersResponse;
   UpdateAreaInput: UpdateAreaInput;
   UpdateBuilderInput: UpdateBuilderInput;
   UpdateCommunityInput: UpdateCommunityInput;
@@ -667,6 +786,16 @@ export type AreaResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type AreasResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['AreasResponse'] = ResolversParentTypes['AreasResponse']
+> = {
+  areas?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type BuilderResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Builder'] = ResolversParentTypes['Builder']
@@ -687,6 +816,26 @@ export type BuilderResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type BuildersResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['BuildersResponse'] = ResolversParentTypes['BuildersResponse']
+> = {
+  builders?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommunitiesResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CommunitiesResponse'] = ResolversParentTypes['CommunitiesResponse']
+> = {
+  communities?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CommunityResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Community'] = ResolversParentTypes['Community']
@@ -702,6 +851,16 @@ export type CommunityResolvers<
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CompaniesResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CompaniesResponse'] = ResolversParentTypes['CompaniesResponse']
+> = {
+  companies?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -739,6 +898,16 @@ export type ContractorResolvers<
   primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ContractorsResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ContractorsResponse'] = ResolversParentTypes['ContractorsResponse']
+> = {
+  contractors?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -919,6 +1088,46 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationDeleteLineItemLegacyArgs, 'id'>
   >;
+  updateArea?: Resolver<
+    ResolversTypes['MessageResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateAreaArgs, 'data' | 'id'>
+  >;
+  updateBuilder?: Resolver<
+    ResolversTypes['MessageResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateBuilderArgs, 'data' | 'id'>
+  >;
+  updateCommunity?: Resolver<
+    ResolversTypes['MessageResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateCommunityArgs, 'data' | 'id'>
+  >;
+  updateCompany?: Resolver<
+    ResolversTypes['MessageResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateCompanyArgs, 'data' | 'id'>
+  >;
+  updateContactor?: Resolver<
+    ResolversTypes['MessageResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateContactorArgs, 'data' | 'id'>
+  >;
+};
+
+export type PaginationResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['PaginationResponse'] = ResolversParentTypes['PaginationResponse']
+> = {
+  page?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  pageSize?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<
@@ -926,22 +1135,22 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
   areaById?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType, RequireFields<QueryAreaByIdArgs, 'id'>>;
-  areas?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType, Partial<QueryAreasArgs>>;
+  areas?: Resolver<ResolversTypes['AreasResponse'], ParentType, ContextType, Partial<QueryAreasArgs>>;
   builderById?: Resolver<
     Maybe<ResolversTypes['Builder']>,
     ParentType,
     ContextType,
     RequireFields<QueryBuilderByIdArgs, 'id'>
   >;
-  builders?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType, Partial<QueryBuildersArgs>>;
-  communities?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType, Partial<QueryCommunitiesArgs>>;
+  builders?: Resolver<ResolversTypes['BuildersResponse'], ParentType, ContextType, Partial<QueryBuildersArgs>>;
+  communities?: Resolver<ResolversTypes['CommunitiesResponse'], ParentType, ContextType, Partial<QueryCommunitiesArgs>>;
   communityById?: Resolver<
     Maybe<ResolversTypes['Community']>,
     ParentType,
     ContextType,
     RequireFields<QueryCommunityByIdArgs, 'id'>
   >;
-  companies?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType, Partial<QueryCompaniesArgs>>;
+  companies?: Resolver<ResolversTypes['CompaniesResponse'], ParentType, ContextType, Partial<QueryCompaniesArgs>>;
   companyById?: Resolver<
     Maybe<ResolversTypes['Company']>,
     ParentType,
@@ -954,7 +1163,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryContractorByIdArgs, 'id'>
   >;
-  contractors?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType, Partial<QueryContractorsArgs>>;
+  contractors?: Resolver<ResolversTypes['ContractorsResponse'], ParentType, ContextType, Partial<QueryContractorsArgs>>;
   jobLegacyById?: Resolver<
     Maybe<ResolversTypes['JobLegacy']>,
     ParentType,
@@ -967,21 +1176,21 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryReporterByIdArgs, 'id'>
   >;
-  reporters?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType, Partial<QueryReportersArgs>>;
+  reporters?: Resolver<ResolversTypes['ReportersResponse'], ParentType, ContextType, Partial<QueryReportersArgs>>;
   scopeById?: Resolver<
     Maybe<ResolversTypes['Scope']>,
     ParentType,
     ContextType,
     RequireFields<QueryScopeByIdArgs, 'id'>
   >;
-  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType, Partial<QueryScopesArgs>>;
+  scopes?: Resolver<ResolversTypes['ScopesResponse'], ParentType, ContextType, Partial<QueryScopesArgs>>;
   supplierById?: Resolver<
     Maybe<ResolversTypes['Supplier']>,
     ParentType,
     ContextType,
     RequireFields<QuerySupplierByIdArgs, 'id'>
   >;
-  suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType, Partial<QuerySuppliersArgs>>;
+  suppliers?: Resolver<ResolversTypes['SuppliersResponse'], ParentType, ContextType, Partial<QuerySuppliersArgs>>;
 };
 
 export type ReporterResolvers<
@@ -999,6 +1208,16 @@ export type ReporterResolvers<
   primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ReportersResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ReportersResponse'] = ResolversParentTypes['ReportersResponse']
+> = {
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  reporters?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1020,6 +1239,25 @@ export type ScopeResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ScopesResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ScopesResponse'] = ResolversParentTypes['ScopesResponse']
+> = {
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SortingResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['SortingResponse'] = ResolversParentTypes['SortingResponse']
+> = {
+  field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['SortOrder'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type SupplierResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Supplier'] = ResolversParentTypes['Supplier']
@@ -1037,18 +1275,38 @@ export type SupplierResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SuppliersResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['SuppliersResponse'] = ResolversParentTypes['SuppliersResponse']
+> = {
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
+  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   Area?: AreaResolvers<ContextType>;
+  AreasResponse?: AreasResponseResolvers<ContextType>;
   Builder?: BuilderResolvers<ContextType>;
+  BuildersResponse?: BuildersResponseResolvers<ContextType>;
+  CommunitiesResponse?: CommunitiesResponseResolvers<ContextType>;
   Community?: CommunityResolvers<ContextType>;
+  CompaniesResponse?: CompaniesResponseResolvers<ContextType>;
   Company?: CompanyResolvers<ContextType>;
   Contractor?: ContractorResolvers<ContextType>;
+  ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PaginationResponse?: PaginationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reporter?: ReporterResolvers<ContextType>;
+  ReportersResponse?: ReportersResponseResolvers<ContextType>;
   Scope?: ScopeResolvers<ContextType>;
+  ScopesResponse?: ScopesResponseResolvers<ContextType>;
+  SortingResponse?: SortingResponseResolvers<ContextType>;
   Supplier?: SupplierResolvers<ContextType>;
+  SuppliersResponse?: SuppliersResponseResolvers<ContextType>;
 };

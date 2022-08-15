@@ -41,6 +41,7 @@
     "generate": "graphql-codegen --config codegen.yml",
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
-    "postinstall": "yarn prisma:generate && yarn generate"
+    "postinstall": "yarn prisma:generate && yarn generate",
+    "seed:test": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seed.ts"
   }
 }
