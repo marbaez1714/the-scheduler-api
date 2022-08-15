@@ -168,7 +168,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: AreasResponse = {
-      areas: docList.map(areaDTO),
+      data: docList.map(areaDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -191,7 +191,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: BuildersResponse = {
-      builders: docList.map(builderDTO),
+      data: docList.map(builderDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -214,7 +214,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: CommunitiesResponse = {
-      communities: docList.map(communityDTO),
+      data: docList.map(communityDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -237,7 +237,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: CompaniesResponse = {
-      companies: docList.map(companyDTO),
+      data: docList.map(companyDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -269,7 +269,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: ContractorsResponse = {
-      contractors: docList.map(contractorDTO),
+      data: docList.map(contractorDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -292,7 +292,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: ReportersResponse = {
-      reporters: docList.map(reporterDTO),
+      data: docList.map(reporterDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -315,7 +315,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: ScopesResponse = {
-      scopes: docList.map(scopeDTO),
+      data: docList.map(scopeDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,
@@ -338,7 +338,7 @@ export const queryResolvers: QueryResolvers = {
     ]);
 
     const response: SuppliersResponse = {
-      suppliers: docList.map(supplierDTO),
+      data: docList.map(supplierDTO),
       pagination: {
         totalCount: count,
         page: options?.pagination?.page,

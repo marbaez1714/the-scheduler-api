@@ -318,49 +318,49 @@ export const typeDefs = gql`
   }
 
   type AreasResponse {
-    areas: [Area!]!
+    data: [Area!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type BuildersResponse {
-    builders: [Builder!]!
+    data: [Builder!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type CommunitiesResponse {
-    communities: [Community!]!
+    data: [Community!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type CompaniesResponse {
-    companies: [Company!]!
+    data: [Company!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type ContractorsResponse {
-    contractors: [Contractor!]!
+    data: [Contractor!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type ReportersResponse {
-    reporters: [Reporter!]!
+    data: [Reporter!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type ScopesResponse {
-    scopes: [Scope!]!
+    data: [Scope!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }
 
   type SuppliersResponse {
-    suppliers: [Supplier!]!
+    data: [Supplier!]!
     pagination: PaginationResponse!
     sorting: SortingResponse
   }

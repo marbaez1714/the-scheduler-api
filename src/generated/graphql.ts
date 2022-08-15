@@ -31,7 +31,7 @@ export type Area = {
 
 export type AreasResponse = {
   __typename?: 'AreasResponse';
-  areas: Array<Area>;
+  data: Array<Area>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
 };
@@ -55,14 +55,14 @@ export type Builder = {
 
 export type BuildersResponse = {
   __typename?: 'BuildersResponse';
-  builders: Array<Builder>;
+  data: Array<Builder>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
 };
 
 export type CommunitiesResponse = {
   __typename?: 'CommunitiesResponse';
-  communities: Array<Community>;
+  data: Array<Community>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
 };
@@ -84,7 +84,7 @@ export type Community = {
 
 export type CompaniesResponse = {
   __typename?: 'CompaniesResponse';
-  companies: Array<Company>;
+  data: Array<Company>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
 };
@@ -122,7 +122,7 @@ export type Contractor = {
 
 export type ContractorsResponse = {
   __typename?: 'ContractorsResponse';
-  contractors: Array<Contractor>;
+  data: Array<Contractor>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
 };
@@ -502,8 +502,8 @@ export type Reporter = {
 
 export type ReportersResponse = {
   __typename?: 'ReportersResponse';
+  data: Array<Reporter>;
   pagination: PaginationResponse;
-  reporters: Array<Reporter>;
   sorting?: Maybe<SortingResponse>;
 };
 
@@ -524,8 +524,8 @@ export type Scope = {
 
 export type ScopesResponse = {
   __typename?: 'ScopesResponse';
+  data: Array<Scope>;
   pagination: PaginationResponse;
-  scopes: Array<Scope>;
   sorting?: Maybe<SortingResponse>;
 };
 
@@ -561,9 +561,9 @@ export type Supplier = {
 
 export type SuppliersResponse = {
   __typename?: 'SuppliersResponse';
+  data: Array<Supplier>;
   pagination: PaginationResponse;
   sorting?: Maybe<SortingResponse>;
-  suppliers: Array<Supplier>;
 };
 
 export type UpdateAreaInput = {
@@ -790,7 +790,7 @@ export type AreasResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['AreasResponse'] = ResolversParentTypes['AreasResponse']
 > = {
-  areas?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -820,7 +820,7 @@ export type BuildersResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['BuildersResponse'] = ResolversParentTypes['BuildersResponse']
 > = {
-  builders?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -830,7 +830,7 @@ export type CommunitiesResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['CommunitiesResponse'] = ResolversParentTypes['CommunitiesResponse']
 > = {
-  communities?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -858,7 +858,7 @@ export type CompaniesResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['CompaniesResponse'] = ResolversParentTypes['CompaniesResponse']
 > = {
-  companies?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -905,7 +905,7 @@ export type ContractorsResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['ContractorsResponse'] = ResolversParentTypes['ContractorsResponse']
 > = {
-  contractors?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1215,8 +1215,8 @@ export type ReportersResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['ReportersResponse'] = ResolversParentTypes['ReportersResponse']
 > = {
+  data?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  reporters?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1243,8 +1243,8 @@ export type ScopesResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['ScopesResponse'] = ResolversParentTypes['ScopesResponse']
 > = {
+  data?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  scopes?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1279,9 +1279,9 @@ export type SuppliersResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['SuppliersResponse'] = ResolversParentTypes['SuppliersResponse']
 > = {
+  data?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
-  suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

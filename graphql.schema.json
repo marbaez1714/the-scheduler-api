@@ -181,7 +181,7 @@
         "description": null,
         "fields": [
           {
-            "name": "areas",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -461,7 +461,7 @@
         "description": null,
         "fields": [
           {
-            "name": "builders",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -524,7 +524,7 @@
         "description": null,
         "fields": [
           {
-            "name": "communities",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -770,7 +770,7 @@
         "description": null,
         "fields": [
           {
-            "name": "companies",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -1211,7 +1211,7 @@
         "description": null,
         "fields": [
           {
-            "name": "contractors",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -4288,23 +4288,7 @@
         "description": null,
         "fields": [
           {
-            "name": "pagination",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginationResponse",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "reporters",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -4322,6 +4306,22 @@
                     "ofType": null
                   }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pagination",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginationResponse",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -4530,23 +4530,7 @@
         "description": null,
         "fields": [
           {
-            "name": "pagination",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "PaginationResponse",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "scopes",
+            "name": "data",
             "description": null,
             "args": [],
             "type": {
@@ -4564,6 +4548,22 @@
                     "ofType": null
                   }
                 }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "pagination",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PaginationResponse",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -4875,6 +4875,30 @@
         "description": null,
         "fields": [
           {
+            "name": "data",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Supplier",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "pagination",
             "description": null,
             "args": [],
@@ -4898,30 +4922,6 @@
               "kind": "OBJECT",
               "name": "SortingResponse",
               "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "suppliers",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Supplier",
-                    "ofType": null
-                  }
-                }
-              }
             },
             "isDeprecated": false,
             "deprecationReason": null
