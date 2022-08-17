@@ -1,5 +1,5 @@
 overwrite: true
-schema: ./src/typeDefs.ts
+schema: ./src/**/*.graphql
 hooks:
   afterAllFileWrite:
     - prettier --write

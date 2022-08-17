@@ -194,6 +194,14 @@ export type CreateSupplierInput = {
   primaryPhone?: InputMaybe<Scalars['String']>;
 };
 
+export type DashboardLegacyResponse = {
+  __typename?: 'DashboardLegacyResponse';
+  assigned: Array<Contractor>;
+  totalAssigned: Scalars['Int'];
+  totalUnassigned: Scalars['Int'];
+  unassigned: Array<JobLegacy>;
+};
+
 export type JobLegacy = {
   __typename?: 'JobLegacy';
   active: Scalars['Boolean'];
@@ -402,6 +410,7 @@ export type Query = {
   companyById?: Maybe<Company>;
   contractorById?: Maybe<Contractor>;
   contractors: ContractorsResponse;
+  dashboardLegacy: DashboardLegacyResponse;
   jobLegacyById?: Maybe<JobLegacy>;
   reporterById?: Maybe<Reporter>;
   reporters: ReportersResponse;
@@ -692,6 +701,7 @@ export type ResolversTypes = {
   CreateReporterInput: CreateReporterInput;
   CreateScopeInput: CreateScopeInput;
   CreateSupplierInput: CreateSupplierInput;
+  DashboardLegacyResponse: ResolverTypeWrapper<DashboardLegacyResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
@@ -742,6 +752,7 @@ export type ResolversParentTypes = {
   CreateReporterInput: CreateReporterInput;
   CreateScopeInput: CreateScopeInput;
   CreateSupplierInput: CreateSupplierInput;
+  DashboardLegacyResponse: DashboardLegacyResponse;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
@@ -908,6 +919,17 @@ export type ContractorsResponseResolvers<
   data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
   pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DashboardLegacyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DashboardLegacyResponse'] = ResolversParentTypes['DashboardLegacyResponse']
+> = {
+  assigned?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  totalAssigned?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalUnassigned?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  unassigned?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1164,6 +1186,7 @@ export type QueryResolvers<
     RequireFields<QueryContractorByIdArgs, 'id'>
   >;
   contractors?: Resolver<ResolversTypes['ContractorsResponse'], ParentType, ContextType, Partial<QueryContractorsArgs>>;
+  dashboardLegacy?: Resolver<ResolversTypes['DashboardLegacyResponse'], ParentType, ContextType>;
   jobLegacyById?: Resolver<
     Maybe<ResolversTypes['JobLegacy']>,
     ParentType,
@@ -1296,6 +1319,7 @@ export type Resolvers<ContextType = Context> = {
   Company?: CompanyResolvers<ContextType>;
   Contractor?: ContractorResolvers<ContextType>;
   ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
+  DashboardLegacyResponse?: DashboardLegacyResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;

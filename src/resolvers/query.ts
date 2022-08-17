@@ -349,4 +349,23 @@ export const queryResolvers: QueryResolvers = {
 
     return response;
   },
+  // Dashboard
+  dashboardLegacy: async (_, __, context) => {
+    // Check for admin permissions
+    checkPermission(Permissions.Admin, context);
+
+    const findUnassigned = context.prisma.jobLegacy.findMany({
+      where: { archived: false, active: true, contractorId: null },
+      include: { lineItems: true },
+    });
+
+    const [unassignedList] = await context.prisma.$transaction([findUnassigned]);
+
+    return {
+      assigned: [],
+      unassigned: unassignedList.map(jobLegacyDTO),
+      totalAssigned: 0,
+      totalUnassigned: 0,
+    };
+  },
 };
