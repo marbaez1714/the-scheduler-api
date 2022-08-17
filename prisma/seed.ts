@@ -90,14 +90,14 @@ const getLineItems = (jobList: Job[]) => {
   }[] = [];
 
   jobList.forEach((job) => {
-    const newLineItems = job.lineItems.map(({ orderNumber, supplier }) => ({
-      orderNumber,
-      supplierId: supplier,
-      jobId: job.id,
-      ...metadata,
-    }));
-
-    lineItems.concat(newLineItems);
+    job.lineItems.forEach(({ orderNumber, supplier }) => {
+      lineItems.push({
+        orderNumber,
+        supplierId: supplier,
+        jobId: job.id,
+        ...metadata,
+      });
+    });
   });
 
   return lineItems;
@@ -158,9 +158,9 @@ const formattedScopes = createUniqueNames(scopes).map(({ name, nameSpanish, ...r
 const formattedJobsLegacy = jobsLegacy.map((job) => ({
   id: job.id,
   name: job.address,
-  active: job.active || undefined,
-  inProgress: job.inProgress || undefined,
-  isImportant: job.isImportant || undefined,
+  active: job.active,
+  inProgress: job.inProgress,
+  isImportant: job.isImportant,
   areaId: job.areaId || undefined,
   builderId: job.builderId || undefined,
   communityId: job.communityId || undefined,
@@ -168,8 +168,8 @@ const formattedJobsLegacy = jobsLegacy.map((job) => ({
   reporterId: job.reporterId || undefined,
   scopeId: job.sowId || undefined,
   notes: job.comments || undefined,
-  completedDate: new Date(job.completedDate) || undefined,
-  startDate: new Date(`${job.date}T05:00:00Z`) || undefined,
+  completedDate: job.completedDate ? new Date(job.completedDate) : undefined,
+  startDate: job.date ? new Date(`${job.date}T05:00:00Z`) : undefined,
   ...metadata,
 }));
 

@@ -292,12 +292,6 @@ input SortingOptions {
   order: SortOrder!
 }
 
-input QueryOptions {
-  pagination: PaginationOptions
-  sorting: SortingOptions
-  archived: Boolean
-}
-
 # Responses
 type MessageResponse {
   message: String!
@@ -362,11 +356,16 @@ type SuppliersResponse {
   sorting: SortingResponse
 }
 
-type DashboardLegacyResponse {
-  assigned: [Contractor!]!
-  unassigned: [JobLegacy!]!
-  totalAssigned: Int!
-  totalUnassigned: Int!
+type AssignedContractorsResponse {
+  data: [Contractor!]!
+  pagination: PaginationResponse!
+  sorting: SortingResponse
+}
+
+type UnassignedJobsResponse {
+  data: [JobLegacy!]!
+  pagination: PaginationResponse!
+  sorting: SortingResponse
 }
 
 # Queries
@@ -383,17 +382,18 @@ type Query {
   jobLegacyById(id: ID!): JobLegacy
 
   # Query paginated and sorted
-  areas(options: QueryOptions): AreasResponse!
-  builders(options: QueryOptions): BuildersResponse!
-  communities(options: QueryOptions): CommunitiesResponse!
-  companies(options: QueryOptions): CompaniesResponse!
-  contractors(options: QueryOptions): ContractorsResponse!
-  reporters(options: QueryOptions): ReportersResponse!
-  scopes(options: QueryOptions): ScopesResponse!
-  suppliers(options: QueryOptions): SuppliersResponse!
+  areas(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): AreasResponse!
+  builders(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): BuildersResponse!
+  communities(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): CommunitiesResponse!
+  companies(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): CompaniesResponse!
+  contractors(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ContractorsResponse!
+  reporters(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ReportersResponse!
+  scopes(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ScopesResponse!
+  suppliers(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): SuppliersResponse!
 
   # Dashboard
-  dashboardLegacy: DashboardLegacyResponse!
+  assignedContractors(pagination: PaginationOptions, sorting: SortingOptions): AssignedContractorsResponse!
+  unassignedJobs(pagination: PaginationOptions, sorting: SortingOptions): UnassignedJobsResponse!
 }
 
 # Mutations
