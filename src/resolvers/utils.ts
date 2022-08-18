@@ -12,8 +12,8 @@ import {
   Scope,
   Supplier,
   MessageResponse,
-  QueryOptions,
-  SortOrder,
+  PaginationOptions,
+  SortingOptions,
 } from './../generated/graphql';
 
 import { Context } from './../context';
@@ -22,8 +22,8 @@ import { BaseDocument, Permissions, PrismaData } from './types';
 /******************************/
 /* Authentication             */
 /******************************/
-export const checkPermission = (permission: Permissions, context: Context) => {
-  if (!context.user.permissions?.includes(permission)) {
+export const checkPermission = (permission: Permissions, context: Partial<Context>) => {
+  if (!context.user?.permissions?.includes(permission)) {
     throw new AuthenticationError('Missing permissions');
   }
 };
@@ -152,29 +152,21 @@ export const supplierDTO = (data: PrismaData['Supplier']): Supplier => {
   };
 };
 
+export const paginationDTO = (totalCount: number, options?: PaginationOptions) => {
+  return { pagination: { totalCount, ...options } };
+};
+
+export const sortingDTO = (options?: SortingOptions) => {
+  return options ? { sorting: { ...options } } : {};
+};
+
 /******************************/
 /* Request Inputs             */
 /******************************/
-export const getQueryOptions = (data?: QueryOptions) => {
-  const options: {
-    where: { archived: boolean };
-    skip?: number;
-    take?: number;
-    orderBy?: { [field: string]: SortOrder };
-  } = {
-    where: { archived: !!data?.archived },
-  };
+export const getSortingArgs = (args?: SortingOptions) => {
+  return args && { orderBy: { [args.field]: args.order } };
+};
 
-  if (data?.pagination) {
-    const { page, pageSize } = data.pagination;
-    options.take = pageSize;
-    options.skip = Math.min(page - 1, 0) * pageSize;
-  }
-
-  if (data?.sorting) {
-    const { field, order } = data.sorting;
-    options.orderBy = { [field]: order };
-  }
-
-  return options;
+export const getPaginationArgs = (args?: PaginationOptions) => {
+  return args && { take: args.pageSize, skip: Math.min(args.page - 1, 0) * args.pageSize };
 };

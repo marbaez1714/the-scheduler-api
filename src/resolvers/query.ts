@@ -1,18 +1,4 @@
-import {
-  ReportersResponse,
-  ScopesResponse,
-  SuppliersResponse,
-  UnassignedJobsResponse,
-  AssignedContractorsResponse,
-} from './../generated/graphql';
-import {
-  AreasResponse,
-  BuildersResponse,
-  CommunitiesResponse,
-  CompaniesResponse,
-  ContractorsResponse,
-  QueryResolvers,
-} from '../generated/graphql';
+import { QueryResolvers } from '../generated/graphql';
 import { UserInputError } from 'apollo-server-core';
 
 import { Permissions } from './types';
@@ -27,7 +13,10 @@ import {
   scopeDTO,
   supplierDTO,
   jobLegacyDTO,
-  getQueryOptions,
+  paginationDTO,
+  sortingDTO,
+  getPaginationArgs,
+  getSortingArgs,
 } from './utils';
 
 export const queryResolvers: QueryResolvers = {
@@ -162,12 +151,14 @@ export const queryResolvers: QueryResolvers = {
     return jobLegacyDTO(doc);
   },
   // Paginated Queries
-  areas: async (_, args, context) => {
+  areas: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
     const findArgs = {
-      ...getQueryOptions(args),
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
@@ -175,26 +166,21 @@ export const queryResolvers: QueryResolvers = {
       context.prisma.area.count({ where: findArgs.where }),
     ]);
 
-    const response: AreasResponse = {
+    return {
       data: docList.map(areaDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  builders: async (_, args, context) => {
+  builders: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
     const findArgs = {
-      include: {
-        company: true,
-      },
-      ...getQueryOptions(args),
+      include: { company: true },
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
@@ -202,26 +188,21 @@ export const queryResolvers: QueryResolvers = {
       context.prisma.builder.count({ where: findArgs.where }),
     ]);
 
-    const response: BuildersResponse = {
+    return {
       data: docList.map(builderDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  communities: async (_, args, context) => {
+  communities: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
     const findArgs = {
-      include: {
-        company: true,
-      },
-      ...getQueryOptions(args),
+      include: { company: true },
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
@@ -229,52 +210,46 @@ export const queryResolvers: QueryResolvers = {
       context.prisma.community.count({ where: findArgs.where }),
     ]);
 
-    const response: CommunitiesResponse = {
+    return {
       data: docList.map(communityDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  companies: async (_, args, context) => {
+  companies: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findArgs = { ...getQueryOptions(args) };
+    const findArgs = {
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
+    };
 
     const [docList, count] = await context.prisma.$transaction([
       context.prisma.company.findMany(findArgs),
       context.prisma.company.count({ where: findArgs.where }),
     ]);
 
-    const response: CompaniesResponse = {
+    return {
       data: docList.map(companyDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  contractors: async (_, args, context) => {
+  contractors: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
     const findArgs = {
       include: {
         jobsLegacy: {
-          include: {
-            lineItems: true,
-          },
+          include: { lineItems: true },
         },
       },
-      ...getQueryOptions(args),
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
@@ -282,145 +257,125 @@ export const queryResolvers: QueryResolvers = {
       context.prisma.contractor.count({ where: findArgs.where }),
     ]);
 
-    const response: ContractorsResponse = {
+    return {
       data: docList.map(contractorDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  reporters: async (_, args, context) => {
+  reporters: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findArgs = { ...getQueryOptions(args) };
+    const findArgs = {
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
+    };
 
     const [docList, count] = await context.prisma.$transaction([
       context.prisma.reporter.findMany(findArgs),
       context.prisma.reporter.count({ where: findArgs.where }),
     ]);
 
-    const response: ReportersResponse = {
+    return {
       data: docList.map(reporterDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  scopes: async (_, args, context) => {
+  scopes: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findArgs = { ...getQueryOptions(args) };
+    const findArgs = {
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
+    };
 
     const [docList, count] = await context.prisma.$transaction([
       context.prisma.scope.findMany(findArgs),
       context.prisma.scope.count({ where: findArgs.where }),
     ]);
 
-    const response: ScopesResponse = {
+    return {
       data: docList.map(scopeDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  suppliers: async (_, args, context) => {
+  suppliers: async (_, { archived, pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
 
-    const findArgs = { ...getQueryOptions(args) };
+    const findArgs = {
+      where: { archived: !!archived },
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
+    };
 
     const [docList, count] = await context.prisma.$transaction([
       context.prisma.supplier.findMany(findArgs),
       context.prisma.supplier.count({ where: findArgs.where }),
     ]);
 
-    const response: SuppliersResponse = {
+    return {
       data: docList.map(supplierDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
   // Dashboard
-  assignedContractors: async (_, args, context) => {
+  assignedContractors: async (_, { pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
-
-    const { where, ...rest } = getQueryOptions(args);
-
-    const jobWhereArgs = {
-      active: true,
-      ...where,
-    };
 
     const findArgs = {
       where: {
         jobsLegacy: {
-          some: jobWhereArgs,
+          some: { active: true, archived: false },
         },
-        ...where,
+        archived: false,
       },
       include: {
         jobsLegacy: {
-          where: jobWhereArgs,
+          where: { active: true, archived: false },
           include: {
             lineItems: true,
           },
         },
       },
-      ...rest,
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
       context.prisma.contractor.findMany(findArgs),
-      context.prisma.jobLegacy.count({ where: jobWhereArgs }),
+      context.prisma.jobLegacy.count({ where: { active: true, archived: false, contractorId: { not: null } } }),
     ]);
 
-    const response: AssignedContractorsResponse = {
+    return {
       data: docList.map(contractorDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
-  unassignedJobs: async (_, args, context) => {
+  unassignedJobs: async (_, { pagination, sorting }, context) => {
     // Check for admin permissions
     checkPermission(Permissions.Admin, context);
-
-    const { where, ...rest } = getQueryOptions(args);
 
     const findArgs = {
       where: {
         active: true,
         contractorId: null,
-        ...where,
+        archived: false,
       },
       include: {
         lineItems: true,
       },
-      ...rest,
+      ...getPaginationArgs(pagination),
+      ...getSortingArgs(sorting),
     };
 
     const [docList, count] = await context.prisma.$transaction([
@@ -428,15 +383,10 @@ export const queryResolvers: QueryResolvers = {
       context.prisma.jobLegacy.count({ where: findArgs.where }),
     ]);
 
-    const response: UnassignedJobsResponse = {
+    return {
       data: docList.map(jobLegacyDTO),
-      pagination: {
-        totalCount: count,
-        ...args.pagination,
-      },
-      sorting: args.sorting,
+      ...paginationDTO(count, pagination),
+      ...sortingDTO(sorting),
     };
-
-    return response;
   },
 };
