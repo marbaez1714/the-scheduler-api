@@ -372,7 +372,12 @@ export const queryResolvers: QueryResolvers = {
         archived: false,
       },
       include: {
+        area: true,
+        builder: true,
+        community: true,
         lineItems: true,
+        reporter: true,
+        scope: true,
       },
       ...getPaginationArgs(pagination),
       ...getSortingArgs(sorting),
