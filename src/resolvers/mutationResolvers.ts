@@ -1,40 +1,22 @@
 import { checkPermission, messageDTO } from './utils';
-import { Permissions } from './types';
+import { PermissionsEnum } from './types';
 import { MutationResolvers } from '../generated/graphql';
+
+import { AreaModel, BuilderModel } from './models';
 
 export const mutationResolvers: MutationResolvers = {
   // Create
   createArea: async (_, { data }, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    const newDoc = await context.prisma.area.create({
-      data: {
-        ...data,
-        updatedBy: context.user.email,
-        createdBy: context.user.email,
-      },
-    });
-
-    return messageDTO('create', newDoc);
+    const response = await new AreaModel(context).create(data);
+    return response;
   },
   createBuilder: async (_, { data }, context) => {
-    // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
-
-    const newDoc = await context.prisma.builder.create({
-      data: {
-        ...data,
-        updatedBy: context.user.email,
-        createdBy: context.user.email,
-      },
-    });
-
-    return messageDTO('create', newDoc);
+    const response = await new BuilderModel(context).create(data);
+    return response;
   },
   createCommunity: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.community.create({
       data: {
@@ -48,7 +30,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createCompany: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.company.create({
       data: {
@@ -62,7 +44,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createContractor: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.contractor.create({
       data: {
@@ -76,7 +58,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createReporter: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.reporter.create({
       data: {
@@ -90,7 +72,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createScope: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.scope.create({
       data: {
@@ -104,7 +86,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createSupplier: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const newDoc = await context.prisma.supplier.create({
       data: {
@@ -118,7 +100,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   createJobLegacy: async (_, { data }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const { lineItems, ...rest } = data;
 
@@ -146,7 +128,7 @@ export const mutationResolvers: MutationResolvers = {
   // Archive
   archiveArea: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.area.update({ where: { id: id }, data: { archived: true } });
 
@@ -154,7 +136,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveBuilder: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.builder.update({ where: { id: id }, data: { archived: true } });
 
@@ -162,7 +144,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveCommunity: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.community.update({ where: { id: id }, data: { archived: true } });
 
@@ -170,7 +152,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveCompany: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.company.update({ where: { id: id }, data: { archived: true } });
 
@@ -178,7 +160,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveContractor: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.contractor.update({ where: { id: id }, data: { archived: true } });
 
@@ -186,7 +168,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveReporter: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.reporter.update({ where: { id: id }, data: { archived: true } });
 
@@ -194,7 +176,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveScope: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.scope.update({ where: { id: id }, data: { archived: true } });
 
@@ -202,7 +184,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveSupplier: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const updatedDoc = await context.prisma.supplier.update({ where: { id: id }, data: { archived: true } });
 
@@ -210,7 +192,7 @@ export const mutationResolvers: MutationResolvers = {
   },
   archiveJobLegacy: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     // Archive the job
     const updatedDoc = await context.prisma.jobLegacy.update({ where: { id: id }, data: { archived: true } });
@@ -223,7 +205,7 @@ export const mutationResolvers: MutationResolvers = {
   // Delete
   deleteLineItemLegacy: async (_, { id }, context) => {
     // Check for admin permissions
-    checkPermission(Permissions.Admin, context);
+    checkPermission(PermissionsEnum.Admin, context);
 
     const deletedDoc = await context.prisma.lineItemLegacy.delete({ where: { id: id } });
 

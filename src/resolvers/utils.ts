@@ -17,12 +17,12 @@ import {
 } from './../generated/graphql';
 
 import { Context } from './../context';
-import { BaseDocument, Permissions, PrismaData } from './types';
+import { BaseDocument, PermissionsEnum, PrismaData } from './types';
 
 /******************************/
 /* Authentication             */
 /******************************/
-export const checkPermission = (permission: Permissions, context: Partial<Context>) => {
+export const checkPermission = (permission: PermissionsEnum, context: Partial<Context>) => {
   if (!context.user?.permissions?.includes(permission)) {
     throw new AuthenticationError('Missing permissions');
   }

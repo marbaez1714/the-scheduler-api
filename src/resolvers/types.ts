@@ -43,6 +43,6 @@ export interface PrismaData {
 /******************************/
 /* Enums                      */
 /******************************/
-export enum Permissions {
+export enum PermissionsEnum {
   Admin = 'admin',
 }
