@@ -2,45 +2,25 @@ import { checkPermission, messageDTO } from './utils';
 import { PermissionsEnum } from './types';
 import { MutationResolvers } from '../generated/graphql';
 
-import { AreaModel, BuilderModel } from './models';
+import { AreaService, BuilderService, CommunityService, CompanyService } from './services';
 
 export const mutationResolvers: MutationResolvers = {
   // Create
   createArea: async (_, { data }, context) => {
-    const response = await new AreaModel(context).create(data);
+    const response = await new AreaService(context).create(data);
     return response;
   },
   createBuilder: async (_, { data }, context) => {
-    const response = await new BuilderModel(context).create(data);
+    const response = await new BuilderService(context).create(data);
     return response;
   },
   createCommunity: async (_, { data }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const newDoc = await context.prisma.community.create({
-      data: {
-        ...data,
-        updatedBy: context.user.email,
-        createdBy: context.user.email,
-      },
-    });
-
-    return messageDTO('create', newDoc);
+    const response = await new CommunityService(context).create(data);
+    return response;
   },
   createCompany: async (_, { data }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const newDoc = await context.prisma.company.create({
-      data: {
-        ...data,
-        updatedBy: context.user.email,
-        createdBy: context.user.email,
-      },
-    });
-
-    return messageDTO('create', newDoc);
+    const response = await new CompanyService(context).create(data);
+    return response;
   },
   createContractor: async (_, { data }, context) => {
     // Check for admin permissions
@@ -127,36 +107,20 @@ export const mutationResolvers: MutationResolvers = {
   },
   // Archive
   archiveArea: async (_, { id }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const updatedDoc = await context.prisma.area.update({ where: { id: id }, data: { archived: true } });
-
-    return messageDTO('archive', updatedDoc);
+    const response = await new AreaService(context).archive(id);
+    return response;
   },
   archiveBuilder: async (_, { id }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const updatedDoc = await context.prisma.builder.update({ where: { id: id }, data: { archived: true } });
-
-    return messageDTO('archive', updatedDoc);
+    const response = await new BuilderService(context).archive(id);
+    return response;
   },
   archiveCommunity: async (_, { id }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const updatedDoc = await context.prisma.community.update({ where: { id: id }, data: { archived: true } });
-
-    return messageDTO('archive', updatedDoc);
+    const response = await new CommunityService(context).archive(id);
+    return response;
   },
   archiveCompany: async (_, { id }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const updatedDoc = await context.prisma.company.update({ where: { id: id }, data: { archived: true } });
-
-    return messageDTO('archive', updatedDoc);
+    const response = await new CompanyService(context).archive(id);
+    return response;
   },
   archiveContractor: async (_, { id }, context) => {
     // Check for admin permissions

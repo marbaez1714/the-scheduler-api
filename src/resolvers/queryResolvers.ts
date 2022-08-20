@@ -19,24 +19,24 @@ import {
   getSortingArgs,
 } from './utils';
 
-import { AreaModel, BuilderModel, CommunityModel, CompanyModel } from './models';
+import { AreaService, BuilderService, CommunityService, CompanyService } from './services';
 
 export const queryResolvers: QueryResolvers = {
   // Query by Id
   areaById: async (_, args, context) => {
-    const response = await new AreaModel(context).getById(args);
+    const response = await new AreaService(context).getById(args);
     return response;
   },
   builderById: async (_, args, context) => {
-    const response = await new BuilderModel(context).getById(args);
+    const response = await new BuilderService(context).getById(args);
     return response;
   },
   communityById: async (_, args, context) => {
-    const response = await new CommunityModel(context).getById(args);
+    const response = await new CommunityService(context).getById(args);
     return response;
   },
   companyById: async (_, args, context) => {
-    const response = await new CompanyModel(context).getById(args);
+    const response = await new CompanyService(context).getById(args);
     return response;
   },
   contractorById: async (_, args, context) => {
@@ -114,19 +114,19 @@ export const queryResolvers: QueryResolvers = {
   },
   // Paginated Queries
   areas: async (_, args, context) => {
-    const response = await new AreaModel(context).getMany(args);
+    const response = await new AreaService(context).getMany(args);
     return response;
   },
   builders: async (_, args, context) => {
-    const response = await new BuilderModel(context).getMany(args);
+    const response = await new BuilderService(context).getMany(args);
     return response;
   },
   communities: async (_, args, context) => {
-    const response = await new CommunityModel(context).getMany(args);
+    const response = await new CommunityService(context).getMany(args);
     return response;
   },
   companies: async (_, args, context) => {
-    const response = await new CompanyModel(context).getMany(args);
+    const response = await new CompanyService(context).getMany(args);
     return response;
   },
   contractors: async (_, { archived, pagination, sorting }, context) => {

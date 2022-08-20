@@ -32,15 +32,13 @@ export type Area = {
 export type AreasResponse = {
   __typename?: 'AreasResponse';
   data: Array<Area>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type AssignedContractorsResponse = {
   __typename?: 'AssignedContractorsResponse';
   data: Array<Contractor>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type Builder = {
@@ -63,15 +61,13 @@ export type Builder = {
 export type BuildersResponse = {
   __typename?: 'BuildersResponse';
   data: Array<Builder>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type CommunitiesResponse = {
   __typename?: 'CommunitiesResponse';
   data: Array<Community>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type Community = {
@@ -92,8 +88,7 @@ export type Community = {
 export type CompaniesResponse = {
   __typename?: 'CompaniesResponse';
   data: Array<Company>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type Company = {
@@ -130,8 +125,7 @@ export type Contractor = {
 export type ContractorsResponse = {
   __typename?: 'ContractorsResponse';
   data: Array<Contractor>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type CreateAreaInput = {
@@ -254,6 +248,15 @@ export type LineItemLegacyInput = {
 export type MessageResponse = {
   __typename?: 'MessageResponse';
   message: Scalars['String'];
+};
+
+export type MetaResponse = {
+  __typename?: 'MetaResponse';
+  page?: Maybe<Scalars['Int']>;
+  pageSize?: Maybe<Scalars['Int']>;
+  sortField?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<SortOrder>;
+  totalCount: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -388,13 +391,6 @@ export type MutationUpdateContactorArgs = {
 export type PaginationOptions = {
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
-};
-
-export type PaginationResponse = {
-  __typename?: 'PaginationResponse';
-  page?: Maybe<Scalars['Int']>;
-  pageSize?: Maybe<Scalars['Int']>;
-  totalCount: Scalars['Int'];
 };
 
 export type Query = {
@@ -532,8 +528,7 @@ export type Reporter = {
 export type ReportersResponse = {
   __typename?: 'ReportersResponse';
   data: Array<Reporter>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type Scope = {
@@ -554,8 +549,7 @@ export type Scope = {
 export type ScopesResponse = {
   __typename?: 'ScopesResponse';
   data: Array<Scope>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export enum SortOrder {
@@ -564,12 +558,6 @@ export enum SortOrder {
 }
 
 export type SortingOptions = {
-  field: Scalars['String'];
-  order: SortOrder;
-};
-
-export type SortingResponse = {
-  __typename?: 'SortingResponse';
   field: Scalars['String'];
   order: SortOrder;
 };
@@ -591,15 +579,13 @@ export type Supplier = {
 export type SuppliersResponse = {
   __typename?: 'SuppliersResponse';
   data: Array<Supplier>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type UnassignedJobsResponse = {
   __typename?: 'UnassignedJobsResponse';
   data: Array<JobLegacy>;
-  pagination: PaginationResponse;
-  sorting?: Maybe<SortingResponse>;
+  meta: MetaResponse;
 };
 
 export type UpdateAreaInput = {
@@ -735,9 +721,9 @@ export type ResolversTypes = {
   LineItemLegacy: ResolverTypeWrapper<LineItemLegacy>;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
+  MetaResponse: ResolverTypeWrapper<MetaResponse>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginationOptions: PaginationOptions;
-  PaginationResponse: ResolverTypeWrapper<PaginationResponse>;
   Query: ResolverTypeWrapper<{}>;
   Reporter: ResolverTypeWrapper<Reporter>;
   ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
@@ -745,7 +731,6 @@ export type ResolversTypes = {
   ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
   SortOrder: SortOrder;
   SortingOptions: SortingOptions;
-  SortingResponse: ResolverTypeWrapper<SortingResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
@@ -786,16 +771,15 @@ export type ResolversParentTypes = {
   LineItemLegacy: LineItemLegacy;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: MessageResponse;
+  MetaResponse: MetaResponse;
   Mutation: {};
   PaginationOptions: PaginationOptions;
-  PaginationResponse: PaginationResponse;
   Query: {};
   Reporter: Reporter;
   ReportersResponse: ReportersResponse;
   Scope: Scope;
   ScopesResponse: ScopesResponse;
   SortingOptions: SortingOptions;
-  SortingResponse: SortingResponse;
   String: Scalars['String'];
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;
@@ -829,8 +813,7 @@ export type AreasResponseResolvers<
   ParentType extends ResolversParentTypes['AreasResponse'] = ResolversParentTypes['AreasResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -839,8 +822,7 @@ export type AssignedContractorsResponseResolvers<
   ParentType extends ResolversParentTypes['AssignedContractorsResponse'] = ResolversParentTypes['AssignedContractorsResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -869,8 +851,7 @@ export type BuildersResponseResolvers<
   ParentType extends ResolversParentTypes['BuildersResponse'] = ResolversParentTypes['BuildersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -879,8 +860,7 @@ export type CommunitiesResponseResolvers<
   ParentType extends ResolversParentTypes['CommunitiesResponse'] = ResolversParentTypes['CommunitiesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -907,8 +887,7 @@ export type CompaniesResponseResolvers<
   ParentType extends ResolversParentTypes['CompaniesResponse'] = ResolversParentTypes['CompaniesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -954,8 +933,7 @@ export type ContractorsResponseResolvers<
   ParentType extends ResolversParentTypes['ContractorsResponse'] = ResolversParentTypes['ContractorsResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1015,6 +993,18 @@ export type MessageResponseResolvers<
   ParentType extends ResolversParentTypes['MessageResponse'] = ResolversParentTypes['MessageResponse']
 > = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MetaResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['MetaResponse'] = ResolversParentTypes['MetaResponse']
+> = {
+  page?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  pageSize?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  sortField?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  sortOrder?: Resolver<Maybe<ResolversTypes['SortOrder']>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1168,16 +1158,6 @@ export type MutationResolvers<
   >;
 };
 
-export type PaginationResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['PaginationResponse'] = ResolversParentTypes['PaginationResponse']
-> = {
-  page?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  pageSize?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
@@ -1276,8 +1256,7 @@ export type ReportersResponseResolvers<
   ParentType extends ResolversParentTypes['ReportersResponse'] = ResolversParentTypes['ReportersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1304,17 +1283,7 @@ export type ScopesResponseResolvers<
   ParentType extends ResolversParentTypes['ScopesResponse'] = ResolversParentTypes['ScopesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type SortingResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['SortingResponse'] = ResolversParentTypes['SortingResponse']
-> = {
-  field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  order?: Resolver<ResolversTypes['SortOrder'], ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1340,8 +1309,7 @@ export type SuppliersResponseResolvers<
   ParentType extends ResolversParentTypes['SuppliersResponse'] = ResolversParentTypes['SuppliersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1350,8 +1318,7 @@ export type UnassignedJobsResponseResolvers<
   ParentType extends ResolversParentTypes['UnassignedJobsResponse'] = ResolversParentTypes['UnassignedJobsResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
-  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
-  sorting?: Resolver<Maybe<ResolversTypes['SortingResponse']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1370,14 +1337,13 @@ export type Resolvers<ContextType = Context> = {
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;
+  MetaResponse?: MetaResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  PaginationResponse?: PaginationResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reporter?: ReporterResolvers<ContextType>;
   ReportersResponse?: ReportersResponseResolvers<ContextType>;
   Scope?: ScopeResolvers<ContextType>;
   ScopesResponse?: ScopesResponseResolvers<ContextType>;
-  SortingResponse?: SortingResponseResolvers<ContextType>;
   Supplier?: SupplierResolvers<ContextType>;
   SuppliersResponse?: SuppliersResponseResolvers<ContextType>;
   UnassignedJobsResponse?: UnassignedJobsResponseResolvers<ContextType>;

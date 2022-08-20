@@ -1,3 +1,4 @@
+import { SortOrder } from './../generated/graphql';
 import {
   Area as AreaModel,
   Builder as BuilderModel,
@@ -19,10 +20,26 @@ export type BaseDocument = {
   id: string;
 };
 
-export type Timestamps = {
-  createdTime: Date;
-  updatedTime: Date;
-};
+export type PaginationFindArguments = { take: number; skip: number } | undefined;
+
+export type SortingFindArguments = { orderBy: { [field: string]: SortOrder } } | undefined;
+
+export type FindArguments =
+  | PaginationFindArguments
+  | SortingFindArguments
+  | (PaginationFindArguments & SortingFindArguments);
+
+export type PrismaClientNames =
+  | 'company'
+  | 'area'
+  | 'builder'
+  | 'community'
+  | 'contractor'
+  | 'lineItemLegacy'
+  | 'reporter'
+  | 'scope'
+  | 'supplier'
+  | 'jobLegacy';
 
 /******************************/
 /* Interfaces                 */

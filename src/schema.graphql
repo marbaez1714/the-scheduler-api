@@ -297,75 +297,62 @@ type MessageResponse {
   message: String!
 }
 
-type SortingResponse {
-  field: String!
-  order: SortOrder!
-}
-
-type PaginationResponse {
+type MetaResponse {
   page: Int
   pageSize: Int
+  sortField: String
+  sortOrder: SortOrder
   totalCount: Int!
 }
 
 type AreasResponse {
   data: [Area!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type BuildersResponse {
   data: [Builder!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type CommunitiesResponse {
   data: [Community!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type CompaniesResponse {
   data: [Company!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type ContractorsResponse {
   data: [Contractor!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type ReportersResponse {
   data: [Reporter!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type ScopesResponse {
   data: [Scope!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type SuppliersResponse {
   data: [Supplier!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type AssignedContractorsResponse {
   data: [Contractor!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 type UnassignedJobsResponse {
   data: [JobLegacy!]!
-  pagination: PaginationResponse!
-  sorting: SortingResponse
+  meta: MetaResponse!
 }
 
 # Queries
