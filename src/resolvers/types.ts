@@ -1,4 +1,53 @@
-import { SortOrder } from './../generated/graphql';
+import {
+  SortOrder,
+  PaginationOptions,
+  SortingOptions,
+  Area,
+  Builder,
+  Community,
+  Company,
+  Contractor,
+  JobLegacy,
+  Reporter,
+  Scope,
+  Supplier,
+  CreateAreaInput,
+  CreateBuilderInput,
+  CreateCommunityInput,
+  CreateCompanyInput,
+  CreateContractorInput,
+  CreateJobLegacyInput,
+  CreateReporterInput,
+  CreateScopeInput,
+  CreateSupplierInput,
+  CreateAreaResponse,
+  CreateBuilderResponse,
+  CreateCommunityResponse,
+  CreateCompanyResponse,
+  CreateContractorResponse,
+  CreateJobLegacyResponse,
+  CreateReporterResponse,
+  CreateScopeResponse,
+  CreateSupplierResponse,
+  AreasResponse,
+  BuildersResponse,
+  CommunitiesResponse,
+  CompaniesResponse,
+  ContractorsResponse,
+  ReportersResponse,
+  ScopesResponse,
+  SuppliersResponse,
+  ArchiveAreaResponse,
+  ArchiveBuilderResponse,
+  ArchiveCommunityResponse,
+  ArchiveCompanyResponse,
+  ArchiveContractorResponse,
+  ArchiveJobLegacyResponse,
+  ArchiveReporterResponse,
+  ArchiveScopeResponse,
+  ArchiveSupplierResponse,
+} from './../generated/graphql';
+
 import {
   Area as AreaModel,
   Builder as BuilderModel,
@@ -29,32 +78,20 @@ export type FindArguments =
   | SortingFindArguments
   | (PaginationFindArguments & SortingFindArguments);
 
-export type PrismaClientNames =
-  | 'company'
-  | 'area'
-  | 'builder'
-  | 'community'
-  | 'contractor'
-  | 'lineItemLegacy'
-  | 'reporter'
-  | 'scope'
-  | 'supplier'
-  | 'jobLegacy';
-
 /******************************/
 /* Interfaces                 */
 /******************************/
 export interface PrismaData {
-  Area: AreaModel;
-  Builder: BuilderModel & { company: PrismaData['Company'] };
-  Community: CommunityModel & { company: PrismaData['Company'] };
-  Company: CompanyModel;
-  Contractor: ContractorModel & { jobsLegacy: PrismaData['JobLegacy'][] };
-  JobLegacy: JobLegacyModel & { lineItems: PrismaData['LineItemLegacy'][] };
-  LineItemLegacy: LineItemLegacyModel;
-  Reporter: ReporterModel;
-  Scope: ScopeModel;
-  Supplier: SupplierModel;
+  area: AreaModel;
+  builder: BuilderModel & { company: PrismaData['company'] };
+  community: CommunityModel & { company: PrismaData['company'] };
+  company: CompanyModel;
+  contractor: ContractorModel & { jobsLegacy: PrismaData['jobLegacy'][] };
+  jobLegacy: JobLegacyModel & { lineItems: PrismaData['lineItemLegacy'][] };
+  lineItemLegacy: LineItemLegacyModel;
+  reporter: ReporterModel;
+  scope: ScopeModel;
+  supplier: SupplierModel;
 }
 
 /******************************/
@@ -62,4 +99,82 @@ export interface PrismaData {
 /******************************/
 export enum PermissionsEnum {
   Admin = 'admin',
+}
+
+/******************************/
+/* Services                   */
+/******************************/
+// Archive
+export interface ArchiveResponse {
+  area: Promise<ArchiveAreaResponse>;
+  builder: Promise<ArchiveBuilderResponse>;
+  community: Promise<ArchiveCommunityResponse>;
+  company: Promise<ArchiveCompanyResponse>;
+  contractor: Promise<ArchiveContractorResponse>;
+  jobLegacy: Promise<ArchiveJobLegacyResponse>;
+  reporter: Promise<ArchiveReporterResponse>;
+  scope: Promise<ArchiveScopeResponse>;
+  supplier: Promise<ArchiveSupplierResponse>;
+
+  lineItemLegacy: never;
+}
+
+// Create
+export interface CreateInputs {
+  area: CreateAreaInput;
+  builder: CreateBuilderInput;
+  community: CreateCommunityInput;
+  company: CreateCompanyInput;
+  contractor: CreateContractorInput;
+  jobLegacy: CreateJobLegacyInput;
+  reporter: CreateReporterInput;
+  scope: CreateScopeInput;
+  supplier: CreateSupplierInput;
+}
+
+export interface CreateResponse {
+  area: Promise<CreateAreaResponse>;
+  builder: Promise<CreateBuilderResponse>;
+  community: Promise<CreateCommunityResponse>;
+  company: Promise<CreateCompanyResponse>;
+  contractor: Promise<CreateContractorResponse>;
+  jobLegacy: Promise<CreateJobLegacyResponse>;
+  reporter: Promise<CreateReporterResponse>;
+  scope: Promise<CreateScopeResponse>;
+  supplier: Promise<CreateSupplierResponse>;
+}
+
+// Get By Id
+export interface GetByIdInput {
+  id: string;
+}
+
+export interface GetByIdResponse {
+  area: Promise<Area>;
+  builder: Promise<Builder>;
+  community: Promise<Community>;
+  company: Promise<Company>;
+  contractor: Promise<Contractor>;
+  jobLegacy: Promise<JobLegacy>;
+  reporter: Promise<Reporter>;
+  scope: Promise<Scope>;
+  supplier: Promise<Supplier>;
+}
+
+// Get Many
+export interface GetManyInputs {
+  archived?: boolean;
+  pagination?: PaginationOptions;
+  sorting?: SortingOptions;
+}
+
+export interface GetManyResponse {
+  area: Promise<AreasResponse>;
+  builder: Promise<BuildersResponse>;
+  community: Promise<CommunitiesResponse>;
+  company: Promise<CompaniesResponse>;
+  contractor: Promise<ContractorsResponse>;
+  reporter: Promise<ReportersResponse>;
+  scope: Promise<ScopesResponse>;
+  supplier: Promise<SuppliersResponse>;
 }

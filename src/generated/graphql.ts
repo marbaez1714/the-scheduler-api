@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { Context } from '../context';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = undefined | T;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -13,6 +13,60 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+};
+
+export type ArchiveAreaResponse = {
+  __typename?: 'ArchiveAreaResponse';
+  data: Area;
+  message: Scalars['String'];
+};
+
+export type ArchiveBuilderResponse = {
+  __typename?: 'ArchiveBuilderResponse';
+  data: Builder;
+  message: Scalars['String'];
+};
+
+export type ArchiveCommunityResponse = {
+  __typename?: 'ArchiveCommunityResponse';
+  data: Community;
+  message: Scalars['String'];
+};
+
+export type ArchiveCompanyResponse = {
+  __typename?: 'ArchiveCompanyResponse';
+  data: Company;
+  message: Scalars['String'];
+};
+
+export type ArchiveContractorResponse = {
+  __typename?: 'ArchiveContractorResponse';
+  data: Contractor;
+  message: Scalars['String'];
+};
+
+export type ArchiveJobLegacyResponse = {
+  __typename?: 'ArchiveJobLegacyResponse';
+  data: JobLegacy;
+  message: Scalars['String'];
+};
+
+export type ArchiveReporterResponse = {
+  __typename?: 'ArchiveReporterResponse';
+  data: Reporter;
+  message: Scalars['String'];
+};
+
+export type ArchiveScopeResponse = {
+  __typename?: 'ArchiveScopeResponse';
+  data: Scope;
+  message: Scalars['String'];
+};
+
+export type ArchiveSupplierResponse = {
+  __typename?: 'ArchiveSupplierResponse';
+  data: Supplier;
+  message: Scalars['String'];
 };
 
 export type Area = {
@@ -134,6 +188,12 @@ export type CreateAreaInput = {
   notes?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateAreaResponse = {
+  __typename?: 'CreateAreaResponse';
+  data: Area;
+  message: Scalars['String'];
+};
+
 export type CreateBuilderInput = {
   companyId: Scalars['String'];
   name: Scalars['String'];
@@ -142,10 +202,22 @@ export type CreateBuilderInput = {
   primaryPhone: Scalars['String'];
 };
 
+export type CreateBuilderResponse = {
+  __typename?: 'CreateBuilderResponse';
+  data: Builder;
+  message: Scalars['String'];
+};
+
 export type CreateCommunityInput = {
   companyId: Scalars['String'];
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateCommunityResponse = {
+  __typename?: 'CreateCommunityResponse';
+  data: Community;
+  message: Scalars['String'];
 };
 
 export type CreateCompanyInput = {
@@ -156,10 +228,22 @@ export type CreateCompanyInput = {
   primaryPhone?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateCompanyResponse = {
+  __typename?: 'CreateCompanyResponse';
+  data: Company;
+  message: Scalars['String'];
+};
+
 export type CreateContractorInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryPhone: Scalars['String'];
+};
+
+export type CreateContractorResponse = {
+  __typename?: 'CreateContractorResponse';
+  data: Contractor;
+  message: Scalars['String'];
 };
 
 export type CreateJobLegacyInput = {
@@ -175,11 +259,23 @@ export type CreateJobLegacyInput = {
   startDate?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateJobLegacyResponse = {
+  __typename?: 'CreateJobLegacyResponse';
+  data: JobLegacy;
+  message: Scalars['String'];
+};
+
 export type CreateReporterInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryEmail?: InputMaybe<Scalars['String']>;
   primaryPhone: Scalars['String'];
+};
+
+export type CreateReporterResponse = {
+  __typename?: 'CreateReporterResponse';
+  data: Reporter;
+  message: Scalars['String'];
 };
 
 export type CreateScopeInput = {
@@ -189,10 +285,22 @@ export type CreateScopeInput = {
   notes?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateScopeResponse = {
+  __typename?: 'CreateScopeResponse';
+  data: Scope;
+  message: Scalars['String'];
+};
+
 export type CreateSupplierInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryPhone?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateSupplierResponse = {
+  __typename?: 'CreateSupplierResponse';
+  data: Supplier;
+  message: Scalars['String'];
 };
 
 export type JobLegacy = {
@@ -261,24 +369,24 @@ export type MetaResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  archiveArea: MessageResponse;
-  archiveBuilder: MessageResponse;
-  archiveCommunity: MessageResponse;
-  archiveCompany: MessageResponse;
-  archiveContractor: MessageResponse;
-  archiveJobLegacy: MessageResponse;
-  archiveReporter: MessageResponse;
-  archiveScope: MessageResponse;
-  archiveSupplier: MessageResponse;
-  createArea: MessageResponse;
-  createBuilder: MessageResponse;
-  createCommunity: MessageResponse;
-  createCompany: MessageResponse;
-  createContractor: MessageResponse;
-  createJobLegacy: MessageResponse;
-  createReporter: MessageResponse;
-  createScope: MessageResponse;
-  createSupplier: MessageResponse;
+  archiveArea: ArchiveAreaResponse;
+  archiveBuilder: ArchiveBuilderResponse;
+  archiveCommunity: ArchiveCommunityResponse;
+  archiveCompany: ArchiveCompanyResponse;
+  archiveContractor: ArchiveContractorResponse;
+  archiveJobLegacy: ArchiveJobLegacyResponse;
+  archiveReporter: ArchiveReporterResponse;
+  archiveScope: ArchiveScopeResponse;
+  archiveSupplier: ArchiveSupplierResponse;
+  createArea: CreateAreaResponse;
+  createBuilder: CreateBuilderResponse;
+  createCommunity: CreateCommunityResponse;
+  createCompany: CreateCompanyResponse;
+  createContractor: CreateContractorResponse;
+  createJobLegacy: CreateJobLegacyResponse;
+  createReporter: CreateReporterResponse;
+  createScope: CreateScopeResponse;
+  createSupplier: CreateSupplierResponse;
   deleteLineItemLegacy: MessageResponse;
   updateArea: MessageResponse;
   updateBuilder: MessageResponse;
@@ -694,6 +802,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  ArchiveAreaResponse: ResolverTypeWrapper<ArchiveAreaResponse>;
+  ArchiveBuilderResponse: ResolverTypeWrapper<ArchiveBuilderResponse>;
+  ArchiveCommunityResponse: ResolverTypeWrapper<ArchiveCommunityResponse>;
+  ArchiveCompanyResponse: ResolverTypeWrapper<ArchiveCompanyResponse>;
+  ArchiveContractorResponse: ResolverTypeWrapper<ArchiveContractorResponse>;
+  ArchiveJobLegacyResponse: ResolverTypeWrapper<ArchiveJobLegacyResponse>;
+  ArchiveReporterResponse: ResolverTypeWrapper<ArchiveReporterResponse>;
+  ArchiveScopeResponse: ResolverTypeWrapper<ArchiveScopeResponse>;
+  ArchiveSupplierResponse: ResolverTypeWrapper<ArchiveSupplierResponse>;
   Area: ResolverTypeWrapper<Area>;
   AreasResponse: ResolverTypeWrapper<AreasResponse>;
   AssignedContractorsResponse: ResolverTypeWrapper<AssignedContractorsResponse>;
@@ -707,14 +824,23 @@ export type ResolversTypes = {
   Contractor: ResolverTypeWrapper<Contractor>;
   ContractorsResponse: ResolverTypeWrapper<ContractorsResponse>;
   CreateAreaInput: CreateAreaInput;
+  CreateAreaResponse: ResolverTypeWrapper<CreateAreaResponse>;
   CreateBuilderInput: CreateBuilderInput;
+  CreateBuilderResponse: ResolverTypeWrapper<CreateBuilderResponse>;
   CreateCommunityInput: CreateCommunityInput;
+  CreateCommunityResponse: ResolverTypeWrapper<CreateCommunityResponse>;
   CreateCompanyInput: CreateCompanyInput;
+  CreateCompanyResponse: ResolverTypeWrapper<CreateCompanyResponse>;
   CreateContractorInput: CreateContractorInput;
+  CreateContractorResponse: ResolverTypeWrapper<CreateContractorResponse>;
   CreateJobLegacyInput: CreateJobLegacyInput;
+  CreateJobLegacyResponse: ResolverTypeWrapper<CreateJobLegacyResponse>;
   CreateReporterInput: CreateReporterInput;
+  CreateReporterResponse: ResolverTypeWrapper<CreateReporterResponse>;
   CreateScopeInput: CreateScopeInput;
+  CreateScopeResponse: ResolverTypeWrapper<CreateScopeResponse>;
   CreateSupplierInput: CreateSupplierInput;
+  CreateSupplierResponse: ResolverTypeWrapper<CreateSupplierResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
@@ -744,6 +870,15 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  ArchiveAreaResponse: ArchiveAreaResponse;
+  ArchiveBuilderResponse: ArchiveBuilderResponse;
+  ArchiveCommunityResponse: ArchiveCommunityResponse;
+  ArchiveCompanyResponse: ArchiveCompanyResponse;
+  ArchiveContractorResponse: ArchiveContractorResponse;
+  ArchiveJobLegacyResponse: ArchiveJobLegacyResponse;
+  ArchiveReporterResponse: ArchiveReporterResponse;
+  ArchiveScopeResponse: ArchiveScopeResponse;
+  ArchiveSupplierResponse: ArchiveSupplierResponse;
   Area: Area;
   AreasResponse: AreasResponse;
   AssignedContractorsResponse: AssignedContractorsResponse;
@@ -757,14 +892,23 @@ export type ResolversParentTypes = {
   Contractor: Contractor;
   ContractorsResponse: ContractorsResponse;
   CreateAreaInput: CreateAreaInput;
+  CreateAreaResponse: CreateAreaResponse;
   CreateBuilderInput: CreateBuilderInput;
+  CreateBuilderResponse: CreateBuilderResponse;
   CreateCommunityInput: CreateCommunityInput;
+  CreateCommunityResponse: CreateCommunityResponse;
   CreateCompanyInput: CreateCompanyInput;
+  CreateCompanyResponse: CreateCompanyResponse;
   CreateContractorInput: CreateContractorInput;
+  CreateContractorResponse: CreateContractorResponse;
   CreateJobLegacyInput: CreateJobLegacyInput;
+  CreateJobLegacyResponse: CreateJobLegacyResponse;
   CreateReporterInput: CreateReporterInput;
+  CreateReporterResponse: CreateReporterResponse;
   CreateScopeInput: CreateScopeInput;
+  CreateScopeResponse: CreateScopeResponse;
   CreateSupplierInput: CreateSupplierInput;
+  CreateSupplierResponse: CreateSupplierResponse;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
@@ -789,6 +933,87 @@ export type ResolversParentTypes = {
   UpdateCommunityInput: UpdateCommunityInput;
   UpdateCompanyInput: UpdateCompanyInput;
   UpdateContractorInput: UpdateContractorInput;
+};
+
+export type ArchiveAreaResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveAreaResponse'] = ResolversParentTypes['ArchiveAreaResponse']
+> = {
+  data?: Resolver<ResolversTypes['Area'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveBuilderResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveBuilderResponse'] = ResolversParentTypes['ArchiveBuilderResponse']
+> = {
+  data?: Resolver<ResolversTypes['Builder'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveCommunityResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveCommunityResponse'] = ResolversParentTypes['ArchiveCommunityResponse']
+> = {
+  data?: Resolver<ResolversTypes['Community'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveCompanyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveCompanyResponse'] = ResolversParentTypes['ArchiveCompanyResponse']
+> = {
+  data?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveContractorResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveContractorResponse'] = ResolversParentTypes['ArchiveContractorResponse']
+> = {
+  data?: Resolver<ResolversTypes['Contractor'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveJobLegacyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveJobLegacyResponse'] = ResolversParentTypes['ArchiveJobLegacyResponse']
+> = {
+  data?: Resolver<ResolversTypes['JobLegacy'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveReporterResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveReporterResponse'] = ResolversParentTypes['ArchiveReporterResponse']
+> = {
+  data?: Resolver<ResolversTypes['Reporter'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveScopeResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveScopeResponse'] = ResolversParentTypes['ArchiveScopeResponse']
+> = {
+  data?: Resolver<ResolversTypes['Scope'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ArchiveSupplierResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ArchiveSupplierResponse'] = ResolversParentTypes['ArchiveSupplierResponse']
+> = {
+  data?: Resolver<ResolversTypes['Supplier'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AreaResolvers<
@@ -937,6 +1162,87 @@ export type ContractorsResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateAreaResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateAreaResponse'] = ResolversParentTypes['CreateAreaResponse']
+> = {
+  data?: Resolver<ResolversTypes['Area'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateBuilderResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateBuilderResponse'] = ResolversParentTypes['CreateBuilderResponse']
+> = {
+  data?: Resolver<ResolversTypes['Builder'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateCommunityResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateCommunityResponse'] = ResolversParentTypes['CreateCommunityResponse']
+> = {
+  data?: Resolver<ResolversTypes['Community'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateCompanyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateCompanyResponse'] = ResolversParentTypes['CreateCompanyResponse']
+> = {
+  data?: Resolver<ResolversTypes['Company'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateContractorResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateContractorResponse'] = ResolversParentTypes['CreateContractorResponse']
+> = {
+  data?: Resolver<ResolversTypes['Contractor'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateJobLegacyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateJobLegacyResponse'] = ResolversParentTypes['CreateJobLegacyResponse']
+> = {
+  data?: Resolver<ResolversTypes['JobLegacy'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateReporterResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateReporterResponse'] = ResolversParentTypes['CreateReporterResponse']
+> = {
+  data?: Resolver<ResolversTypes['Reporter'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateScopeResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateScopeResponse'] = ResolversParentTypes['CreateScopeResponse']
+> = {
+  data?: Resolver<ResolversTypes['Scope'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateSupplierResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateSupplierResponse'] = ResolversParentTypes['CreateSupplierResponse']
+> = {
+  data?: Resolver<ResolversTypes['Supplier'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type JobLegacyResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['JobLegacy'] = ResolversParentTypes['JobLegacy']
@@ -1013,109 +1319,109 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
   archiveArea?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveAreaResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveAreaArgs, 'id'>
   >;
   archiveBuilder?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveBuilderResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveBuilderArgs, 'id'>
   >;
   archiveCommunity?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveCommunityResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveCommunityArgs, 'id'>
   >;
   archiveCompany?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveCompanyResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveCompanyArgs, 'id'>
   >;
   archiveContractor?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveContractorResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveContractorArgs, 'id'>
   >;
   archiveJobLegacy?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveJobLegacyResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveJobLegacyArgs, 'id'>
   >;
   archiveReporter?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveReporterResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveReporterArgs, 'id'>
   >;
   archiveScope?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveScopeResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveScopeArgs, 'id'>
   >;
   archiveSupplier?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['ArchiveSupplierResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationArchiveSupplierArgs, 'id'>
   >;
   createArea?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateAreaResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateAreaArgs, 'data'>
   >;
   createBuilder?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateBuilderResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateBuilderArgs, 'data'>
   >;
   createCommunity?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateCommunityResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateCommunityArgs, 'data'>
   >;
   createCompany?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateCompanyResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateCompanyArgs, 'data'>
   >;
   createContractor?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateContractorResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateContractorArgs, 'data'>
   >;
   createJobLegacy?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateJobLegacyResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateJobLegacyArgs, 'data'>
   >;
   createReporter?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateReporterResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateReporterArgs, 'data'>
   >;
   createScope?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateScopeResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateScopeArgs, 'data'>
   >;
   createSupplier?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['CreateSupplierResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateSupplierArgs, 'data'>
@@ -1323,6 +1629,15 @@ export type UnassignedJobsResponseResolvers<
 };
 
 export type Resolvers<ContextType = Context> = {
+  ArchiveAreaResponse?: ArchiveAreaResponseResolvers<ContextType>;
+  ArchiveBuilderResponse?: ArchiveBuilderResponseResolvers<ContextType>;
+  ArchiveCommunityResponse?: ArchiveCommunityResponseResolvers<ContextType>;
+  ArchiveCompanyResponse?: ArchiveCompanyResponseResolvers<ContextType>;
+  ArchiveContractorResponse?: ArchiveContractorResponseResolvers<ContextType>;
+  ArchiveJobLegacyResponse?: ArchiveJobLegacyResponseResolvers<ContextType>;
+  ArchiveReporterResponse?: ArchiveReporterResponseResolvers<ContextType>;
+  ArchiveScopeResponse?: ArchiveScopeResponseResolvers<ContextType>;
+  ArchiveSupplierResponse?: ArchiveSupplierResponseResolvers<ContextType>;
   Area?: AreaResolvers<ContextType>;
   AreasResponse?: AreasResponseResolvers<ContextType>;
   AssignedContractorsResponse?: AssignedContractorsResponseResolvers<ContextType>;
@@ -1334,6 +1649,15 @@ export type Resolvers<ContextType = Context> = {
   Company?: CompanyResolvers<ContextType>;
   Contractor?: ContractorResolvers<ContextType>;
   ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
+  CreateAreaResponse?: CreateAreaResponseResolvers<ContextType>;
+  CreateBuilderResponse?: CreateBuilderResponseResolvers<ContextType>;
+  CreateCommunityResponse?: CreateCommunityResponseResolvers<ContextType>;
+  CreateCompanyResponse?: CreateCompanyResponseResolvers<ContextType>;
+  CreateContractorResponse?: CreateContractorResponseResolvers<ContextType>;
+  CreateJobLegacyResponse?: CreateJobLegacyResponseResolvers<ContextType>;
+  CreateReporterResponse?: CreateReporterResponseResolvers<ContextType>;
+  CreateScopeResponse?: CreateScopeResponseResolvers<ContextType>;
+  CreateSupplierResponse?: CreateSupplierResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;

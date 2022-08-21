@@ -1,28 +1,40 @@
-import { PrismaClient } from '@prisma/client';
 import { UserInputError } from 'apollo-server';
 
 import {
+  // Area
   Area,
   AreasResponse,
   QueryAreasArgs,
   QueryAreaByIdArgs,
-  CreateAreaInput,
+  // Builder
   Builder,
   BuildersResponse,
   QueryBuildersArgs,
   QueryBuilderByIdArgs,
-  CreateBuilderInput,
+  // Community
   Community,
   CommunitiesResponse,
   QueryCommunityByIdArgs,
   QueryCommunitiesArgs,
-  CreateCommunityInput,
+  // Company
   Company,
   CompaniesResponse,
   QueryCompaniesArgs,
   QueryCompanyByIdArgs,
-  CreateCompanyInput,
-  MessageResponse,
+  // Contractor
+  Contractor,
+  QueryContractorByIdArgs,
+  // Job Legacy
+  JobLegacy,
+  // Line Item Legacy
+  LineItemLegacy,
+  // Reporter
+  Reporter,
+  // Scope
+  Scope,
+  // Supplier
+  Supplier,
+  // Util
   MetaResponse,
   PaginationOptions,
   SortingOptions,
@@ -31,20 +43,48 @@ import {
 
 import { checkPermission, messageDTO } from './utils';
 import { Context } from '../context';
-import { PermissionsEnum, PrismaData, FindArguments } from './types';
+import {
+  PermissionsEnum,
+  PrismaData,
+  FindArguments,
+  ArchiveResponse,
+  CreateInputs,
+  BaseDocument,
+  CreateResponse,
+} from './types';
 
-// Base
-export class DataServiceBase<TClient extends keyof PrismaClient> {
+/******************************/
+/* Base                       */
+/******************************/
+export class DataServiceBase<TClient extends keyof PrismaData> {
   context: Context;
+  client: TClient;
   crud: Context['prisma'][TClient];
   userEmail: string;
+  archiveData: { archived: true; updatedBy: string };
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
     checkPermission(PermissionsEnum.Admin, context);
+    // Set context
     this.context = context;
-    this.crud = this.context.prisma[client];
-    this.userEmail = this.context.user.email;
+    // Set the client
+    this.client = client;
+    // Create the prisma client
+    this.crud = context.prisma[client];
+    // Set the user's email
+    this.userEmail = context.user.email;
+    // Set generic archive data
+    this.archiveData = { archived: true, updatedBy: context.user.email };
+  }
+
+  // Creates a formatted response
+  archiveResponse<TData extends BaseDocument>(data: TData): { data: TData; message: string } {
+    return { data, message: `${data.name} archived.` };
+  }
+
+  createResponse<TData extends BaseDocument>(data: TData): { data: TData; message: string } {
+    return { data, message: `${data.name} created.` };
   }
 }
 
@@ -83,18 +123,26 @@ class Meta {
   }
 }
 
-// Area
+/******************************/
+/* Area                       */
+/******************************/
 export class AreaService extends DataServiceBase<'area'> {
   constructor(context: Context) {
     super(context, 'area');
   }
 
-  async archive(id: string): Promise<MessageResponse> {
-    const updatedDoc = await this.crud.update({ where: { id: id }, data: { archived: true } });
-    return messageDTO('archive', updatedDoc);
+  async archive(id: string): ArchiveResponse['area'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateAreaInput): Promise<MessageResponse> {
+  async create(data: CreateInputs['area']): CreateResponse['area'] {
     const newDoc = await this.crud.create({
       data: {
         ...data,
@@ -103,10 +151,12 @@ export class AreaService extends DataServiceBase<'area'> {
       },
     });
 
-    return messageDTO('create', newDoc);
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
   }
 
-  formatPrisma(data: PrismaData['Area']): Area {
+  formatPrisma(data: PrismaData['area']): Area {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -144,18 +194,27 @@ export class AreaService extends DataServiceBase<'area'> {
   }
 }
 
-// Builder
+/******************************/
+/* Builder                    */
+/******************************/
 export class BuilderService extends DataServiceBase<'builder'> {
   constructor(context: Context) {
     super(context, 'builder');
   }
 
-  async archive(id: string): Promise<MessageResponse> {
-    const updatedDoc = await this.crud.update({ where: { id: id }, data: { archived: true } });
-    return messageDTO('archive', updatedDoc);
+  async archive(id: string): ArchiveResponse['builder'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+      include: { company: true },
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
   }
 
-  formatPrisma(data: PrismaData['Builder']): Builder {
+  formatPrisma(data: PrismaData['builder']): Builder {
     const { createdTime, updatedTime, company, ...rest } = data;
 
     const companyObject = new CompanyService(this.context).formatPrisma(company);
@@ -168,16 +227,19 @@ export class BuilderService extends DataServiceBase<'builder'> {
     };
   }
 
-  async create(data: CreateBuilderInput): Promise<MessageResponse> {
+  async create(data: CreateInputs['builder']): CreateResponse['builder'] {
     const newDoc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userEmail,
         createdBy: this.userEmail,
       },
+      include: { company: true },
     });
 
-    return messageDTO('create', newDoc);
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
   }
 
   async getById(args: QueryBuilderByIdArgs) {
@@ -209,30 +271,42 @@ export class BuilderService extends DataServiceBase<'builder'> {
   }
 }
 
-// Community
+/******************************/
+/* Community                  */
+/******************************/
 export class CommunityService extends DataServiceBase<'community'> {
   constructor(context: Context) {
     super(context, 'community');
   }
 
-  async archive(id: string): Promise<MessageResponse> {
-    const updatedDoc = await this.crud.update({ where: { id: id }, data: { archived: true } });
-    return messageDTO('archive', updatedDoc);
+  async archive(id: string): ArchiveResponse['community'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+      include: { company: true },
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateCommunityInput): Promise<MessageResponse> {
+  async create(data: CreateInputs['community']): CreateResponse['community'] {
     const newDoc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userEmail,
         createdBy: this.userEmail,
       },
+      include: { company: true },
     });
 
-    return messageDTO('create', newDoc);
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
   }
 
-  formatPrisma(data: PrismaData['Community']): Community {
+  formatPrisma(data: PrismaData['community']): Community {
     const { createdTime, updatedTime, company, ...rest } = data;
 
     const companyObject = new CompanyService(this.context).formatPrisma(company);
@@ -273,18 +347,26 @@ export class CommunityService extends DataServiceBase<'community'> {
   }
 }
 
-// Company
+/******************************/
+/* Company                    */
+/******************************/
 export class CompanyService extends DataServiceBase<'company'> {
   constructor(context: Context) {
     super(context, 'company');
   }
 
-  async archive(id: string): Promise<MessageResponse> {
-    const updatedDoc = await this.crud.update({ where: { id: id }, data: { archived: true } });
-    return messageDTO('archive', updatedDoc);
+  async archive(id: string): ArchiveResponse['company'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateCompanyInput): Promise<MessageResponse> {
+  async create(data: CreateInputs['company']): CreateResponse['company'] {
     const newDoc = await this.crud.create({
       data: {
         ...data,
@@ -293,10 +375,12 @@ export class CompanyService extends DataServiceBase<'company'> {
       },
     });
 
-    return messageDTO('create', newDoc);
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
   }
 
-  formatPrisma(data: PrismaData['Company']): Company {
+  formatPrisma(data: PrismaData['company']): Company {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -330,6 +414,275 @@ export class CompanyService extends DataServiceBase<'company'> {
     return {
       data: docList.map(this.formatPrisma),
       meta: meta.response(count),
+    };
+  }
+}
+
+/******************************/
+/* Contractor                 */
+/******************************/
+export class ContractorService extends DataServiceBase<'contractor'> {
+  constructor(context: Context) {
+    super(context, 'contractor');
+  }
+
+  async archive(id: string): ArchiveResponse['contractor'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+      include: { jobsLegacy: { include: { lineItems: true } } },
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
+  }
+
+  async create(data: CreateInputs['contractor']): CreateResponse['contractor'] {
+    const newDoc = await this.crud.create({
+      data: {
+        ...data,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+      },
+      include: { jobsLegacy: { include: { lineItems: true } } },
+    });
+
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
+  }
+
+  formatPrisma(data: PrismaData['contractor']): Contractor {
+    const { jobsLegacy, createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      jobsLegacy: jobsLegacy.map(new JobLegacyService(this.context).formatPrisma),
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  async getById(args: QueryContractorByIdArgs): Promise<Contractor> {
+    const doc = await this.crud.findUnique({
+      where: { id: args.id },
+      include: { jobsLegacy: { include: { lineItems: true } } },
+    });
+
+    if (!doc) throw new UserInputError(`${args.id} does not exist.`);
+
+    return this.formatPrisma(doc);
+  }
+}
+
+/******************************/
+/* Job Legacy                 */
+/******************************/
+export class JobLegacyService extends DataServiceBase<'jobLegacy'> {
+  constructor(context: Context) {
+    super(context, 'jobLegacy');
+  }
+
+  async archive(id: string): ArchiveResponse['jobLegacy'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+      include: { lineItems: true },
+    });
+    const formatted = this.formatPrisma(archivedDoc);
+    return this.archiveResponse(formatted);
+  }
+
+  async create(data: CreateInputs['jobLegacy']): CreateResponse['jobLegacy'] {
+    const { lineItems, ...rest } = data;
+
+    const createLineItemsData = lineItems.map((item) => ({
+      ...item,
+      updatedBy: this.userEmail,
+      createdBy: this.userEmail,
+    }));
+
+    const newJob = await this.crud.create({
+      data: {
+        ...rest,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+        lineItems: { create: createLineItemsData },
+      },
+      include: { lineItems: true },
+    });
+
+    const formatted = this.formatPrisma(newJob);
+
+    return this.createResponse(formatted);
+  }
+
+  formatPrisma(data: PrismaData['jobLegacy']): JobLegacy {
+    const { lineItems, startDate, completedDate, createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      lineItems: lineItems.map(new LineItemLegacyService(this.context).formatPrisma),
+      startDate: startDate?.toJSON(),
+      completedDate: completedDate?.toJSON(),
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+}
+
+/******************************/
+/* Line Item Legacy`          */
+/******************************/
+export class LineItemLegacyService extends DataServiceBase<'lineItemLegacy'> {
+  constructor(context: Context) {
+    super(context, 'lineItemLegacy');
+  }
+
+  async delete(id: string) {
+    const deletedDoc = await this.crud.delete({ where: { id: id } });
+  }
+
+  formatPrisma(data: PrismaData['lineItemLegacy']): LineItemLegacy {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+}
+
+/******************************/
+/* Reporter                   */
+/******************************/
+export class ReporterService extends DataServiceBase<'reporter'> {
+  constructor(context: Context) {
+    super(context, 'reporter');
+  }
+
+  async archive(id: string): ArchiveResponse['reporter'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
+  }
+
+  async create(data: CreateInputs['reporter']): CreateResponse['reporter'] {
+    const newDoc = await this.crud.create({
+      data: {
+        ...data,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+      },
+    });
+
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
+  }
+
+  formatPrisma(data: PrismaData['reporter']): Reporter {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+}
+
+/******************************/
+/* Scope                      */
+/******************************/
+export class ScopeService extends DataServiceBase<'scope'> {
+  constructor(context: Context) {
+    super(context, 'scope');
+  }
+
+  async archive(id: string): ArchiveResponse['scope'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
+  }
+
+  async create(data: CreateInputs['scope']): CreateResponse['scope'] {
+    const newDoc = await this.crud.create({
+      data: {
+        ...data,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+      },
+    });
+
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
+  }
+
+  formatPrisma(data: PrismaData['scope']): Scope {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+}
+
+/******************************/
+/* Supplier                   */
+/******************************/
+export class SupplierService extends DataServiceBase<'supplier'> {
+  constructor(context: Context) {
+    super(context, 'supplier');
+  }
+
+  async archive(id: string): ArchiveResponse['supplier'] {
+    const archivedDoc = await this.crud.update({
+      where: { id },
+      data: this.archiveData,
+    });
+
+    const formatted = this.formatPrisma(archivedDoc);
+
+    return this.archiveResponse(formatted);
+  }
+
+  async create(data: CreateInputs['supplier']): CreateResponse['supplier'] {
+    const newDoc = await this.crud.create({
+      data: {
+        ...data,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+      },
+    });
+
+    const formatted = this.formatPrisma(newDoc);
+
+    return this.createResponse(formatted);
+  }
+
+  formatPrisma(data: PrismaData['supplier']): Supplier {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
     };
   }
 }

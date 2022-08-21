@@ -305,6 +305,7 @@ type MetaResponse {
   totalCount: Int!
 }
 
+# Query Responses
 type AreasResponse {
   data: [Area!]!
   meta: MetaResponse!
@@ -355,6 +356,98 @@ type UnassignedJobsResponse {
   meta: MetaResponse!
 }
 
+# Archive Mutation Responses
+type ArchiveAreaResponse {
+  data: Area!
+  message: String!
+}
+
+type ArchiveBuilderResponse {
+  data: Builder!
+  message: String!
+}
+
+type ArchiveCommunityResponse {
+  data: Community!
+  message: String!
+}
+
+type ArchiveCompanyResponse {
+  data: Company!
+  message: String!
+}
+
+type ArchiveContractorResponse {
+  data: Contractor!
+  message: String!
+}
+
+type ArchiveJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type ArchiveReporterResponse {
+  data: Reporter!
+  message: String!
+}
+
+type ArchiveScopeResponse {
+  data: Scope!
+  message: String!
+}
+
+type ArchiveSupplierResponse {
+  data: Supplier!
+  message: String!
+}
+
+# Create Mutation Responses
+type CreateAreaResponse {
+  data: Area!
+  message: String!
+}
+
+type CreateBuilderResponse {
+  data: Builder!
+  message: String!
+}
+
+type CreateCommunityResponse {
+  data: Community!
+  message: String!
+}
+
+type CreateCompanyResponse {
+  data: Company!
+  message: String!
+}
+
+type CreateContractorResponse {
+  data: Contractor!
+  message: String!
+}
+
+type CreateJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type CreateReporterResponse {
+  data: Reporter!
+  message: String!
+}
+
+type CreateScopeResponse {
+  data: Scope!
+  message: String!
+}
+
+type CreateSupplierResponse {
+  data: Supplier!
+  message: String!
+}
+
 # Queries
 type Query {
   # Query by id
@@ -385,26 +478,28 @@ type Query {
 
 # Mutations
 type Mutation {
-  # Create
-  createArea(data: CreateAreaInput!): MessageResponse!
-  createBuilder(data: CreateBuilderInput!): MessageResponse!
-  createCommunity(data: CreateCommunityInput!): MessageResponse!
-  createCompany(data: CreateCompanyInput!): MessageResponse!
-  createContractor(data: CreateContractorInput!): MessageResponse!
-  createReporter(data: CreateReporterInput!): MessageResponse!
-  createScope(data: CreateScopeInput!): MessageResponse!
-  createSupplier(data: CreateSupplierInput!): MessageResponse!
-  createJobLegacy(data: CreateJobLegacyInput!): MessageResponse!
   # Archive
-  archiveArea(id: ID!): MessageResponse!
-  archiveBuilder(id: ID!): MessageResponse!
-  archiveCommunity(id: ID!): MessageResponse!
-  archiveCompany(id: ID!): MessageResponse!
-  archiveContractor(id: ID!): MessageResponse!
-  archiveReporter(id: ID!): MessageResponse!
-  archiveScope(id: ID!): MessageResponse!
-  archiveSupplier(id: ID!): MessageResponse!
-  archiveJobLegacy(id: ID!): MessageResponse!
+  archiveArea(id: ID!): ArchiveAreaResponse!
+  archiveBuilder(id: ID!): ArchiveBuilderResponse!
+  archiveCommunity(id: ID!): ArchiveCommunityResponse!
+  archiveCompany(id: ID!): ArchiveCompanyResponse!
+  archiveContractor(id: ID!): ArchiveContractorResponse!
+  archiveJobLegacy(id: ID!): ArchiveJobLegacyResponse!
+  archiveReporter(id: ID!): ArchiveReporterResponse!
+  archiveScope(id: ID!): ArchiveScopeResponse!
+  archiveSupplier(id: ID!): ArchiveSupplierResponse!
+
+  # Create
+  createArea(data: CreateAreaInput!): CreateAreaResponse!
+  createBuilder(data: CreateBuilderInput!): CreateBuilderResponse!
+  createCommunity(data: CreateCommunityInput!): CreateCommunityResponse!
+  createCompany(data: CreateCompanyInput!): CreateCompanyResponse!
+  createContractor(data: CreateContractorInput!): CreateContractorResponse!
+  createJobLegacy(data: CreateJobLegacyInput!): CreateJobLegacyResponse!
+  createReporter(data: CreateReporterInput!): CreateReporterResponse!
+  createScope(data: CreateScopeInput!): CreateScopeResponse!
+  createSupplier(data: CreateSupplierInput!): CreateSupplierResponse!
+
   # Delete
   deleteLineItemLegacy(id: ID!): MessageResponse!
   # Update

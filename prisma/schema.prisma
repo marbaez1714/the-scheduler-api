@@ -120,7 +120,6 @@ model LineItemLegacy {
   createdTime DateTime @default(now())
   updatedTime DateTime @updatedAt
 
-  archived Boolean @default(false)
   legacy   Boolean @default(false)
 }
 

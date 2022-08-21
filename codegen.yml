@@ -3,7 +3,6 @@ schema: ./src/**/*.graphql
 hooks:
   afterAllFileWrite:
     - prettier --write
-documents: null
 generates:
   src/generated/graphql.ts:
     plugins:
@@ -11,7 +10,6 @@ generates:
       - "typescript-resolvers"
       - "typescript-operations"
     config:
-      inputMaybeValue: undefined | T
       contextType: ../context#Context
   ./graphql.schema.json:
     plugins:
