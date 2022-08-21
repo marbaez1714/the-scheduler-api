@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { Context } from '../context';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type InputMaybe<T> = undefined | T;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -303,6 +303,11 @@ export type CreateSupplierResponse = {
   message: Scalars['String'];
 };
 
+export type DeleteResponse = {
+  __typename?: 'DeleteResponse';
+  message: Scalars['String'];
+};
+
 export type JobLegacy = {
   __typename?: 'JobLegacy';
   active: Scalars['Boolean'];
@@ -336,7 +341,6 @@ export type JobLegacy = {
 
 export type LineItemLegacy = {
   __typename?: 'LineItemLegacy';
-  archived: Scalars['Boolean'];
   createdBy: Scalars['String'];
   createdTime: Scalars['String'];
   id: Scalars['ID'];
@@ -387,7 +391,7 @@ export type Mutation = {
   createReporter: CreateReporterResponse;
   createScope: CreateScopeResponse;
   createSupplier: CreateSupplierResponse;
-  deleteLineItemLegacy: MessageResponse;
+  deleteLineItemLegacy: DeleteResponse;
   updateArea: MessageResponse;
   updateBuilder: MessageResponse;
   updateCommunity: MessageResponse;
@@ -841,6 +845,7 @@ export type ResolversTypes = {
   CreateScopeResponse: ResolverTypeWrapper<CreateScopeResponse>;
   CreateSupplierInput: CreateSupplierInput;
   CreateSupplierResponse: ResolverTypeWrapper<CreateSupplierResponse>;
+  DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
@@ -909,6 +914,7 @@ export type ResolversParentTypes = {
   CreateScopeResponse: CreateScopeResponse;
   CreateSupplierInput: CreateSupplierInput;
   CreateSupplierResponse: CreateSupplierResponse;
+  DeleteResponse: DeleteResponse;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
@@ -1243,6 +1249,14 @@ export type CreateSupplierResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type DeleteResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']
+> = {
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type JobLegacyResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['JobLegacy'] = ResolversParentTypes['JobLegacy']
@@ -1281,7 +1295,6 @@ export type LineItemLegacyResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['LineItemLegacy'] = ResolversParentTypes['LineItemLegacy']
 > = {
-  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -1427,7 +1440,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateSupplierArgs, 'data'>
   >;
   deleteLineItemLegacy?: Resolver<
-    ResolversTypes['MessageResponse'],
+    ResolversTypes['DeleteResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationDeleteLineItemLegacyArgs, 'id'>
@@ -1658,6 +1671,7 @@ export type Resolvers<ContextType = Context> = {
   CreateReporterResponse?: CreateReporterResponseResolvers<ContextType>;
   CreateScopeResponse?: CreateScopeResponseResolvers<ContextType>;
   CreateSupplierResponse?: CreateSupplierResponseResolvers<ContextType>;
+  DeleteResponse?: DeleteResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;

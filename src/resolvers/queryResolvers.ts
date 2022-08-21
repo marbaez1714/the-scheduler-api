@@ -1,25 +1,16 @@
 import { QueryResolvers } from '../generated/graphql';
-import { UserInputError } from 'apollo-server-core';
 
-import { PermissionsEnum } from './types';
 import {
-  checkPermission,
-  areaDTO,
-  builderDTO,
-  communityDTO,
-  companyDTO,
-  contractorDTO,
-  reporterDTO,
-  scopeDTO,
-  supplierDTO,
-  jobLegacyDTO,
-  paginationDTO,
-  sortingDTO,
-  getPaginationArgs,
-  getSortingArgs,
-} from './utils';
-
-import { AreaService, BuilderService, CommunityService, CompanyService } from './services';
+  AreaService,
+  BuilderService,
+  CommunityService,
+  CompanyService,
+  ContractorService,
+  JobLegacyService,
+  ReporterService,
+  ScopeService,
+  SupplierService,
+} from './services';
 
 export const queryResolvers: QueryResolvers = {
   // Query by Id
@@ -40,77 +31,24 @@ export const queryResolvers: QueryResolvers = {
     return response;
   },
   contractorById: async (_, args, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    // Find area
-    const doc = await context.prisma.contractor.findUnique({
-      where: { id: args.id },
-      include: { jobsLegacy: { include: { lineItems: true } } },
-    });
-
-    // If no idea is found, throw an error
-    if (!doc) {
-      throw new UserInputError(`${args.id} does not exist.`);
-    }
-
-    return contractorDTO(doc);
+    const response = await new ContractorService(context).getById(args);
+    return response;
   },
   reporterById: async (_, args, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    // Find area
-    const doc = await context.prisma.reporter.findUnique({ where: { id: args.id } });
-
-    // If no idea is found, throw an error
-    if (!doc) {
-      throw new UserInputError(`${args.id} does not exist.`);
-    }
-
-    return reporterDTO(doc);
+    const response = await new ReporterService(context).getById(args);
+    return response;
   },
   scopeById: async (_, args, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    // Find area
-    const doc = await context.prisma.scope.findUnique({ where: { id: args.id } });
-
-    // If no idea is found, throw an error
-    if (!doc) {
-      throw new UserInputError(`${args.id} does not exist.`);
-    }
-
-    return scopeDTO(doc);
+    const response = await new ScopeService(context).getById(args);
+    return response;
   },
   supplierById: async (_, args, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    // Find area
-    const doc = await context.prisma.supplier.findUnique({ where: { id: args.id } });
-
-    // If no idea is found, throw an error
-    if (!doc) {
-      throw new UserInputError(`${args.id} does not exist.`);
-    }
-
-    return supplierDTO(doc);
+    const response = await new SupplierService(context).getById(args);
+    return response;
   },
   jobLegacyById: async (_, args, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    // Find area
-    const doc = await context.prisma.jobLegacy.findUnique({ where: { id: args.id }, include: { lineItems: true } });
-
-    // If no idea is found, throw an error
-    if (!doc) {
-      throw new UserInputError(`${args.id} does not exist.`);
-    }
-
-    return jobLegacyDTO(doc);
+    const response = await new JobLegacyService(context).getById(args);
+    return response;
   },
   // Paginated Queries
   areas: async (_, args, context) => {
@@ -129,161 +67,29 @@ export const queryResolvers: QueryResolvers = {
     const response = await new CompanyService(context).getMany(args);
     return response;
   },
-  contractors: async (_, { archived, pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      include: {
-        jobsLegacy: {
-          include: { lineItems: true },
-        },
-      },
-      where: { archived: !!archived },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.contractor.findMany(findArgs),
-      context.prisma.contractor.count({ where: findArgs.where }),
-    ]);
-
-    return {
-      data: docList.map(contractorDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  contractors: async (_, args, context) => {
+    const response = await new ContractorService(context).getMany(args);
+    return response;
   },
-  reporters: async (_, { archived, pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      where: { archived: !!archived },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.reporter.findMany(findArgs),
-      context.prisma.reporter.count({ where: findArgs.where }),
-    ]);
-
-    return {
-      data: docList.map(reporterDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  reporters: async (_, args, context) => {
+    const response = await new ReporterService(context).getMany(args);
+    return response;
   },
-  scopes: async (_, { archived, pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      where: { archived: !!archived },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.scope.findMany(findArgs),
-      context.prisma.scope.count({ where: findArgs.where }),
-    ]);
-
-    return {
-      data: docList.map(scopeDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  scopes: async (_, args, context) => {
+    const response = await new ScopeService(context).getMany(args);
+    return response;
   },
-  suppliers: async (_, { archived, pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      where: { archived: !!archived },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.supplier.findMany(findArgs),
-      context.prisma.supplier.count({ where: findArgs.where }),
-    ]);
-
-    return {
-      data: docList.map(supplierDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  suppliers: async (_, args, context) => {
+    const response = await new SupplierService(context).getMany(args);
+    return response;
   },
   // Dashboard
-  assignedContractors: async (_, { pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      where: {
-        jobsLegacy: {
-          some: { active: true, archived: false },
-        },
-        archived: false,
-      },
-      include: {
-        jobsLegacy: {
-          where: { active: true, archived: false },
-          include: {
-            lineItems: true,
-          },
-        },
-      },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.contractor.findMany(findArgs),
-      context.prisma.jobLegacy.count({ where: { active: true, archived: false, contractorId: { not: null } } }),
-    ]);
-
-    return {
-      data: docList.map(contractorDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  assignedContractors: async (_, args, context) => {
+    const response = await new ContractorService(context).getAssigned(args);
+    return response;
   },
-  unassignedJobs: async (_, { pagination, sorting }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const findArgs = {
-      where: {
-        active: true,
-        contractorId: null,
-        archived: false,
-      },
-      include: {
-        area: true,
-        builder: true,
-        community: true,
-        lineItems: true,
-        reporter: true,
-        scope: true,
-      },
-      ...getPaginationArgs(pagination),
-      ...getSortingArgs(sorting),
-    };
-
-    const [docList, count] = await context.prisma.$transaction([
-      context.prisma.jobLegacy.findMany(findArgs),
-      context.prisma.jobLegacy.count({ where: findArgs.where }),
-    ]);
-
-    return {
-      data: docList.map(jobLegacyDTO),
-      ...paginationDTO(count, pagination),
-      ...sortingDTO(sorting),
-    };
+  unassignedJobs: async (_, args, context) => {
+    const response = await new JobLegacyService(context).getUnassigned(args);
+    return response;
   },
 };

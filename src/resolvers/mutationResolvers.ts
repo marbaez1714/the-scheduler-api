@@ -1,5 +1,3 @@
-import { checkPermission, messageDTO } from './utils';
-import { PermissionsEnum } from './types';
 import { MutationResolvers } from '../generated/graphql';
 
 import {
@@ -94,11 +92,7 @@ export const mutationResolvers: MutationResolvers = {
 
   // Delete
   deleteLineItemLegacy: async (_, { id }, context) => {
-    // Check for admin permissions
-    checkPermission(PermissionsEnum.Admin, context);
-
-    const deletedDoc = await context.prisma.lineItemLegacy.delete({ where: { id: id } });
-
-    return messageDTO('delete', { name: deletedDoc.orderNumber, id: deletedDoc.id });
+    const response = await new LineItemLegacyService(context).delete(id);
+    return response;
   },
 };

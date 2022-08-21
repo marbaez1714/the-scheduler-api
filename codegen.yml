@@ -10,6 +10,7 @@ generates:
       - "typescript-resolvers"
       - "typescript-operations"
     config:
+      inputMaybeValue: undefined | T
       contextType: ../context#Context
   ./graphql.schema.json:
     plugins:

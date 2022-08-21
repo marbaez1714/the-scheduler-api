@@ -178,3 +178,9 @@ export interface GetManyResponse {
   scope: Promise<ScopesResponse>;
   supplier: Promise<SuppliersResponse>;
 }
+
+// Dashboard
+export interface GetDashboardInputs {
+  pagination?: PaginationOptions;
+  sorting?: SortingOptions;
+}

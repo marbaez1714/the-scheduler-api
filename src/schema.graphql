@@ -95,7 +95,6 @@ type LineItemLegacy {
   createdBy: String!
   createdTime: String!
   updatedTime: String!
-  archived: Boolean!
   legacy: Boolean!
 }
 
@@ -246,40 +245,6 @@ input CreateJobLegacyInput {
   startDate: String
   notes: String
   lineItems: [LineItemLegacyInput!]!
-}
-
-input UpdateAreaInput {
-  name: String
-  nameSpanish: String
-  notes: String
-}
-
-input UpdateBuilderInput {
-  name: String
-  primaryPhone: String
-  primaryEmail: String
-  companyId: String
-  notes: String
-}
-
-input UpdateCommunityInput {
-  name: String
-  companyId: String
-  notes: String
-}
-
-input UpdateCompanyInput {
-  name: String
-  primaryAddress: String
-  primaryEmail: String
-  primaryPhone: String
-  notes: String
-}
-
-input UpdateContractorInput {
-  name: String
-  primaryPhone: String
-  notes: String
 }
 
 input PaginationOptions {
@@ -448,6 +413,10 @@ type CreateSupplierResponse {
   message: String!
 }
 
+type DeleteResponse {
+  message: String!
+}
+
 # Queries
 type Query {
   # Query by id
@@ -501,11 +470,5 @@ type Mutation {
   createSupplier(data: CreateSupplierInput!): CreateSupplierResponse!
 
   # Delete
-  deleteLineItemLegacy(id: ID!): MessageResponse!
-  # Update
-  updateArea(id: ID!, data: UpdateAreaInput!): MessageResponse!
-  updateBuilder(id: ID!, data: UpdateBuilderInput!): MessageResponse!
-  updateCommunity(id: ID!, data: UpdateCommunityInput!): MessageResponse!
-  updateCompany(id: ID!, data: UpdateCompanyInput!): MessageResponse!
-  updateContactor(id: ID!, data: UpdateContractorInput!): MessageResponse!
+  deleteLineItemLegacy(id: ID!): DeleteResponse!
 }
