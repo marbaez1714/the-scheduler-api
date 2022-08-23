@@ -1,0 +1,95 @@
+# Documents
+type LineItemLegacy {
+  id: ID!
+  orderNumber: String!
+  supplierId: String!
+  jobId: String!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  legacy: Boolean!
+}
+
+type JobLegacy {
+  id: ID!
+  name: String!
+  active: Boolean!
+  inProgress: Boolean!
+  isImportant: Boolean!
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  completedDate: String
+  startDate: String
+  notes: String
+
+  area: Area
+  builder: Builder
+  community: Community
+  contractor: Contractor
+  reporter: Reporter
+  scope: Scope
+  lineItems: [LineItemLegacy!]!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input LineItemLegacyInput {
+  orderNumber: String!
+  supplierId: String!
+}
+
+input CreateJobLegacyInput {
+  name: String!
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  startDate: String
+  notes: String
+  lineItems: [LineItemLegacyInput!]!
+}
+
+# Query Responses
+type ArchiveJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type CreateJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type UnassignedJobsResponse {
+  data: [JobLegacy!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+
+# Queries
+type Query {
+  jobLegacyById(id: ID!): JobLegacy
+  unassignedJobs(pagination: PaginationOptions, sorting: SortingOptions): UnassignedJobsResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveJobLegacy(id: ID!): ArchiveJobLegacyResponse!
+  createJobLegacy(data: CreateJobLegacyInput!): CreateJobLegacyResponse!
+  deleteLineItemLegacy(id: ID!): DeleteResponse!
+}

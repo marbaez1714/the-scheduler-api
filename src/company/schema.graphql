@@ -1,0 +1,54 @@
+# Documents
+type Company {
+  id: ID!
+  name: String!
+  primaryAddress: String
+  primaryEmail: String
+  primaryPhone: String
+  notes: String
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input CreateCompanyInput {
+  name: String!
+  primaryAddress: String
+  primaryEmail: String
+  primaryPhone: String
+  notes: String
+}
+
+# Query Responses
+type CompaniesResponse {
+  data: [Company!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+type ArchiveCompanyResponse {
+  data: Company!
+  message: String!
+}
+
+type CreateCompanyResponse {
+  data: Company!
+  message: String!
+}
+
+# Queries
+type Query {
+  companyById(id: ID!): Company
+  companies(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): CompaniesResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveCompany(id: ID!): ArchiveCompanyResponse!
+  createCompany(data: CreateCompanyInput!): CreateCompanyResponse!
+}

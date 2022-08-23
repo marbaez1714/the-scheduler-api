@@ -1,0 +1,33 @@
+# Enums
+enum SortOrder {
+  asc
+  desc
+}
+
+# Inputs
+input PaginationOptions {
+  page: Int!
+  pageSize: Int!
+}
+
+input SortingOptions {
+  field: String!
+  order: SortOrder!
+}
+
+# Responses
+type MessageResponse {
+  message: String!
+}
+
+type MetaResponse {
+  page: Int
+  pageSize: Int
+  sortField: String
+  sortOrder: SortOrder
+  totalCount: Int!
+}
+
+type DeleteResponse {
+  message: String!
+}

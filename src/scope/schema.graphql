@@ -1,0 +1,52 @@
+# Documents
+type Scope {
+  id: ID!
+  name: String!
+  nameSpanish: String!
+  description: String
+  notes: String
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input CreateScopeInput {
+  name: String!
+  nameSpanish: String!
+  description: String
+  notes: String
+}
+
+# Query Responses
+type ScopesResponse {
+  data: [Scope!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+type ArchiveScopeResponse {
+  data: Scope!
+  message: String!
+}
+
+type CreateScopeResponse {
+  data: Scope!
+  message: String!
+}
+
+# Queries
+type Query {
+  scopeById(id: ID!): Scope
+  scopes(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ScopesResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveScope(id: ID!): ArchiveScopeResponse!
+  createScope(data: CreateScopeInput!): CreateScopeResponse!
+}

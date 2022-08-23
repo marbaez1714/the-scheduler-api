@@ -1,0 +1,52 @@
+# Documents
+type Reporter {
+  id: ID!
+  name: String!
+  primaryPhone: String!
+  primaryEmail: String
+  notes: String
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input CreateReporterInput {
+  name: String!
+  primaryPhone: String!
+  primaryEmail: String
+  notes: String
+}
+
+# Query Responses
+type ReportersResponse {
+  data: [Reporter!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+type ArchiveReporterResponse {
+  data: Reporter!
+  message: String!
+}
+
+type CreateReporterResponse {
+  data: Reporter!
+  message: String!
+}
+
+# Queries
+type Query {
+  reporterById(id: ID!): Reporter
+  reporters(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ReportersResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveReporter(id: ID!): ArchiveReporterResponse!
+  createReporter(data: CreateReporterInput!): CreateReporterResponse!
+}

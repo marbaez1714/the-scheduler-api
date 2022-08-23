@@ -7,7 +7,7 @@ import { resolvers } from './resolvers';
 async function main() {
   // Setup Server
   const server = new ApolloServer({
-    typeDefs: await loadFiles('src/schema.graphql'),
+    typeDefs: await loadFiles('src/**/schema.graphql'),
     resolvers,
     context,
     cache: 'bounded',

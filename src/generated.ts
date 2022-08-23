@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { Context } from '../context';
+import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = undefined | T;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -392,11 +392,6 @@ export type Mutation = {
   createScope: CreateScopeResponse;
   createSupplier: CreateSupplierResponse;
   deleteLineItemLegacy: DeleteResponse;
-  updateArea: MessageResponse;
-  updateBuilder: MessageResponse;
-  updateCommunity: MessageResponse;
-  updateCompany: MessageResponse;
-  updateContactor: MessageResponse;
 };
 
 export type MutationArchiveAreaArgs = {
@@ -472,31 +467,6 @@ export type MutationCreateSupplierArgs = {
 };
 
 export type MutationDeleteLineItemLegacyArgs = {
-  id: Scalars['ID'];
-};
-
-export type MutationUpdateAreaArgs = {
-  data: UpdateAreaInput;
-  id: Scalars['ID'];
-};
-
-export type MutationUpdateBuilderArgs = {
-  data: UpdateBuilderInput;
-  id: Scalars['ID'];
-};
-
-export type MutationUpdateCommunityArgs = {
-  data: UpdateCommunityInput;
-  id: Scalars['ID'];
-};
-
-export type MutationUpdateCompanyArgs = {
-  data: UpdateCompanyInput;
-  id: Scalars['ID'];
-};
-
-export type MutationUpdateContactorArgs = {
-  data: UpdateContractorInput;
   id: Scalars['ID'];
 };
 
@@ -700,40 +670,6 @@ export type UnassignedJobsResponse = {
   meta: MetaResponse;
 };
 
-export type UpdateAreaInput = {
-  name?: InputMaybe<Scalars['String']>;
-  nameSpanish?: InputMaybe<Scalars['String']>;
-  notes?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateBuilderInput = {
-  companyId?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  notes?: InputMaybe<Scalars['String']>;
-  primaryEmail?: InputMaybe<Scalars['String']>;
-  primaryPhone?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateCommunityInput = {
-  companyId?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  notes?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateCompanyInput = {
-  name?: InputMaybe<Scalars['String']>;
-  notes?: InputMaybe<Scalars['String']>;
-  primaryAddress?: InputMaybe<Scalars['String']>;
-  primaryEmail?: InputMaybe<Scalars['String']>;
-  primaryPhone?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateContractorInput = {
-  name?: InputMaybe<Scalars['String']>;
-  notes?: InputMaybe<Scalars['String']>;
-  primaryPhone?: InputMaybe<Scalars['String']>;
-};
-
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
@@ -866,11 +802,6 @@ export type ResolversTypes = {
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
   UnassignedJobsResponse: ResolverTypeWrapper<UnassignedJobsResponse>;
-  UpdateAreaInput: UpdateAreaInput;
-  UpdateBuilderInput: UpdateBuilderInput;
-  UpdateCommunityInput: UpdateCommunityInput;
-  UpdateCompanyInput: UpdateCompanyInput;
-  UpdateContractorInput: UpdateContractorInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -934,11 +865,6 @@ export type ResolversParentTypes = {
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;
   UnassignedJobsResponse: UnassignedJobsResponse;
-  UpdateAreaInput: UpdateAreaInput;
-  UpdateBuilderInput: UpdateBuilderInput;
-  UpdateCommunityInput: UpdateCommunityInput;
-  UpdateCompanyInput: UpdateCompanyInput;
-  UpdateContractorInput: UpdateContractorInput;
 };
 
 export type ArchiveAreaResponseResolvers<
@@ -1444,36 +1370,6 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteLineItemLegacyArgs, 'id'>
-  >;
-  updateArea?: Resolver<
-    ResolversTypes['MessageResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateAreaArgs, 'data' | 'id'>
-  >;
-  updateBuilder?: Resolver<
-    ResolversTypes['MessageResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateBuilderArgs, 'data' | 'id'>
-  >;
-  updateCommunity?: Resolver<
-    ResolversTypes['MessageResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateCommunityArgs, 'data' | 'id'>
-  >;
-  updateCompany?: Resolver<
-    ResolversTypes['MessageResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateCompanyArgs, 'data' | 'id'>
-  >;
-  updateContactor?: Resolver<
-    ResolversTypes['MessageResponse'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateContactorArgs, 'data' | 'id'>
   >;
 };
 

@@ -4,14 +4,14 @@ hooks:
   afterAllFileWrite:
     - prettier --write
 generates:
-  src/generated/graphql.ts:
+  src/generated.ts:
     plugins:
       - "typescript"
       - "typescript-resolvers"
       - "typescript-operations"
     config:
       inputMaybeValue: undefined | T
-      contextType: ../context#Context
+      contextType: ./context#Context
   ./graphql.schema.json:
     plugins:
       - "introspection"

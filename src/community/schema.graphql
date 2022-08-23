@@ -1,0 +1,52 @@
+# Documents
+type Community {
+  id: ID!
+  name: String!
+  companyId: String!
+  notes: String
+
+  company: Company!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input CreateCommunityInput {
+  name: String!
+  companyId: String!
+  notes: String
+}
+
+# Query Responses
+type CommunitiesResponse {
+  data: [Community!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+type ArchiveCommunityResponse {
+  data: Community!
+  message: String!
+}
+
+type CreateCommunityResponse {
+  data: Community!
+  message: String!
+}
+
+# Queries
+type Query {
+  communityById(id: ID!): Community
+  communities(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): CommunitiesResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveCommunity(id: ID!): ArchiveCommunityResponse!
+  createCommunity(data: CreateCommunityInput!): CreateCommunityResponse!
+}

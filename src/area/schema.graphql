@@ -1,0 +1,50 @@
+# Documents
+type Area {
+  id: ID!
+  name: String!
+  nameSpanish: String!
+  notes: String
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input CreateAreaInput {
+  name: String!
+  nameSpanish: String!
+  notes: String
+}
+
+# Query Responses
+type AreasResponse {
+  data: [Area!]!
+  meta: MetaResponse!
+}
+
+# Mutation Responses
+type ArchiveAreaResponse {
+  data: Area!
+  message: String!
+}
+
+type CreateAreaResponse {
+  data: Area!
+  message: String!
+}
+
+# Queries
+type Query {
+  areaById(id: ID!): Area
+  areas(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): AreasResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveArea(id: ID!): ArchiveAreaResponse!
+  createArea(data: CreateAreaInput!): CreateAreaResponse!
+}
