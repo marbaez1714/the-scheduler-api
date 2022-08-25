@@ -54,7 +54,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
     ]);
 
     return {
-      data: docList.map(this.formatSupplier),
+      data: docList.map((doc) => this.formatSupplier(doc)),
       meta: this.responseMeta(count, args),
     };
   }

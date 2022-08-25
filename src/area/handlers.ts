@@ -54,7 +54,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     ]);
 
     return {
-      data: docList.map(this.formatArea),
+      data: docList.map((doc) => this.formatArea(doc)),
       meta: this.responseMeta(count, args),
     };
   }

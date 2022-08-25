@@ -64,7 +64,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     ]);
 
     return {
-      data: docList.map(this.formatContractor),
+      data: docList.map((doc) => this.formatContractor(doc)),
       meta: this.responseMeta(count, args),
     };
   }
@@ -102,7 +102,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     ]);
 
     return {
-      data: docList.map(this.formatContractor),
+      data: docList.map((doc) => this.formatContractor(doc)),
       meta: this.responseMeta(count, args),
     };
   }

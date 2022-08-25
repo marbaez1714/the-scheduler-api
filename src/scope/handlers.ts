@@ -54,7 +54,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
     ]);
 
     return {
-      data: docList.map(this.formatScope),
+      data: docList.map((doc) => this.formatScope(doc)),
       meta: this.responseMeta(count, args),
     };
   }

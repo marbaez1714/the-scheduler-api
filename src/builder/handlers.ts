@@ -57,7 +57,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     ]);
 
     return {
-      data: docList.map(this.formatBuilder),
+      data: docList.map((doc) => this.formatBuilder(doc)),
       meta: this.responseMeta(count, args),
     };
   }

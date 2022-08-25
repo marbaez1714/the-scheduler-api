@@ -78,7 +78,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     ]);
 
     return {
-      data: docList.map(this.formatJobLegacy),
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
       meta: this.responseMeta(count, args),
     };
   }

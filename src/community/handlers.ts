@@ -57,7 +57,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     ]);
 
     return {
-      data: docList.map(this.formatCommunity),
+      data: docList.map((doc) => this.formatCommunity(doc)),
       meta: this.responseMeta(count, args),
     };
   }

@@ -54,7 +54,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     ]);
 
     return {
-      data: docList.map(this.formatReporter),
+      data: docList.map((doc) => this.formatReporter(doc)),
       meta: this.responseMeta(count, args),
     };
   }

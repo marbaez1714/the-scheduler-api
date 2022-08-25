@@ -111,11 +111,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
   formatBuilder(data: PrismaData['builder']): Builder {
     const { createdTime, updatedTime, company, ...rest } = data;
 
-    const companyObject = this.formatCompany(company);
-
     return {
       ...rest,
-      company: companyObject,
+      company: this.formatCompany(company),
       createdTime: createdTime.toJSON(),
       updatedTime: updatedTime.toJSON(),
     };
@@ -124,11 +122,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
   formatCommunity(data: PrismaData['community']): Community {
     const { createdTime, updatedTime, company, ...rest } = data;
 
-    const companyObject = this.formatCompany(company);
-
     return {
       ...rest,
-      company: companyObject,
+      company: this.formatCompany(company),
       createdTime: createdTime.toJSON(),
       updatedTime: updatedTime.toJSON(),
     };
@@ -149,7 +145,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
 
     return {
       ...rest,
-      jobsLegacy: jobsLegacy.map(this.formatJobLegacy),
+      jobsLegacy: jobsLegacy.map((doc) => this.formatJobLegacy(doc)),
       createdTime: createdTime.toJSON(),
       updatedTime: updatedTime.toJSON(),
     };
@@ -160,7 +156,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
 
     return {
       ...rest,
-      lineItems: lineItems.map(this.formatLineItemLegacy),
+      lineItems: lineItems.map((doc) => this.formatLineItemLegacy(doc)),
       startDate: startDate?.toJSON(),
       completedDate: completedDate?.toJSON(),
       createdTime: createdTime.toJSON(),
