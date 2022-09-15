@@ -37,7 +37,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     const formatted = this.formatContractor(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

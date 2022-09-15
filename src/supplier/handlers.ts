@@ -35,7 +35,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     const formatted = this.formatSupplier(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

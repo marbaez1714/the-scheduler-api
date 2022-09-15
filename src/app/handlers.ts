@@ -89,7 +89,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     return { data, message: `${data.name} archived.` };
   }
 
-  createResponse<TData extends BaseDocument>(data: TData) {
+  writeResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} created.` };
   }
 

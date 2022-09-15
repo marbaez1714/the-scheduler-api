@@ -31,7 +31,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     const formatted = this.formatScope(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

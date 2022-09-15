@@ -31,7 +31,18 @@ export class AreaDataHandler extends DataHandler<'area'> {
 
     const formatted = this.formatArea(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
+  }
+
+  async modify(id: string, data: WriteAreaInput) {
+    const updatedDoc = await this.crud.update({
+      where: { id },
+      data: { ...data, updatedBy: this.userEmail },
+    });
+
+    const formatted = this.formatArea(updatedDoc);
+
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

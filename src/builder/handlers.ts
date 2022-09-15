@@ -37,7 +37,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

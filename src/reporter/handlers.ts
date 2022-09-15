@@ -35,7 +35,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

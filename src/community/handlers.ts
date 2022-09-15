@@ -33,7 +33,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
 
     const formatted = this.formatCommunity(newDoc);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {

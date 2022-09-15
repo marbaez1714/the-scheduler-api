@@ -22,5 +22,9 @@ export const resolvers: Resolvers = {
       const response = await new AreaDataHandler(context).create(data);
       return response;
     },
+    modifyArea: async (_, { id, data }, context) => {
+      const response = await new AreaDataHandler(context).modify(id, data);
+      return response;
+    },
   },
 };

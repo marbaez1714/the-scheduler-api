@@ -40,7 +40,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(newJob);
 
-    return this.createResponse(formatted);
+    return this.writeResponse(formatted);
   }
 
   async getById(args: GetByIdArgs) {
