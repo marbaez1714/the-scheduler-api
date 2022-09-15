@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
 import { Context } from '../context';
-import { CreateCommunityInput } from '../generated';
+import { WriteCommunityInput } from '../generated';
 
 export class CommunityDataHandler extends DataHandler<'community'> {
   constructor(context: Context) {
@@ -21,7 +21,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateCommunityInput) {
+  async create(data: WriteCommunityInput) {
     const newDoc = await this.crud.create({
       data: {
         ...data,

@@ -15,7 +15,7 @@ type Reporter {
 }
 
 # Inputs
-input CreateReporterInput {
+input WriteReporterInput {
   name: String!
   primaryPhone: String!
   primaryEmail: String
@@ -34,7 +34,7 @@ type ArchiveReporterResponse {
   message: String!
 }
 
-type CreateReporterResponse {
+type WriteReporterResponse {
   data: Reporter!
   message: String!
 }
@@ -48,5 +48,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveReporter(id: ID!): ArchiveReporterResponse!
-  createReporter(data: CreateReporterInput!): CreateReporterResponse!
+  createReporter(data: WriteReporterInput!): WriteReporterResponse!
+  modifyReporter(id: ID!, data: WriteReporterInput!): WriteReporterResponse!
 }

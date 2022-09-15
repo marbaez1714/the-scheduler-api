@@ -16,7 +16,7 @@ type Contractor {
 }
 
 # Inputs
-input CreateContractorInput {
+input WriteContractorInput {
   name: String!
   primaryPhone: String!
   notes: String
@@ -39,7 +39,7 @@ type ArchiveContractorResponse {
   message: String!
 }
 
-type CreateContractorResponse {
+type WriteContractorResponse {
   data: Contractor!
   message: String!
 }
@@ -54,5 +54,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveContractor(id: ID!): ArchiveContractorResponse!
-  createContractor(data: CreateContractorInput!): CreateContractorResponse!
+  createContractor(data: WriteContractorInput!): WriteContractorResponse!
+  modifyContractor(id: ID!, data: WriteContractorInput!): WriteContractorResponse!
 }

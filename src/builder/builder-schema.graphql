@@ -18,7 +18,7 @@ type Builder {
 }
 
 # Inputs
-input CreateBuilderInput {
+input WriteBuilderInput {
   name: String!
   primaryPhone: String!
   primaryEmail: String
@@ -38,7 +38,7 @@ type ArchiveBuilderResponse {
   message: String!
 }
 
-type CreateBuilderResponse {
+type WriteBuilderResponse {
   data: Builder!
   message: String!
 }
@@ -52,5 +52,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveBuilder(id: ID!): ArchiveBuilderResponse!
-  createBuilder(data: CreateBuilderInput!): CreateBuilderResponse!
+  createBuilder(data: WriteBuilderInput!): WriteBuilderResponse!
+  modifyBuilder(id: ID!, data: WriteBuilderInput!): WriteBuilderResponse!
 }

@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
 import { Context } from '../context';
-import { CreateCompanyInput } from '../generated';
+import { WriteCompanyInput } from '../generated';
 import { formatPhoneNumber } from './../utils';
 
 export class CompanyDataHandler extends DataHandler<'company'> {
@@ -21,7 +21,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
     return this.archiveResponse(formatted);
   }
 
-  async create({ primaryPhone, ...rest }: CreateCompanyInput) {
+  async create({ primaryPhone, ...rest }: WriteCompanyInput) {
     const primaryPhoneFormatted = formatPhoneNumber(primaryPhone);
 
     const newDoc = await this.crud.create({

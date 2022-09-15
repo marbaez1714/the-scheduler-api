@@ -16,7 +16,7 @@ type Community {
 }
 
 # Inputs
-input CreateCommunityInput {
+input WriteCommunityInput {
   name: String!
   companyId: String!
   notes: String
@@ -34,7 +34,7 @@ type ArchiveCommunityResponse {
   message: String!
 }
 
-type CreateCommunityResponse {
+type WriteCommunityResponse {
   data: Community!
   message: String!
 }
@@ -48,5 +48,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveCommunity(id: ID!): ArchiveCommunityResponse!
-  createCommunity(data: CreateCommunityInput!): CreateCommunityResponse!
+  createCommunity(data: WriteCommunityInput!): WriteCommunityResponse!
+  modifyCommunity(id: ID!, data: WriteCommunityInput!): WriteCommunityResponse!
 }

@@ -14,7 +14,7 @@ type Supplier {
 }
 
 # Inputs
-input CreateSupplierInput {
+input WriteSupplierInput {
   name: String!
   primaryPhone: String
   notes: String
@@ -32,7 +32,7 @@ type ArchiveSupplierResponse {
   message: String!
 }
 
-type CreateSupplierResponse {
+type WriteSupplierResponse {
   data: Supplier!
   message: String!
 }
@@ -46,5 +46,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveSupplier(id: ID!): ArchiveSupplierResponse!
-  createSupplier(data: CreateSupplierInput!): CreateSupplierResponse!
+  createSupplier(data: WriteSupplierInput!): WriteSupplierResponse!
+  modifySupplier(id: ID!, data: WriteSupplierInput!): WriteSupplierResponse!
 }

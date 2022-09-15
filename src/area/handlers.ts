@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
 import { Context } from '../context';
-import { CreateAreaInput } from '../generated';
+import { WriteAreaInput } from '../generated';
 
 export class AreaDataHandler extends DataHandler<'area'> {
   constructor(context: Context) {
@@ -20,7 +20,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateAreaInput) {
+  async create(data: WriteAreaInput) {
     const newDoc = await this.crud.create({
       data: {
         ...data,

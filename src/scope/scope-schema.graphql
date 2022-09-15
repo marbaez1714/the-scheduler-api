@@ -15,7 +15,7 @@ type Scope {
 }
 
 # Inputs
-input CreateScopeInput {
+input WriteScopeInput {
   name: String!
   nameSpanish: String!
   description: String
@@ -34,7 +34,7 @@ type ArchiveScopeResponse {
   message: String!
 }
 
-type CreateScopeResponse {
+type WriteScopeResponse {
   data: Scope!
   message: String!
 }
@@ -48,5 +48,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveScope(id: ID!): ArchiveScopeResponse!
-  createScope(data: CreateScopeInput!): CreateScopeResponse!
+  createScope(data: WriteScopeInput!): WriteScopeResponse!
+  modifyScope(id: ID!, data: WriteScopeInput!): WriteScopeResponse!
 }

@@ -16,7 +16,7 @@ type Company {
 }
 
 # Inputs
-input CreateCompanyInput {
+input WriteCompanyInput {
   name: String!
   primaryAddress: String
   primaryEmail: String
@@ -36,7 +36,7 @@ type ArchiveCompanyResponse {
   message: String!
 }
 
-type CreateCompanyResponse {
+type WriteCompanyResponse {
   data: Company!
   message: String!
 }
@@ -50,5 +50,6 @@ type Query {
 # Mutations
 type Mutation {
   archiveCompany(id: ID!): ArchiveCompanyResponse!
-  createCompany(data: CreateCompanyInput!): CreateCompanyResponse!
+  createCompany(data: WriteCompanyInput!): WriteCompanyResponse!
+  modifyCompany(id: ID!, data: WriteCompanyInput!): WriteCompanyResponse!
 }

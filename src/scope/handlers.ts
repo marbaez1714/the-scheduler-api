@@ -2,7 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
 import { Context } from '../context';
-import { CreateScopeInput } from '../generated';
+import { WriteScopeInput } from '../generated';
 
 export class ScopeDataHandler extends DataHandler<'scope'> {
   constructor(context: Context) {
@@ -20,7 +20,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
     return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateScopeInput) {
+  async create(data: WriteScopeInput) {
     const newDoc = await this.crud.create({
       data: {
         ...data,
