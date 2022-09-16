@@ -2,7 +2,7 @@
 type Supplier {
   id: ID!
   name: String!
-  primaryPhone: String
+  primaryPhone: PhoneNumber
   notes: String
 
   updatedBy: String!
@@ -16,7 +16,7 @@ type Supplier {
 # Inputs
 input WriteSupplierInput {
   name: String!
-  primaryPhone: String
+  primaryPhone: PhoneNumber
   notes: String
 }
 

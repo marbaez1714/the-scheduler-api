@@ -36,6 +36,18 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     return this.writeResponse(formatted);
   }
 
+  async modify(id: string, data: WriteCommunityInput) {
+    const updatedDoc = await this.crud.update({
+      where: { id },
+      data: { ...data, updatedBy: this.userEmail },
+      include: { company: true },
+    });
+
+    const formatted = this.formatCommunity(updatedDoc);
+
+    return this.writeResponse(formatted);
+  }
+
   async getById(args: GetByIdArgs) {
     const doc = await this.crud.findUnique({ where: { id: args.id }, include: { company: true } });
 

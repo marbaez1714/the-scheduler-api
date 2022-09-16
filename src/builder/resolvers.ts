@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { BuilderDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const builderResolvers: Resolvers = {
   Query: {
     builderById: async (_, args, context) => {
       const response = await new BuilderDataHandler(context).getById(args);
@@ -20,6 +20,10 @@ export const resolvers: Resolvers = {
     },
     createBuilder: async (_, { data }, context) => {
       const response = await new BuilderDataHandler(context).create(data);
+      return response;
+    },
+    modifyBuilder: async (_, { id, data }, context) => {
+      const response = await new BuilderDataHandler(context).modify(id, data);
       return response;
     },
   },

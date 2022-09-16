@@ -4,7 +4,7 @@ type Company {
   name: String!
   primaryAddress: String
   primaryEmail: String
-  primaryPhone: String
+  primaryPhone: PhoneNumber
   notes: String
 
   updatedBy: String!
@@ -20,7 +20,7 @@ input WriteCompanyInput {
   name: String!
   primaryAddress: String
   primaryEmail: String
-  primaryPhone: String
+  primaryPhone: PhoneNumber
   notes: String
 }
 

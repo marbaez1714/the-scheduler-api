@@ -1,1 +1,1 @@
-export { resolvers } from './resolvers';
+export { areaResolvers } from './resolvers';

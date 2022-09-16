@@ -3,7 +3,6 @@ import { UserInputError } from 'apollo-server';
 import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
 import { Context } from '../context';
 import { WriteCompanyInput } from '../generated';
-import { formatPhoneNumber } from './../utils';
 
 export class CompanyDataHandler extends DataHandler<'company'> {
   constructor(context: Context) {
@@ -21,19 +20,27 @@ export class CompanyDataHandler extends DataHandler<'company'> {
     return this.archiveResponse(formatted);
   }
 
-  async create({ primaryPhone, ...rest }: WriteCompanyInput) {
-    const primaryPhoneFormatted = formatPhoneNumber(primaryPhone);
-
+  async create(data: WriteCompanyInput) {
     const newDoc = await this.crud.create({
       data: {
-        ...rest,
-        primaryPhone: primaryPhoneFormatted,
+        ...data,
         updatedBy: this.userEmail,
         createdBy: this.userEmail,
       },
     });
 
     const formatted = this.formatCompany(newDoc);
+
+    return this.writeResponse(formatted);
+  }
+
+  async modify(id: string, data: WriteCompanyInput) {
+    const updatedDoc = await this.crud.update({
+      where: { id },
+      data: { ...data, updatedBy: this.userEmail },
+    });
+
+    const formatted = this.formatCompany(updatedDoc);
 
     return this.writeResponse(formatted);
   }

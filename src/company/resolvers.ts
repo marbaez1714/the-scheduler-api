@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { CompanyDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const companyResolvers: Resolvers = {
   Query: {
     companyById: async (_, args, context) => {
       const response = await new CompanyDataHandler(context).getById(args);
@@ -19,6 +19,10 @@ export const resolvers: Resolvers = {
     },
     createCompany: async (_, { data }, context) => {
       const response = await new CompanyDataHandler(context).create(data);
+      return response;
+    },
+    modifyCompany: async (_, { id, data }, context) => {
+      const response = await new CompanyDataHandler(context).modify(id, data);
       return response;
     },
   },

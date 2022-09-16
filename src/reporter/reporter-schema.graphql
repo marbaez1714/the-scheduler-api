@@ -2,7 +2,7 @@
 type Reporter {
   id: ID!
   name: String!
-  primaryPhone: String!
+  primaryPhone: PhoneNumber!
   primaryEmail: String
   notes: String
 
@@ -17,7 +17,7 @@ type Reporter {
 # Inputs
 input WriteReporterInput {
   name: String!
-  primaryPhone: String!
+  primaryPhone: PhoneNumber!
   primaryEmail: String
   notes: String
 }

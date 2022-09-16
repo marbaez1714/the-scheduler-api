@@ -1,3 +1,6 @@
+# Scalars
+scalar PhoneNumber
+
 # Enums
 enum SortOrder {
   asc

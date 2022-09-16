@@ -34,6 +34,17 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
     return this.writeResponse(formatted);
   }
 
+  async modify(id: string, data: WriteScopeInput) {
+    const updatedDoc = await this.crud.update({
+      where: { id },
+      data: { ...data, updatedBy: this.userEmail },
+    });
+
+    const formatted = this.formatScope(updatedDoc);
+
+    return this.writeResponse(formatted);
+  }
+
   async getById(args: GetByIdArgs) {
     const doc = await this.crud.findUnique({ where: { id: args.id } });
 

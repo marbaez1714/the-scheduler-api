@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { CommunityDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const communityResolvers: Resolvers = {
   Query: {
     communityById: async (_, args, context) => {
       const response = await new CommunityDataHandler(context).getById(args);
@@ -19,6 +19,10 @@ export const resolvers: Resolvers = {
     },
     createCommunity: async (_, { data }, context) => {
       const response = await new CommunityDataHandler(context).create(data);
+      return response;
+    },
+    modifyCommunity: async (_, { id, data }, context) => {
+      const response = await new CommunityDataHandler(context).modify(id, data);
       return response;
     },
   },

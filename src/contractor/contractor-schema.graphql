@@ -2,7 +2,7 @@
 type Contractor {
   id: ID!
   name: String!
-  primaryPhone: String!
+  primaryPhone: PhoneNumber!
   notes: String
 
   jobsLegacy: [JobLegacy!]!
@@ -18,7 +18,7 @@ type Contractor {
 # Inputs
 input WriteContractorInput {
   name: String!
-  primaryPhone: String!
+  primaryPhone: PhoneNumber!
   notes: String
 }
 

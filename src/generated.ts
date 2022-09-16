@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = undefined | T;
@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  PhoneNumber: string;
 };
 
 export type ArchiveAreaResponse = {
@@ -107,7 +108,7 @@ export type Builder = {
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
-  primaryPhone?: Maybe<Scalars['String']>;
+  primaryPhone?: Maybe<Scalars['PhoneNumber']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -156,7 +157,7 @@ export type Company = {
   notes?: Maybe<Scalars['String']>;
   primaryAddress?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
-  primaryPhone?: Maybe<Scalars['String']>;
+  primaryPhone?: Maybe<Scalars['PhoneNumber']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -171,7 +172,7 @@ export type Contractor = {
   legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone: Scalars['PhoneNumber'];
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -548,7 +549,7 @@ export type Reporter = {
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   primaryEmail?: Maybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone: Scalars['PhoneNumber'];
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -599,7 +600,7 @@ export type Supplier = {
   legacy: Scalars['Boolean'];
   name: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
-  primaryPhone?: Maybe<Scalars['String']>;
+  primaryPhone?: Maybe<Scalars['PhoneNumber']>;
   updatedBy: Scalars['String'];
   updatedTime: Scalars['String'];
 };
@@ -633,7 +634,7 @@ export type WriteBuilderInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryEmail?: InputMaybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone: Scalars['PhoneNumber'];
 };
 
 export type WriteBuilderResponse = {
@@ -659,7 +660,7 @@ export type WriteCompanyInput = {
   notes?: InputMaybe<Scalars['String']>;
   primaryAddress?: InputMaybe<Scalars['String']>;
   primaryEmail?: InputMaybe<Scalars['String']>;
-  primaryPhone?: InputMaybe<Scalars['String']>;
+  primaryPhone?: InputMaybe<Scalars['PhoneNumber']>;
 };
 
 export type WriteCompanyResponse = {
@@ -671,7 +672,7 @@ export type WriteCompanyResponse = {
 export type WriteContractorInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone: Scalars['PhoneNumber'];
 };
 
 export type WriteContractorResponse = {
@@ -684,7 +685,7 @@ export type WriteReporterInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   primaryEmail?: InputMaybe<Scalars['String']>;
-  primaryPhone: Scalars['String'];
+  primaryPhone: Scalars['PhoneNumber'];
 };
 
 export type WriteReporterResponse = {
@@ -709,7 +710,7 @@ export type WriteScopeResponse = {
 export type WriteSupplierInput = {
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
-  primaryPhone?: InputMaybe<Scalars['String']>;
+  primaryPhone?: InputMaybe<Scalars['PhoneNumber']>;
 };
 
 export type WriteSupplierResponse = {
@@ -823,6 +824,7 @@ export type ResolversTypes = {
   MetaResponse: ResolverTypeWrapper<MetaResponse>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginationOptions: PaginationOptions;
+  PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']>;
   Query: ResolverTypeWrapper<{}>;
   Reporter: ResolverTypeWrapper<Reporter>;
   ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
@@ -887,6 +889,7 @@ export type ResolversParentTypes = {
   MetaResponse: MetaResponse;
   Mutation: {};
   PaginationOptions: PaginationOptions;
+  PhoneNumber: Scalars['PhoneNumber'];
   Query: {};
   Reporter: Reporter;
   ReportersResponse: ReportersResponse;
@@ -1045,7 +1048,7 @@ export type BuilderResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1109,7 +1112,7 @@ export type CompanyResolvers<
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1127,7 +1130,7 @@ export type ContractorResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  primaryPhone?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1397,6 +1400,10 @@ export type MutationResolvers<
   >;
 };
 
+export interface PhoneNumberScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PhoneNumber'], any> {
+  name: 'PhoneNumber';
+}
+
 export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
@@ -1484,7 +1491,7 @@ export type ReporterResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  primaryPhone?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1537,7 +1544,7 @@ export type SupplierResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1661,6 +1668,7 @@ export type Resolvers<ContextType = Context> = {
   MessageResponse?: MessageResponseResolvers<ContextType>;
   MetaResponse?: MetaResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PhoneNumber?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Reporter?: ReporterResolvers<ContextType>;
   ReportersResponse?: ReportersResponseResolvers<ContextType>;

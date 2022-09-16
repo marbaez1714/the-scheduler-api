@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { AreaDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const areaResolvers: Resolvers = {
   Query: {
     areaById: async (_, args, context) => {
       const response = await new AreaDataHandler(context).getById(args);

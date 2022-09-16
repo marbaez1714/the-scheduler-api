@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { ContractorDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const contractorResolvers: Resolvers = {
   Query: {
     assignedContractors: async (_, args, context) => {
       const response = await new ContractorDataHandler(context).getAssigned(args);
@@ -23,6 +23,10 @@ export const resolvers: Resolvers = {
     },
     createContractor: async (_, { data }, context) => {
       const response = await new ContractorDataHandler(context).create(data);
+      return response;
+    },
+    modifyContractor: async (_, { id, data }, context) => {
+      const response = await new ContractorDataHandler(context).modify(id, data);
       return response;
     },
   },

@@ -12,6 +12,8 @@ generates:
     config:
       inputMaybeValue: undefined | T
       contextType: ./context#Context
+      scalars:
+        PhoneNumber: string
   ./graphql.schema.json:
     plugins:
       - "introspection"

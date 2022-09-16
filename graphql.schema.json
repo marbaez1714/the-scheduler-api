@@ -837,7 +837,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "PhoneNumber",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1360,7 +1360,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "PhoneNumber",
               "ofType": null
             },
             "isDeprecated": false,
@@ -1550,7 +1550,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "PhoneNumber",
                 "ofType": null
               }
             },
@@ -3648,6 +3648,16 @@
         "possibleTypes": null
       },
       {
+        "kind": "SCALAR",
+        "name": "PhoneNumber",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "Query",
         "description": null,
@@ -4559,7 +4569,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "PhoneNumber",
                 "ofType": null
               }
             },
@@ -5080,7 +5090,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "PhoneNumber",
               "ofType": null
             },
             "isDeprecated": false,
@@ -5394,7 +5404,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "PhoneNumber",
                 "ofType": null
               }
             },
@@ -5611,7 +5621,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "PhoneNumber",
               "ofType": null
             },
             "defaultValue": null,
@@ -5708,7 +5718,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "PhoneNumber",
                 "ofType": null
               }
             },
@@ -5818,7 +5828,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "PhoneNumber",
                 "ofType": null
               }
             },
@@ -6023,7 +6033,7 @@
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "PhoneNumber",
               "ofType": null
             },
             "defaultValue": null,

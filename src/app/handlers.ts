@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, UserInputError } from 'apollo-server';
 
 import { Context } from '../context';
 import { BaseDocument, PrismaData, PermissionsEnum, FindArguments, MetaArgs } from './types';
@@ -16,6 +16,8 @@ import {
   SortOrder,
   Supplier,
 } from '../generated';
+import { GraphQLScalarType } from 'graphql';
+import { regexPatterns } from '../utils';
 
 export class DataHandler<TClient extends keyof PrismaData> {
   context: Context;
@@ -41,7 +43,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     this.archiveData = { archived: true, updatedBy: context.user.email };
   }
 
-  // Prisma Find Arguments
+  /******************************/
+  /* Prisma Find Arguments      */
+  /******************************/
   findArgs(args?: MetaArgs) {
     let findArgs: FindArguments;
     let page: number;
@@ -67,7 +71,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     return findArgs;
   }
 
-  // Response Meta
+  /******************************/
+  /* Response Meta              */
+  /******************************/
   responseMeta(totalCount: number, args?: MetaArgs) {
     let response: MetaResponse = {
       totalCount,
@@ -84,7 +90,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     return response;
   }
 
-  // General Responses
+  /******************************/
+  /* General Responses          */
+  /******************************/
   archiveResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} archived.` };
   }
@@ -97,7 +105,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     return { message: `${data.name} deleted.` };
   }
 
-  // Formatting
+  /******************************/
+  /* Formatting                 */
+  /******************************/
   formatArea(data: PrismaData['area']): Area {
     const { createdTime, updatedTime, ...rest } = data;
 
@@ -204,3 +214,17 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 }
+
+export const ScalarDefs = {
+  PhoneNumber: new GraphQLScalarType<string, string>({
+    name: 'PhoneNumber',
+    description: 'Formatted phone number with only numeric characters.',
+    parseValue: (value) => {
+      if (typeof value !== 'string' || !regexPatterns.phoneNumber.test(value)) {
+        throw new UserInputError('Invalid phone format');
+      }
+
+      return value;
+    },
+  }),
+};

@@ -1,1 +1,1 @@
-export { resolvers } from './resolvers';
+export { contractorResolvers } from './resolvers';

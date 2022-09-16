@@ -1,7 +1,7 @@
 import { Resolvers } from '../generated';
 import { JobLegacyDataHandler, LineItemLegacyDataHandler } from './handlers';
 
-export const resolvers: Resolvers = {
+export const jobLegacyResolvers: Resolvers = {
   Query: {
     jobLegacyById: async (_, args, context) => {
       const response = await new JobLegacyDataHandler(context).getById(args);
