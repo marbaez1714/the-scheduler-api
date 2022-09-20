@@ -98,7 +98,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   writeResponse<TData extends BaseDocument>(data: TData) {
-    return { data, message: `${data.name} created.` };
+    return { data, message: `${data.name} written.` };
   }
 
   deleteResponse<TData extends BaseDocument>(data: TData) {
@@ -220,8 +220,12 @@ export const ScalarDefs = {
     name: 'PhoneNumber',
     description: 'Formatted phone number with only numeric characters.',
     parseValue: (value) => {
-      if (typeof value !== 'string' || !regexPatterns.phoneNumber.test(value)) {
-        throw new UserInputError('Invalid phone format');
+      if (typeof value !== 'string') {
+        throw new UserInputError('Phone Number must be a string');
+      }
+
+      if (!regexPatterns.phoneNumber.test(value)) {
+        throw new UserInputError(`Invalid phone format - ${value}`);
       }
 
       return value;
