@@ -20,7 +20,9 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   async create(data: CreateJobLegacyInput) {
-    const { lineItems, ...rest } = data;
+    const { lineItems, startDate, ...rest } = data;
+
+    const startDateTime = startDate ? new Date(startDate) : null;
 
     const createLineItemsData = lineItems.map((item) => ({
       ...item,
@@ -31,6 +33,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     const newJob = await this.crud.create({
       data: {
         ...rest,
+        startDate: startDateTime,
         updatedBy: this.userEmail,
         createdBy: this.userEmail,
         lineItems: { create: createLineItemsData },
