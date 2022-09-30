@@ -1,7 +1,14 @@
+/* eslint-disable prefer-const */
 import { AuthenticationError, UserInputError } from 'apollo-server';
 
 import { Context } from '../context';
-import { BaseDocument, PrismaData, PermissionsEnum, FindArguments, MetaArgs } from './types';
+import {
+  BaseDocument,
+  PrismaData,
+  PermissionsEnum,
+  FindArguments,
+  MetaArgs,
+} from './types';
 import {
   Area,
   Builder,
@@ -9,6 +16,7 @@ import {
   Company,
   Contractor,
   JobLegacy,
+  JobLegacyStatus,
   LineItemLegacy,
   MetaResponse,
   Reporter,
@@ -25,6 +33,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   crud: Context['prisma'][TClient];
   userEmail: string;
   archiveData: { archived: true; updatedBy: string };
+  todayDate: Date;
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
@@ -41,6 +50,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     this.userEmail = context.user.email;
     // Set generic archive data
     this.archiveData = { archived: true, updatedBy: context.user.email };
+    // Set today's date to midnight
+    this.todayDate = new Date();
+    this.todayDate.setHours(0, 0, 0, 0);
   }
 
   /******************************/
@@ -84,7 +96,11 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
 
     if (args?.sorting) {
-      response = { ...response, sortField: args.sorting.field, sortOrder: args.sorting.order };
+      response = {
+        ...response,
+        sortField: args.sorting.field,
+        sortOrder: args.sorting.order,
+      };
     }
 
     return response;
@@ -162,10 +178,38 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   formatJobLegacy(data: PrismaData['jobLegacy']): JobLegacy {
-    const { lineItems, startDate, completedDate, createdTime, updatedTime, ...rest } = data;
+    const {
+      lineItems,
+      startDate,
+      completedDate,
+      createdTime,
+      updatedTime,
+      inProgress,
+      ...rest
+    } = data;
+
+    // By default the job is will call
+    let status: JobLegacyStatus = JobLegacyStatus.WillCall;
+
+    // if the job is in progress, override all other statuses
+    if (inProgress) {
+      status = JobLegacyStatus.InProgress;
+    } else if (startDate) {
+      // todayDate > startDate = past due
+      // todayDate < startDate = planned
+      // todayDate === startDate = today
+      status =
+        this.todayDate > startDate
+          ? JobLegacyStatus.PastDue
+          : this.todayDate < startDate
+          ? JobLegacyStatus.Planned
+          : JobLegacyStatus.Today;
+    }
 
     return {
       ...rest,
+      status,
+      inProgress,
       lineItems: lineItems.map((doc) => this.formatLineItemLegacy(doc)),
       startDate: startDate?.toJSON(),
       completedDate: completedDate?.toJSON(),

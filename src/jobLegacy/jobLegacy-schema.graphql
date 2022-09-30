@@ -1,3 +1,12 @@
+# Enums
+enum JobLegacyStatus {
+  inProgress
+  today
+  pastDue
+  planned
+  willCall
+}
+
 # Documents
 type LineItemLegacy {
   id: ID!
@@ -18,6 +27,7 @@ type JobLegacy {
   active: Boolean!
   inProgress: Boolean!
   isImportant: Boolean!
+  status: JobLegacyStatus!
   areaId: String
   builderId: String
   communityId: String
