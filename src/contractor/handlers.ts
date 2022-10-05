@@ -2,11 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import {
-  Pagination,
-  Sorting,
-  WriteContractorInput,
-} from '../generated';
+import { Pagination, Sorting, WriteContractorInput } from '../generated';
 
 export class ContractorDataHandler extends DataHandler<'contractor'> {
   constructor(context: Context) {
@@ -87,5 +83,21 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       data: docList.map((doc) => this.formatContractor(doc)),
       meta: this.responseMeta(count, pagination, sorting),
     };
+  }
+
+  async getAssigned() {
+    const docList = await this.crud.findMany({
+      where: {
+        jobsLegacy: { some: { archived: false, active: true } },
+        archived: false,
+      },
+      include: {
+        jobsLegacy: {
+          include: { lineItems: true },
+        },
+      },
+    });
+
+    return { data: docList.map((doc) => this.formatContractor(doc)) };
   }
 }

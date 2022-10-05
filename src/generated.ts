@@ -102,6 +102,11 @@ export type AreasResponse = {
   meta: MetaResponse;
 };
 
+export type AssignedContractorsResponse = {
+  __typename?: 'AssignedContractorsResponse';
+  data: Array<Contractor>;
+};
+
 export type Builder = {
   __typename?: 'Builder';
   archived: Scalars['Boolean'];
@@ -447,6 +452,7 @@ export type Query = {
   __typename?: 'Query';
   areaById?: Maybe<Area>;
   areas: AreasResponse;
+  assignedContractors: AssignedContractorsResponse;
   builderById?: Maybe<Builder>;
   builders: BuildersResponse;
   communities: CommunitiesResponse;
@@ -848,6 +854,7 @@ export type ResolversTypes = {
   ArchiveSupplierResponse: ResolverTypeWrapper<ArchiveSupplierResponse>;
   Area: ResolverTypeWrapper<Area>;
   AreasResponse: ResolverTypeWrapper<AreasResponse>;
+  AssignedContractorsResponse: ResolverTypeWrapper<AssignedContractorsResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Builder: ResolverTypeWrapper<Builder>;
   BuildersResponse: ResolverTypeWrapper<BuildersResponse>;
@@ -913,6 +920,7 @@ export type ResolversParentTypes = {
   ArchiveSupplierResponse: ArchiveSupplierResponse;
   Area: Area;
   AreasResponse: AreasResponse;
+  AssignedContractorsResponse: AssignedContractorsResponse;
   Boolean: Scalars['Boolean'];
   Builder: Builder;
   BuildersResponse: BuildersResponse;
@@ -1067,6 +1075,14 @@ export type AreasResponseResolvers<
 > = {
   data?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AssignedContractorsResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['AssignedContractorsResponse'] = ResolversParentTypes['AssignedContractorsResponse']
+> = {
+  data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1543,6 +1559,11 @@ export type QueryResolvers<
     ContextType,
     Partial<QueryAreasArgs>
   >;
+  assignedContractors?: Resolver<
+    ResolversTypes['AssignedContractorsResponse'],
+    ParentType,
+    ContextType
+  >;
   builderById?: Resolver<
     Maybe<ResolversTypes['Builder']>,
     ParentType,
@@ -1821,6 +1842,7 @@ export type Resolvers<ContextType = Context> = {
   ArchiveSupplierResponse?: ArchiveSupplierResponseResolvers<ContextType>;
   Area?: AreaResolvers<ContextType>;
   AreasResponse?: AreasResponseResolvers<ContextType>;
+  AssignedContractorsResponse?: AssignedContractorsResponseResolvers<ContextType>;
   Builder?: BuilderResolvers<ContextType>;
   BuildersResponse?: BuildersResponseResolvers<ContextType>;
   CommunitiesResponse?: CommunitiesResponseResolvers<ContextType>;

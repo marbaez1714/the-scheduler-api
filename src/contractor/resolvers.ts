@@ -3,6 +3,10 @@ import { ContractorDataHandler } from './handlers';
 
 export const contractorResolvers: Resolvers = {
   Query: {
+    assignedContractors: async (_, __, context) => {
+      const response = await new ContractorDataHandler(context).getAssigned();
+      return response;
+    },
     contractorById: async (_, { id }, context) => {
       const response = await new ContractorDataHandler(context).getById(id);
       return response;

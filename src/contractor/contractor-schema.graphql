@@ -28,6 +28,10 @@ type ContractorsResponse {
   meta: MetaResponse!
 }
 
+type AssignedContractorsResponse {
+  data: [Contractor!]!
+}
+
 # Mutation Responses
 type ArchiveContractorResponse {
   data: Contractor!
@@ -41,6 +45,7 @@ type WriteContractorResponse {
 
 # Queries
 type Query {
+  assignedContractors: AssignedContractorsResponse!
   contractorById(id: ID!): Contractor
   contractors(
     pagination: Pagination
