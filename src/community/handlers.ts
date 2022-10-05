@@ -1,8 +1,12 @@
 import { UserInputError } from 'apollo-server';
 
-import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
+import { DataHandler } from '../app';
 import { Context } from '../context';
-import { WriteCommunityInput } from '../generated';
+import {
+  PaginationOptions,
+  SortingOptions,
+  WriteCommunityInput,
+} from '../generated';
 
 export class CommunityDataHandler extends DataHandler<'community'> {
   constructor(context: Context) {
@@ -48,19 +52,26 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     return this.writeResponse(formatted);
   }
 
-  async getById(args: GetByIdArgs) {
-    const doc = await this.crud.findUnique({ where: { id: args.id }, include: { company: true } });
+  async getById(id: string) {
+    const doc = await this.crud.findUnique({
+      where: { id },
+      include: { company: true },
+    });
 
-    if (!doc) throw new UserInputError(`${args.id} does not exist.`);
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
 
     return this.formatCommunity(doc);
   }
 
-  async getMany(args: GetManyArgs) {
+  async getMany(
+    archived?: boolean,
+    pagination?: PaginationOptions,
+    sorting?: SortingOptions
+  ) {
     const findArgs = {
       include: { company: true },
-      where: { archived: !!args.archived },
-      ...this.findArgs(args),
+      where: { archived: !!archived },
+      ...this.findArgs(pagination, sorting),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -70,7 +81,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
 
     return {
       data: docList.map((doc) => this.formatCommunity(doc)),
-      meta: this.responseMeta(count, args),
+      meta: this.responseMeta(count, pagination, sorting),
     };
   }
 }

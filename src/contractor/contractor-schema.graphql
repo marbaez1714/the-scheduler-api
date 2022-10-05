@@ -28,11 +28,6 @@ type ContractorsResponse {
   meta: MetaResponse!
 }
 
-type AssignedContractorsResponse {
-  data: [Contractor!]!
-  meta: MetaResponse!
-}
-
 # Mutation Responses
 type ArchiveContractorResponse {
   data: Contractor!
@@ -46,14 +41,20 @@ type WriteContractorResponse {
 
 # Queries
 type Query {
-  assignedContractors(pagination: PaginationOptions, sorting: SortingOptions): AssignedContractorsResponse!
   contractorById(id: ID!): Contractor
-  contractors(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ContractorsResponse!
+  contractors(
+    pagination: PaginationOptions
+    sorting: SortingOptions
+    archived: Boolean
+  ): ContractorsResponse!
 }
 
 # Mutations
 type Mutation {
   archiveContractor(id: ID!): ArchiveContractorResponse!
   createContractor(data: WriteContractorInput!): WriteContractorResponse!
-  modifyContractor(id: ID!, data: WriteContractorInput!): WriteContractorResponse!
+  modifyContractor(
+    id: ID!
+    data: WriteContractorInput!
+  ): WriteContractorResponse!
 }

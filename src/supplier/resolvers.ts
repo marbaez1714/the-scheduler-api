@@ -3,12 +3,16 @@ import { SupplierDataHandler } from './handlers';
 
 export const supplierResolvers: Resolvers = {
   Query: {
-    supplierById: async (_, args, context) => {
-      const response = await new SupplierDataHandler(context).getById(args);
+    supplierById: async (_, { id }, context) => {
+      const response = await new SupplierDataHandler(context).getById(id);
       return response;
     },
-    suppliers: async (_, args, context) => {
-      const response = await new SupplierDataHandler(context).getMany(args);
+    suppliers: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new SupplierDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

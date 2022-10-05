@@ -44,28 +44,11 @@ export interface PrismaData {
 /******************************/
 /* Arguments                  */
 /******************************/
-export interface MetaArgs {
-  pagination?: PaginationOptions;
-  sorting?: SortingOptions;
-}
+type PaginationFindArgs = { take: number; skip: number } | undefined;
 
-export type PaginationFindArgs = { take: number; skip: number } | undefined;
+type SortingFindArgs = { orderBy: { [field: string]: SortOrder } } | undefined;
 
-export type SortingFindArgs = { orderBy: { [field: string]: SortOrder } } | undefined;
-
-export type FindArguments = PaginationFindArgs | SortingFindArgs | (PaginationFindArgs & SortingFindArgs);
-
-export interface GetByIdArgs {
-  id: string;
-}
-
-export interface GetManyArgs {
-  archived?: boolean;
-  pagination?: PaginationOptions;
-  sorting?: SortingOptions;
-}
-
-export interface GetDashboardArgs {
-  pagination?: PaginationOptions;
-  sorting?: SortingOptions;
-}
+export type FindArguments =
+  | PaginationFindArgs
+  | SortingFindArgs
+  | (PaginationFindArgs & SortingFindArgs);

@@ -1,8 +1,12 @@
 import { UserInputError } from 'apollo-server';
 
-import { DataHandler, GetByIdArgs, GetDashboardArgs } from '../app';
+import { DataHandler } from '../app';
 import { Context } from '../context';
-import { CreateJobLegacyInput } from '../generated';
+import {
+  CreateJobLegacyInput,
+  PaginationOptions,
+  SortingOptions,
+} from '../generated';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -46,23 +50,28 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return this.writeResponse(formatted);
   }
 
-  async getById(args: GetByIdArgs) {
+  async getById(id: string) {
     const doc = await this.crud.findUnique({
-      where: { id: args.id },
+      where: { id },
       include: { lineItems: true },
     });
 
-    if (!doc) throw new UserInputError(`${args.id} does not exist.`);
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
 
     return this.formatJobLegacy(doc);
   }
 
-  async getUnassigned(args: GetDashboardArgs) {
+  async getByContractorId(
+    id: string,
+    archived?: boolean,
+    pagination?: PaginationOptions,
+    sorting?: SortingOptions
+  ) {
     const findArgs = {
       where: {
         active: true,
-        contractorId: null,
-        archived: false,
+        contractorId: id || null,
+        archived: !!archived,
       },
       include: {
         area: true,
@@ -72,7 +81,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         reporter: true,
         scope: true,
       },
-      ...this.findArgs(args),
+      ...this.findArgs(pagination, sorting),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -82,7 +91,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, args),
+      meta: this.responseMeta(count, pagination, sorting),
     };
   }
 }

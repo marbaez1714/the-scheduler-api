@@ -3,12 +3,16 @@ import { AreaDataHandler } from './handlers';
 
 export const areaResolvers: Resolvers = {
   Query: {
-    areaById: async (_, args, context) => {
-      const response = await new AreaDataHandler(context).getById(args);
+    areaById: async (_, { id }, context) => {
+      const response = await new AreaDataHandler(context).getById(id);
       return response;
     },
-    areas: async (_, args, context) => {
-      const response = await new AreaDataHandler(context).getMany(args);
+    areas: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new AreaDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

@@ -84,7 +84,7 @@ type CreateJobLegacyResponse {
   message: String!
 }
 
-type UnassignedJobsResponse {
+type JobsLegacyResponse {
   data: [JobLegacy!]!
   meta: MetaResponse!
 }
@@ -94,7 +94,12 @@ type UnassignedJobsResponse {
 # Queries
 type Query {
   jobLegacyById(id: ID!): JobLegacy
-  unassignedJobs(pagination: PaginationOptions, sorting: SortingOptions): UnassignedJobsResponse!
+  jobLegacyByContractorId(
+    id: ID!
+    pagination: PaginationOptions
+    sorting: SortingOptions
+    archived: Boolean
+  ): JobsLegacyResponse!
 }
 
 # Mutations

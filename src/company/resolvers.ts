@@ -3,12 +3,16 @@ import { CompanyDataHandler } from './handlers';
 
 export const companyResolvers: Resolvers = {
   Query: {
-    companyById: async (_, args, context) => {
-      const response = await new CompanyDataHandler(context).getById(args);
+    companyById: async (_, { id }, context) => {
+      const response = await new CompanyDataHandler(context).getById(id);
       return response;
     },
-    companies: async (_, args, context) => {
-      const response = await new CompanyDataHandler(context).getMany(args);
+    companies: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new CompanyDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

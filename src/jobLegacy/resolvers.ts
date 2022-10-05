@@ -3,12 +3,19 @@ import { JobLegacyDataHandler, LineItemLegacyDataHandler } from './handlers';
 
 export const jobLegacyResolvers: Resolvers = {
   Query: {
-    jobLegacyById: async (_, args, context) => {
-      const response = await new JobLegacyDataHandler(context).getById(args);
+    jobLegacyById: async (_, { id }, context) => {
+      const response = await new JobLegacyDataHandler(context).getById(id);
       return response;
     },
-    unassignedJobs: async (_, args, context) => {
-      const response = await new JobLegacyDataHandler(context).getUnassigned(args);
+    jobLegacyByContractorId: async (
+      _,
+      { id, archived, pagination, sorting },
+      context
+    ) => {
+      const response = await new JobLegacyDataHandler(
+        context
+      ).getByContractorId(id, archived, pagination, sorting);
+
       return response;
     },
   },

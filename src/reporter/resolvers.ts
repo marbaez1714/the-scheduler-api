@@ -3,12 +3,16 @@ import { ReporterDataHandler } from './handlers';
 
 export const reporterResolvers: Resolvers = {
   Query: {
-    reporterById: async (_, args, context) => {
-      const response = await new ReporterDataHandler(context).getById(args);
+    reporterById: async (_, { id }, context) => {
+      const response = await new ReporterDataHandler(context).getById(id);
       return response;
     },
-    reporters: async (_, args, context) => {
-      const response = await new ReporterDataHandler(context).getMany(args);
+    reporters: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new ReporterDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

@@ -102,12 +102,6 @@ export type AreasResponse = {
   meta: MetaResponse;
 };
 
-export type AssignedContractorsResponse = {
-  __typename?: 'AssignedContractorsResponse';
-  data: Array<Contractor>;
-  meta: MetaResponse;
-};
-
 export type Builder = {
   __typename?: 'Builder';
   archived: Scalars['Boolean'];
@@ -258,6 +252,12 @@ export enum JobLegacyStatus {
   Today = 'today',
   WillCall = 'willCall',
 }
+
+export type JobsLegacyResponse = {
+  __typename?: 'JobsLegacyResponse';
+  data: Array<JobLegacy>;
+  meta: MetaResponse;
+};
 
 export type LineItemLegacy = {
   __typename?: 'LineItemLegacy';
@@ -447,7 +447,6 @@ export type Query = {
   __typename?: 'Query';
   areaById?: Maybe<Area>;
   areas: AreasResponse;
-  assignedContractors: AssignedContractorsResponse;
   builderById?: Maybe<Builder>;
   builders: BuildersResponse;
   communities: CommunitiesResponse;
@@ -456,6 +455,7 @@ export type Query = {
   companyById?: Maybe<Company>;
   contractorById?: Maybe<Contractor>;
   contractors: ContractorsResponse;
+  jobLegacyByContractorId: JobsLegacyResponse;
   jobLegacyById?: Maybe<JobLegacy>;
   reporterById?: Maybe<Reporter>;
   reporters: ReportersResponse;
@@ -463,7 +463,6 @@ export type Query = {
   scopes: ScopesResponse;
   supplierById?: Maybe<Supplier>;
   suppliers: SuppliersResponse;
-  unassignedJobs: UnassignedJobsResponse;
 };
 
 export type QueryAreaByIdArgs = {
@@ -472,11 +471,6 @@ export type QueryAreaByIdArgs = {
 
 export type QueryAreasArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
-};
-
-export type QueryAssignedContractorsArgs = {
   pagination?: InputMaybe<PaginationOptions>;
   sorting?: InputMaybe<SortingOptions>;
 };
@@ -521,6 +515,13 @@ export type QueryContractorsArgs = {
   sorting?: InputMaybe<SortingOptions>;
 };
 
+export type QueryJobLegacyByContractorIdArgs = {
+  archived?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  pagination?: InputMaybe<PaginationOptions>;
+  sorting?: InputMaybe<SortingOptions>;
+};
+
 export type QueryJobLegacyByIdArgs = {
   id: Scalars['ID'];
 };
@@ -551,11 +552,6 @@ export type QuerySupplierByIdArgs = {
 
 export type QuerySuppliersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
-};
-
-export type QueryUnassignedJobsArgs = {
   pagination?: InputMaybe<PaginationOptions>;
   sorting?: InputMaybe<SortingOptions>;
 };
@@ -629,12 +625,6 @@ export type Supplier = {
 export type SuppliersResponse = {
   __typename?: 'SuppliersResponse';
   data: Array<Supplier>;
-  meta: MetaResponse;
-};
-
-export type UnassignedJobsResponse = {
-  __typename?: 'UnassignedJobsResponse';
-  data: Array<JobLegacy>;
   meta: MetaResponse;
 };
 
@@ -858,7 +848,6 @@ export type ResolversTypes = {
   ArchiveSupplierResponse: ResolverTypeWrapper<ArchiveSupplierResponse>;
   Area: ResolverTypeWrapper<Area>;
   AreasResponse: ResolverTypeWrapper<AreasResponse>;
-  AssignedContractorsResponse: ResolverTypeWrapper<AssignedContractorsResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Builder: ResolverTypeWrapper<Builder>;
   BuildersResponse: ResolverTypeWrapper<BuildersResponse>;
@@ -875,6 +864,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
   JobLegacyStatus: JobLegacyStatus;
+  JobsLegacyResponse: ResolverTypeWrapper<JobsLegacyResponse>;
   LineItemLegacy: ResolverTypeWrapper<LineItemLegacy>;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
@@ -892,7 +882,6 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
-  UnassignedJobsResponse: ResolverTypeWrapper<UnassignedJobsResponse>;
   WriteAreaInput: WriteAreaInput;
   WriteAreaResponse: ResolverTypeWrapper<WriteAreaResponse>;
   WriteBuilderInput: WriteBuilderInput;
@@ -924,7 +913,6 @@ export type ResolversParentTypes = {
   ArchiveSupplierResponse: ArchiveSupplierResponse;
   Area: Area;
   AreasResponse: AreasResponse;
-  AssignedContractorsResponse: AssignedContractorsResponse;
   Boolean: Scalars['Boolean'];
   Builder: Builder;
   BuildersResponse: BuildersResponse;
@@ -940,6 +928,7 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
+  JobsLegacyResponse: JobsLegacyResponse;
   LineItemLegacy: LineItemLegacy;
   LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: MessageResponse;
@@ -956,7 +945,6 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;
-  UnassignedJobsResponse: UnassignedJobsResponse;
   WriteAreaInput: WriteAreaInput;
   WriteAreaResponse: WriteAreaResponse;
   WriteBuilderInput: WriteBuilderInput;
@@ -1078,15 +1066,6 @@ export type AreasResponseResolvers<
   ParentType extends ResolversParentTypes['AreasResponse'] = ResolversParentTypes['AreasResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
-  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AssignedContractorsResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['AssignedContractorsResponse'] = ResolversParentTypes['AssignedContractorsResponse']
-> = {
-  data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
   meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1319,6 +1298,15 @@ export type JobLegacyResolvers<
   status?: Resolver<ResolversTypes['JobLegacyStatus'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type JobsLegacyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['JobsLegacyResponse'] = ResolversParentTypes['JobsLegacyResponse']
+> = {
+  data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
+  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1555,12 +1543,6 @@ export type QueryResolvers<
     ContextType,
     Partial<QueryAreasArgs>
   >;
-  assignedContractors?: Resolver<
-    ResolversTypes['AssignedContractorsResponse'],
-    ParentType,
-    ContextType,
-    Partial<QueryAssignedContractorsArgs>
-  >;
   builderById?: Resolver<
     Maybe<ResolversTypes['Builder']>,
     ParentType,
@@ -1609,6 +1591,12 @@ export type QueryResolvers<
     ContextType,
     Partial<QueryContractorsArgs>
   >;
+  jobLegacyByContractorId?: Resolver<
+    ResolversTypes['JobsLegacyResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryJobLegacyByContractorIdArgs, 'id'>
+  >;
   jobLegacyById?: Resolver<
     Maybe<ResolversTypes['JobLegacy']>,
     ParentType,
@@ -1650,12 +1638,6 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     Partial<QuerySuppliersArgs>
-  >;
-  unassignedJobs?: Resolver<
-    ResolversTypes['UnassignedJobsResponse'],
-    ParentType,
-    ContextType,
-    Partial<QueryUnassignedJobsArgs>
   >;
 };
 
@@ -1755,15 +1737,6 @@ export type SuppliersResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UnassignedJobsResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['UnassignedJobsResponse'] = ResolversParentTypes['UnassignedJobsResponse']
-> = {
-  data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
-  meta?: Resolver<ResolversTypes['MetaResponse'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type WriteAreaResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['WriteAreaResponse'] = ResolversParentTypes['WriteAreaResponse']
@@ -1848,7 +1821,6 @@ export type Resolvers<ContextType = Context> = {
   ArchiveSupplierResponse?: ArchiveSupplierResponseResolvers<ContextType>;
   Area?: AreaResolvers<ContextType>;
   AreasResponse?: AreasResponseResolvers<ContextType>;
-  AssignedContractorsResponse?: AssignedContractorsResponseResolvers<ContextType>;
   Builder?: BuilderResolvers<ContextType>;
   BuildersResponse?: BuildersResponseResolvers<ContextType>;
   CommunitiesResponse?: CommunitiesResponseResolvers<ContextType>;
@@ -1860,6 +1832,7 @@ export type Resolvers<ContextType = Context> = {
   CreateJobLegacyResponse?: CreateJobLegacyResponseResolvers<ContextType>;
   DeleteResponse?: DeleteResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
+  JobsLegacyResponse?: JobsLegacyResponseResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
   MessageResponse?: MessageResponseResolvers<ContextType>;
   MetaResponse?: MetaResponseResolvers<ContextType>;
@@ -1872,7 +1845,6 @@ export type Resolvers<ContextType = Context> = {
   ScopesResponse?: ScopesResponseResolvers<ContextType>;
   Supplier?: SupplierResolvers<ContextType>;
   SuppliersResponse?: SuppliersResponseResolvers<ContextType>;
-  UnassignedJobsResponse?: UnassignedJobsResponseResolvers<ContextType>;
   WriteAreaResponse?: WriteAreaResponseResolvers<ContextType>;
   WriteBuilderResponse?: WriteBuilderResponseResolvers<ContextType>;
   WriteCommunityResponse?: WriteCommunityResponseResolvers<ContextType>;

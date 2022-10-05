@@ -3,16 +3,16 @@ import { ContractorDataHandler } from './handlers';
 
 export const contractorResolvers: Resolvers = {
   Query: {
-    assignedContractors: async (_, args, context) => {
-      const response = await new ContractorDataHandler(context).getAssigned(args);
+    contractorById: async (_, { id }, context) => {
+      const response = await new ContractorDataHandler(context).getById(id);
       return response;
     },
-    contractorById: async (_, args, context) => {
-      const response = await new ContractorDataHandler(context).getById(args);
-      return response;
-    },
-    contractors: async (_, args, context) => {
-      const response = await new ContractorDataHandler(context).getMany(args);
+    contractors: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new ContractorDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },
@@ -26,7 +26,10 @@ export const contractorResolvers: Resolvers = {
       return response;
     },
     modifyContractor: async (_, { id, data }, context) => {
-      const response = await new ContractorDataHandler(context).modify(id, data);
+      const response = await new ContractorDataHandler(context).modify(
+        id,
+        data
+      );
       return response;
     },
   },

@@ -3,12 +3,16 @@ import { BuilderDataHandler } from './handlers';
 
 export const builderResolvers: Resolvers = {
   Query: {
-    builderById: async (_, args, context) => {
-      const response = await new BuilderDataHandler(context).getById(args);
+    builderById: async (_, { id }, context) => {
+      const response = await new BuilderDataHandler(context).getById(id);
       return response;
     },
-    builders: async (_, args, context) => {
-      const response = await new BuilderDataHandler(context).getMany(args);
+    builders: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new BuilderDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

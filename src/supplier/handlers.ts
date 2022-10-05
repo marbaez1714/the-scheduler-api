@@ -1,8 +1,12 @@
 import { UserInputError } from 'apollo-server';
 
-import { DataHandler, GetByIdArgs, GetManyArgs } from '../app';
+import { DataHandler } from '../app';
 import { Context } from '../context';
-import { WriteSupplierInput } from '../generated';
+import {
+  PaginationOptions,
+  SortingOptions,
+  WriteSupplierInput,
+} from '../generated';
 
 export class SupplierDataHandler extends DataHandler<'supplier'> {
   constructor(context: Context) {
@@ -45,18 +49,22 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
     return this.writeResponse(formatted);
   }
 
-  async getById(args: GetByIdArgs) {
-    const doc = await this.crud.findUnique({ where: { id: args.id } });
+  async getById(id: string) {
+    const doc = await this.crud.findUnique({ where: { id } });
 
-    if (!doc) throw new UserInputError(`${args.id} does not exist.`);
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
 
     return this.formatSupplier(doc);
   }
 
-  async getMany(args: GetManyArgs) {
+  async getMany(
+    archived?: boolean,
+    pagination?: PaginationOptions,
+    sorting?: SortingOptions
+  ) {
     const findArgs = {
-      where: { archived: !!args.archived },
-      ...this.findArgs(args),
+      where: { archived: !!archived },
+      ...this.findArgs(pagination, sorting),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +74,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     return {
       data: docList.map((doc) => this.formatSupplier(doc)),
-      meta: this.responseMeta(count, args),
+      meta: this.responseMeta(count, pagination, sorting),
     };
   }
 }

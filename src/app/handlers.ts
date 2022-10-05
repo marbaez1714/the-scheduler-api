@@ -7,7 +7,6 @@ import {
   PrismaData,
   PermissionsEnum,
   FindArguments,
-  MetaArgs,
 } from './types';
 import {
   Area,
@@ -19,8 +18,10 @@ import {
   JobLegacyStatus,
   LineItemLegacy,
   MetaResponse,
+  PaginationOptions,
   Reporter,
   Scope,
+  SortingOptions,
   SortOrder,
   Supplier,
 } from '../generated';
@@ -58,25 +59,19 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Prisma Find Arguments      */
   /******************************/
-  findArgs(args?: MetaArgs) {
+  findArgs(pagination?: PaginationOptions, sorting?: SortingOptions) {
     let findArgs: FindArguments;
-    let page: number;
-    let pageSize: number;
-    let field: string;
-    let order: SortOrder;
 
-    if (args?.pagination) {
-      page = args.pagination.page;
-      pageSize = args.pagination.pageSize;
+    if (pagination) {
+      const { page, pageSize } = pagination;
       findArgs = {
-        ...findArgs,
-        ...{ take: pageSize, skip: Math.min(page - 1, 0) * pageSize },
+        take: pageSize,
+        skip: Math.min(page - 1, 0) * pageSize,
       };
     }
 
-    if (args?.sorting) {
-      field = args.sorting.field;
-      order = args.sorting.order;
+    if (sorting) {
+      const { field, order } = sorting;
       findArgs = { ...findArgs, orderBy: { [field]: order } };
     }
 
@@ -86,20 +81,24 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Response Meta              */
   /******************************/
-  responseMeta(totalCount: number, args?: MetaArgs) {
+  responseMeta(
+    totalCount: number,
+    pagination?: PaginationOptions,
+    sorting?: SortingOptions
+  ) {
     let response: MetaResponse = {
       totalCount,
     };
 
-    if (args?.pagination) {
-      response = { ...response, ...args.pagination };
+    if (pagination) {
+      response = { ...response, ...pagination };
     }
 
-    if (args?.sorting) {
+    if (sorting) {
       response = {
         ...response,
-        sortField: args.sorting.field,
-        sortOrder: args.sorting.order,
+        sortField: sorting.field,
+        sortOrder: sorting.order,
       };
     }
 

@@ -3,12 +3,16 @@ import { CommunityDataHandler } from './handlers';
 
 export const communityResolvers: Resolvers = {
   Query: {
-    communityById: async (_, args, context) => {
-      const response = await new CommunityDataHandler(context).getById(args);
+    communityById: async (_, { id }, context) => {
+      const response = await new CommunityDataHandler(context).getById(id);
       return response;
     },
-    communities: async (_, args, context) => {
-      const response = await new CommunityDataHandler(context).getMany(args);
+    communities: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new CommunityDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

@@ -3,12 +3,16 @@ import { ScopeDataHandler } from './handlers';
 
 export const scopeResolvers: Resolvers = {
   Query: {
-    scopeById: async (_, args, context) => {
-      const response = await new ScopeDataHandler(context).getById(args);
+    scopeById: async (_, { id }, context) => {
+      const response = await new ScopeDataHandler(context).getById(id);
       return response;
     },
-    scopes: async (_, args, context) => {
-      const response = await new ScopeDataHandler(context).getMany(args);
+    scopes: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new ScopeDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
       return response;
     },
   },

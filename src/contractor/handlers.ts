@@ -1,8 +1,12 @@
 import { UserInputError } from 'apollo-server';
 
-import { DataHandler, GetByIdArgs, GetDashboardArgs, GetManyArgs } from '../app';
+import { DataHandler } from '../app';
 import { Context } from '../context';
-import { WriteContractorInput } from '../generated';
+import {
+  PaginationOptions,
+  SortingOptions,
+  WriteContractorInput,
+} from '../generated';
 
 export class ContractorDataHandler extends DataHandler<'contractor'> {
   constructor(context: Context) {
@@ -48,26 +52,30 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     return this.writeResponse(formatted);
   }
 
-  async getById(args: GetByIdArgs) {
+  async getById(id: string) {
     const doc = await this.crud.findUnique({
-      where: { id: args.id },
+      where: { id },
       include: { jobsLegacy: { include: { lineItems: true } } },
     });
 
-    if (!doc) throw new UserInputError(`${args.id} does not exist.`);
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
 
     return this.formatContractor(doc);
   }
 
-  async getMany(args: GetManyArgs) {
+  async getMany(
+    archived?: boolean,
+    pagination?: PaginationOptions,
+    sorting?: SortingOptions
+  ) {
     const findArgs = {
       include: {
         jobsLegacy: {
           include: { lineItems: true },
         },
       },
-      where: { archived: !!args?.archived },
-      ...this.findArgs(args),
+      where: { archived: !!archived },
+      ...this.findArgs(pagination, sorting),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -77,45 +85,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     return {
       data: docList.map((doc) => this.formatContractor(doc)),
-      meta: this.responseMeta(count, args),
-    };
-  }
-
-  async getAssigned(args: GetDashboardArgs) {
-    const findArgs = {
-      where: {
-        jobsLegacy: {
-          some: { active: true, archived: false },
-        },
-        archived: false,
-      },
-      include: {
-        jobsLegacy: {
-          where: { active: true, archived: false },
-          include: {
-            lineItems: true,
-          },
-        },
-      },
-      ...this.findArgs(args),
-    };
-
-    const countArgs = {
-      where: {
-        active: true,
-        archived: false,
-        contractorId: { not: null },
-      },
-    };
-
-    const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany(findArgs),
-      this.context.prisma.jobLegacy.count(countArgs),
-    ]);
-
-    return {
-      data: docList.map((doc) => this.formatContractor(doc)),
-      meta: this.responseMeta(count, args),
+      meta: this.responseMeta(count, pagination, sorting),
     };
   }
 }
