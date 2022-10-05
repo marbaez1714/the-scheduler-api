@@ -43,8 +43,8 @@ type WriteContractorResponse {
 type Query {
   contractorById(id: ID!): Contractor
   contractors(
-    pagination: PaginationOptions
-    sorting: SortingOptions
+    pagination: Pagination
+    sorting: Sorting
     archived: Boolean
   ): ContractorsResponse!
 }

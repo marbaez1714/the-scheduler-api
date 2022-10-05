@@ -96,8 +96,8 @@ type Query {
   jobLegacyById(id: ID!): JobLegacy
   jobLegacyByContractorId(
     id: ID!
-    pagination: PaginationOptions
-    sorting: SortingOptions
+    pagination: Pagination
+    sorting: Sorting
     archived: Boolean
   ): JobsLegacyResponse!
 }

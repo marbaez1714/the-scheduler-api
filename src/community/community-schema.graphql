@@ -42,7 +42,7 @@ type WriteCommunityResponse {
 # Queries
 type Query {
   communityById(id: ID!): Community
-  communities(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): CommunitiesResponse!
+  communities(pagination: Pagination, sorting: Sorting, archived: Boolean): CommunitiesResponse!
 }
 
 # Mutations

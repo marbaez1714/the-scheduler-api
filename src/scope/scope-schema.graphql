@@ -42,7 +42,7 @@ type WriteScopeResponse {
 # Queries
 type Query {
   scopeById(id: ID!): Scope
-  scopes(pagination: PaginationOptions, sorting: SortingOptions, archived: Boolean): ScopesResponse!
+  scopes(pagination: Pagination, sorting: Sorting, archived: Boolean): ScopesResponse!
 }
 
 # Mutations

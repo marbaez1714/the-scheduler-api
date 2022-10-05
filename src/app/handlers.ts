@@ -18,11 +18,10 @@ import {
   JobLegacyStatus,
   LineItemLegacy,
   MetaResponse,
-  PaginationOptions,
+  Pagination,
   Reporter,
   Scope,
-  SortingOptions,
-  SortOrder,
+  Sorting,
   Supplier,
 } from '../generated';
 import { GraphQLScalarType } from 'graphql';
@@ -59,7 +58,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Prisma Find Arguments      */
   /******************************/
-  findArgs(pagination?: PaginationOptions, sorting?: SortingOptions) {
+  findArgs(pagination?: Pagination, sorting?: Sorting) {
     let findArgs: FindArguments;
 
     if (pagination) {
@@ -83,8 +82,8 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   responseMeta(
     totalCount: number,
-    pagination?: PaginationOptions,
-    sorting?: SortingOptions
+    pagination?: Pagination,
+    sorting?: Sorting
   ) {
     let response: MetaResponse = {
       totalCount,

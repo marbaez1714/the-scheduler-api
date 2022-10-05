@@ -3,8 +3,8 @@ import { UserInputError } from 'apollo-server';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
-  PaginationOptions,
-  SortingOptions,
+  Pagination,
+  Sorting,
   WriteContractorInput,
 } from '../generated';
 
@@ -65,8 +65,8 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
   async getMany(
     archived?: boolean,
-    pagination?: PaginationOptions,
-    sorting?: SortingOptions
+    pagination?: Pagination,
+    sorting?: Sorting
   ) {
     const findArgs = {
       include: {

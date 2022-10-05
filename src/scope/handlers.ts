@@ -3,8 +3,8 @@ import { UserInputError } from 'apollo-server';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
-  PaginationOptions,
-  SortingOptions,
+  Pagination,
+  Sorting,
   WriteScopeInput,
 } from '../generated';
 
@@ -59,8 +59,8 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
   async getMany(
     archived?: boolean,
-    pagination?: PaginationOptions,
-    sorting?: SortingOptions
+    pagination?: Pagination,
+    sorting?: Sorting
   ) {
     const findArgs = {
       where: { archived: !!archived },

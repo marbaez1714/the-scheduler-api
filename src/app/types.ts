@@ -11,7 +11,7 @@ import {
   Supplier as SupplierModel,
 } from '@prisma/client';
 
-import { PaginationOptions, SortingOptions, SortOrder } from '../generated';
+import { SortOrder } from '../generated';
 
 /******************************/
 /* Enums                      */

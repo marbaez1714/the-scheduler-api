@@ -8,12 +8,12 @@ enum SortOrder {
 }
 
 # Inputs
-input PaginationOptions {
+input Pagination {
   page: Int!
   pageSize: Int!
 }
 
-input SortingOptions {
+input Sorting {
   field: String!
   order: SortOrder!
 }

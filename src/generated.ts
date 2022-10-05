@@ -438,7 +438,7 @@ export type MutationModifySupplierArgs = {
   id: Scalars['ID'];
 };
 
-export type PaginationOptions = {
+export type Pagination = {
   page: Scalars['Int'];
   pageSize: Scalars['Int'];
 };
@@ -471,8 +471,8 @@ export type QueryAreaByIdArgs = {
 
 export type QueryAreasArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryBuilderByIdArgs = {
@@ -481,14 +481,14 @@ export type QueryBuilderByIdArgs = {
 
 export type QueryBuildersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCommunitiesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCommunityByIdArgs = {
@@ -497,8 +497,8 @@ export type QueryCommunityByIdArgs = {
 
 export type QueryCompaniesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCompanyByIdArgs = {
@@ -511,15 +511,15 @@ export type QueryContractorByIdArgs = {
 
 export type QueryContractorsArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobLegacyByContractorIdArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   id: Scalars['ID'];
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobLegacyByIdArgs = {
@@ -532,8 +532,8 @@ export type QueryReporterByIdArgs = {
 
 export type QueryReportersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryScopeByIdArgs = {
@@ -542,8 +542,8 @@ export type QueryScopeByIdArgs = {
 
 export type QueryScopesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QuerySupplierByIdArgs = {
@@ -552,8 +552,8 @@ export type QuerySupplierByIdArgs = {
 
 export type QuerySuppliersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  pagination?: InputMaybe<PaginationOptions>;
-  sorting?: InputMaybe<SortingOptions>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type Reporter = {
@@ -603,7 +603,7 @@ export enum SortOrder {
   Desc = 'desc',
 }
 
-export type SortingOptions = {
+export type Sorting = {
   field: Scalars['String'];
   order: SortOrder;
 };
@@ -870,7 +870,7 @@ export type ResolversTypes = {
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
   MetaResponse: ResolverTypeWrapper<MetaResponse>;
   Mutation: ResolverTypeWrapper<{}>;
-  PaginationOptions: PaginationOptions;
+  Pagination: Pagination;
   PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']>;
   Query: ResolverTypeWrapper<{}>;
   Reporter: ResolverTypeWrapper<Reporter>;
@@ -878,7 +878,7 @@ export type ResolversTypes = {
   Scope: ResolverTypeWrapper<Scope>;
   ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
   SortOrder: SortOrder;
-  SortingOptions: SortingOptions;
+  Sorting: Sorting;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
@@ -934,14 +934,14 @@ export type ResolversParentTypes = {
   MessageResponse: MessageResponse;
   MetaResponse: MetaResponse;
   Mutation: {};
-  PaginationOptions: PaginationOptions;
+  Pagination: Pagination;
   PhoneNumber: Scalars['PhoneNumber'];
   Query: {};
   Reporter: Reporter;
   ReportersResponse: ReportersResponse;
   Scope: Scope;
   ScopesResponse: ScopesResponse;
-  SortingOptions: SortingOptions;
+  Sorting: Sorting;
   String: Scalars['String'];
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;

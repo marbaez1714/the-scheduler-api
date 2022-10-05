@@ -4,8 +4,8 @@ import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
   CreateJobLegacyInput,
-  PaginationOptions,
-  SortingOptions,
+  Pagination,
+  Sorting,
 } from '../generated';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
@@ -64,8 +64,8 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   async getByContractorId(
     id: string,
     archived?: boolean,
-    pagination?: PaginationOptions,
-    sorting?: SortingOptions
+    pagination?: Pagination,
+    sorting?: Sorting
   ) {
     const findArgs = {
       where: {
