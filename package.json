@@ -29,7 +29,8 @@
     "dotenv": "^16.0.1",
     "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^2.1.4"
+    "jwks-rsa": "^2.1.4",
+    "twilio": "^3.83.0"
   },
   "engines": {
     "node": "18.x",

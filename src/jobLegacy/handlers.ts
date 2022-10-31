@@ -1,12 +1,9 @@
+import { ModifyJobLegacyInput } from './../generated';
 import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import {
-  CreateJobLegacyInput,
-  Pagination,
-  Sorting,
-} from '../generated';
+import { CreateJobLegacyInput, Pagination, Sorting } from '../generated';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -48,6 +45,17 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     const formatted = this.formatJobLegacy(newJob);
 
     return this.writeResponse(formatted);
+  }
+
+  async modify(id: string, data: ModifyJobLegacyInput) {
+    const doc = await this.crud.findUnique({
+      where: { id },
+      include: { lineItems: true },
+    });
+
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
+
+    return this.formatJobLegacy(doc);
   }
 
   async getById(id: string) {

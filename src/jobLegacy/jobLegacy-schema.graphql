@@ -55,7 +55,7 @@ type JobLegacy {
 }
 
 # Inputs
-input LineItemLegacyInput {
+input CreateLineItemLegacyInput {
   orderNumber: String!
   supplierId: String!
 }
@@ -70,7 +70,26 @@ input CreateJobLegacyInput {
   scopeId: String
   startDate: String
   notes: String
-  lineItems: [LineItemLegacyInput!]!
+  lineItems: [CreateLineItemLegacyInput!]!
+}
+
+input ModifyLineItemLegacyInput {
+  id: String
+  orderNumber: String!
+  supplierId: String!
+}
+
+input ModifyJobLegacyInput {
+  name: String!
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  startDate: String
+  notes: String
+  lineItems: [ModifyLineItemLegacyInput!]!
 }
 
 # Query Responses
@@ -79,7 +98,7 @@ type ArchiveJobLegacyResponse {
   message: String!
 }
 
-type CreateJobLegacyResponse {
+type WriteJobLegacyResponse {
   data: JobLegacy!
   message: String!
 }
@@ -105,6 +124,7 @@ type Query {
 # Mutations
 type Mutation {
   archiveJobLegacy(id: ID!): ArchiveJobLegacyResponse!
-  createJobLegacy(data: CreateJobLegacyInput!): CreateJobLegacyResponse!
+  createJobLegacy(data: CreateJobLegacyInput!): WriteJobLegacyResponse!
   deleteLineItemLegacy(id: ID!): DeleteResponse!
+  modifyJobLegacy(id: ID!, data: ModifyJobLegacyInput!): WriteJobLegacyResponse!
 }

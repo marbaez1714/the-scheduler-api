@@ -199,7 +199,7 @@ export type CreateJobLegacyInput = {
   builderId?: InputMaybe<Scalars['String']>;
   communityId?: InputMaybe<Scalars['String']>;
   contractorId?: InputMaybe<Scalars['String']>;
-  lineItems: Array<LineItemLegacyInput>;
+  lineItems: Array<CreateLineItemLegacyInput>;
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   reporterId?: InputMaybe<Scalars['String']>;
@@ -207,10 +207,9 @@ export type CreateJobLegacyInput = {
   startDate?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateJobLegacyResponse = {
-  __typename?: 'CreateJobLegacyResponse';
-  data: JobLegacy;
-  message: Scalars['String'];
+export type CreateLineItemLegacyInput = {
+  orderNumber: Scalars['String'];
+  supplierId: Scalars['String'];
 };
 
 export type DeleteResponse = {
@@ -277,11 +276,6 @@ export type LineItemLegacy = {
   updatedTime: Scalars['String'];
 };
 
-export type LineItemLegacyInput = {
-  orderNumber: Scalars['String'];
-  supplierId: Scalars['String'];
-};
-
 export type MessageResponse = {
   __typename?: 'MessageResponse';
   message: Scalars['String'];
@@ -294,6 +288,25 @@ export type MetaResponse = {
   sortField?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<SortOrder>;
   totalCount: Scalars['Int'];
+};
+
+export type ModifyJobLegacyInput = {
+  areaId?: InputMaybe<Scalars['String']>;
+  builderId?: InputMaybe<Scalars['String']>;
+  communityId?: InputMaybe<Scalars['String']>;
+  contractorId?: InputMaybe<Scalars['String']>;
+  lineItems: Array<ModifyLineItemLegacyInput>;
+  name: Scalars['String'];
+  notes?: InputMaybe<Scalars['String']>;
+  reporterId?: InputMaybe<Scalars['String']>;
+  scopeId?: InputMaybe<Scalars['String']>;
+  startDate?: InputMaybe<Scalars['String']>;
+};
+
+export type ModifyLineItemLegacyInput = {
+  id?: InputMaybe<Scalars['String']>;
+  orderNumber: Scalars['String'];
+  supplierId: Scalars['String'];
 };
 
 export type Mutation = {
@@ -312,7 +325,7 @@ export type Mutation = {
   createCommunity: WriteCommunityResponse;
   createCompany: WriteCompanyResponse;
   createContractor: WriteContractorResponse;
-  createJobLegacy: CreateJobLegacyResponse;
+  createJobLegacy: WriteJobLegacyResponse;
   createReporter: WriteReporterResponse;
   createScope: WriteScopeResponse;
   createSupplier: WriteSupplierResponse;
@@ -322,9 +335,11 @@ export type Mutation = {
   modifyCommunity: WriteCommunityResponse;
   modifyCompany: WriteCompanyResponse;
   modifyContractor: WriteContractorResponse;
+  modifyJobLegacy: WriteJobLegacyResponse;
   modifyReporter: WriteReporterResponse;
   modifyScope: WriteScopeResponse;
   modifySupplier: WriteSupplierResponse;
+  sendNotification: SendNotificationResponse;
 };
 
 export type MutationArchiveAreaArgs = {
@@ -428,6 +443,11 @@ export type MutationModifyContractorArgs = {
   id: Scalars['ID'];
 };
 
+export type MutationModifyJobLegacyArgs = {
+  data: ModifyJobLegacyInput;
+  id: Scalars['ID'];
+};
+
 export type MutationModifyReporterArgs = {
   data: WriteReporterInput;
   id: Scalars['ID'];
@@ -441,6 +461,24 @@ export type MutationModifyScopeArgs = {
 export type MutationModifySupplierArgs = {
   data: WriteSupplierInput;
   id: Scalars['ID'];
+};
+
+export type MutationSendNotificationArgs = {
+  data: SendNotificationInput;
+};
+
+export type NotificationLegacy = {
+  __typename?: 'NotificationLegacy';
+  archived: Scalars['Boolean'];
+  createdBy: Scalars['String'];
+  createdTime: Scalars['String'];
+  id: Scalars['ID'];
+  jobId: Scalars['String'];
+  jobLegacy: JobLegacy;
+  message: Scalars['String'];
+  recipientPhone: Scalars['String'];
+  recipientRole: RecipientRole;
+  success: Scalars['Boolean'];
 };
 
 export type Pagination = {
@@ -562,6 +600,11 @@ export type QuerySuppliersArgs = {
   sorting?: InputMaybe<Sorting>;
 };
 
+export enum RecipientRole {
+  Contractor = 'contractor',
+  Reporter = 'reporter',
+}
+
 export type Reporter = {
   __typename?: 'Reporter';
   archived: Scalars['Boolean'];
@@ -602,6 +645,18 @@ export type ScopesResponse = {
   __typename?: 'ScopesResponse';
   data: Array<Scope>;
   meta: MetaResponse;
+};
+
+export type SendNotificationInput = {
+  jobId: Scalars['String'];
+  message: Scalars['String'];
+  recipientPhone: Scalars['String'];
+  recipientRole: RecipientRole;
+};
+
+export type SendNotificationResponse = {
+  __typename?: 'SendNotificationResponse';
+  notification: NotificationLegacy;
 };
 
 export enum SortOrder {
@@ -695,6 +750,12 @@ export type WriteContractorInput = {
 export type WriteContractorResponse = {
   __typename?: 'WriteContractorResponse';
   data: Contractor;
+  message: Scalars['String'];
+};
+
+export type WriteJobLegacyResponse = {
+  __typename?: 'WriteJobLegacyResponse';
+  data: JobLegacy;
   message: Scalars['String'];
 };
 
@@ -865,7 +926,7 @@ export type ResolversTypes = {
   Contractor: ResolverTypeWrapper<Contractor>;
   ContractorsResponse: ResolverTypeWrapper<ContractorsResponse>;
   CreateJobLegacyInput: CreateJobLegacyInput;
-  CreateJobLegacyResponse: ResolverTypeWrapper<CreateJobLegacyResponse>;
+  CreateLineItemLegacyInput: CreateLineItemLegacyInput;
   DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -873,17 +934,22 @@ export type ResolversTypes = {
   JobLegacyStatus: JobLegacyStatus;
   JobsLegacyResponse: ResolverTypeWrapper<JobsLegacyResponse>;
   LineItemLegacy: ResolverTypeWrapper<LineItemLegacy>;
-  LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: ResolverTypeWrapper<MessageResponse>;
   MetaResponse: ResolverTypeWrapper<MetaResponse>;
+  ModifyJobLegacyInput: ModifyJobLegacyInput;
+  ModifyLineItemLegacyInput: ModifyLineItemLegacyInput;
   Mutation: ResolverTypeWrapper<{}>;
+  NotificationLegacy: ResolverTypeWrapper<NotificationLegacy>;
   Pagination: Pagination;
   PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']>;
   Query: ResolverTypeWrapper<{}>;
+  RecipientRole: RecipientRole;
   Reporter: ResolverTypeWrapper<Reporter>;
   ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
   Scope: ResolverTypeWrapper<Scope>;
   ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
+  SendNotificationInput: SendNotificationInput;
+  SendNotificationResponse: ResolverTypeWrapper<SendNotificationResponse>;
   SortOrder: SortOrder;
   Sorting: Sorting;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -899,6 +965,7 @@ export type ResolversTypes = {
   WriteCompanyResponse: ResolverTypeWrapper<WriteCompanyResponse>;
   WriteContractorInput: WriteContractorInput;
   WriteContractorResponse: ResolverTypeWrapper<WriteContractorResponse>;
+  WriteJobLegacyResponse: ResolverTypeWrapper<WriteJobLegacyResponse>;
   WriteReporterInput: WriteReporterInput;
   WriteReporterResponse: ResolverTypeWrapper<WriteReporterResponse>;
   WriteScopeInput: WriteScopeInput;
@@ -931,17 +998,19 @@ export type ResolversParentTypes = {
   Contractor: Contractor;
   ContractorsResponse: ContractorsResponse;
   CreateJobLegacyInput: CreateJobLegacyInput;
-  CreateJobLegacyResponse: CreateJobLegacyResponse;
+  CreateLineItemLegacyInput: CreateLineItemLegacyInput;
   DeleteResponse: DeleteResponse;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
   JobsLegacyResponse: JobsLegacyResponse;
   LineItemLegacy: LineItemLegacy;
-  LineItemLegacyInput: LineItemLegacyInput;
   MessageResponse: MessageResponse;
   MetaResponse: MetaResponse;
+  ModifyJobLegacyInput: ModifyJobLegacyInput;
+  ModifyLineItemLegacyInput: ModifyLineItemLegacyInput;
   Mutation: {};
+  NotificationLegacy: NotificationLegacy;
   Pagination: Pagination;
   PhoneNumber: Scalars['PhoneNumber'];
   Query: {};
@@ -949,6 +1018,8 @@ export type ResolversParentTypes = {
   ReportersResponse: ReportersResponse;
   Scope: Scope;
   ScopesResponse: ScopesResponse;
+  SendNotificationInput: SendNotificationInput;
+  SendNotificationResponse: SendNotificationResponse;
   Sorting: Sorting;
   String: Scalars['String'];
   Supplier: Supplier;
@@ -963,6 +1034,7 @@ export type ResolversParentTypes = {
   WriteCompanyResponse: WriteCompanyResponse;
   WriteContractorInput: WriteContractorInput;
   WriteContractorResponse: WriteContractorResponse;
+  WriteJobLegacyResponse: WriteJobLegacyResponse;
   WriteReporterInput: WriteReporterInput;
   WriteReporterResponse: WriteReporterResponse;
   WriteScopeInput: WriteScopeInput;
@@ -1225,15 +1297,6 @@ export type ContractorsResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CreateJobLegacyResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['CreateJobLegacyResponse'] = ResolversParentTypes['CreateJobLegacyResponse']
-> = {
-  data?: Resolver<ResolversTypes['JobLegacy'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type DeleteResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['DeleteResponse'] = ResolversParentTypes['DeleteResponse']
@@ -1459,7 +1522,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateContractorArgs, 'data'>
   >;
   createJobLegacy?: Resolver<
-    ResolversTypes['CreateJobLegacyResponse'],
+    ResolversTypes['WriteJobLegacyResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateJobLegacyArgs, 'data'>
@@ -1518,6 +1581,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationModifyContractorArgs, 'data' | 'id'>
   >;
+  modifyJobLegacy?: Resolver<
+    ResolversTypes['WriteJobLegacyResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationModifyJobLegacyArgs, 'data' | 'id'>
+  >;
   modifyReporter?: Resolver<
     ResolversTypes['WriteReporterResponse'],
     ParentType,
@@ -1536,6 +1605,33 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationModifySupplierArgs, 'data' | 'id'>
   >;
+  sendNotification?: Resolver<
+    ResolversTypes['SendNotificationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSendNotificationArgs, 'data'>
+  >;
+};
+
+export type NotificationLegacyResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['NotificationLegacy'] = ResolversParentTypes['NotificationLegacy']
+> = {
+  archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  jobId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  jobLegacy?: Resolver<ResolversTypes['JobLegacy'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  recipientPhone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  recipientRole?: Resolver<
+    ResolversTypes['RecipientRole'],
+    ParentType,
+    ContextType
+  >;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface PhoneNumberScalarConfig
@@ -1728,6 +1824,18 @@ export type ScopesResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SendNotificationResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['SendNotificationResponse'] = ResolversParentTypes['SendNotificationResponse']
+> = {
+  notification?: Resolver<
+    ResolversTypes['NotificationLegacy'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type SupplierResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Supplier'] = ResolversParentTypes['Supplier']
@@ -1803,6 +1911,15 @@ export type WriteContractorResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WriteJobLegacyResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['WriteJobLegacyResponse'] = ResolversParentTypes['WriteJobLegacyResponse']
+> = {
+  data?: Resolver<ResolversTypes['JobLegacy'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WriteReporterResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['WriteReporterResponse'] = ResolversParentTypes['WriteReporterResponse']
@@ -1851,7 +1968,6 @@ export type Resolvers<ContextType = Context> = {
   Company?: CompanyResolvers<ContextType>;
   Contractor?: ContractorResolvers<ContextType>;
   ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
-  CreateJobLegacyResponse?: CreateJobLegacyResponseResolvers<ContextType>;
   DeleteResponse?: DeleteResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
   JobsLegacyResponse?: JobsLegacyResponseResolvers<ContextType>;
@@ -1859,12 +1975,14 @@ export type Resolvers<ContextType = Context> = {
   MessageResponse?: MessageResponseResolvers<ContextType>;
   MetaResponse?: MetaResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  NotificationLegacy?: NotificationLegacyResolvers<ContextType>;
   PhoneNumber?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   Reporter?: ReporterResolvers<ContextType>;
   ReportersResponse?: ReportersResponseResolvers<ContextType>;
   Scope?: ScopeResolvers<ContextType>;
   ScopesResponse?: ScopesResponseResolvers<ContextType>;
+  SendNotificationResponse?: SendNotificationResponseResolvers<ContextType>;
   Supplier?: SupplierResolvers<ContextType>;
   SuppliersResponse?: SuppliersResponseResolvers<ContextType>;
   WriteAreaResponse?: WriteAreaResponseResolvers<ContextType>;
@@ -1872,6 +1990,7 @@ export type Resolvers<ContextType = Context> = {
   WriteCommunityResponse?: WriteCommunityResponseResolvers<ContextType>;
   WriteCompanyResponse?: WriteCompanyResponseResolvers<ContextType>;
   WriteContractorResponse?: WriteContractorResponseResolvers<ContextType>;
+  WriteJobLegacyResponse?: WriteJobLegacyResponseResolvers<ContextType>;
   WriteReporterResponse?: WriteReporterResponseResolvers<ContextType>;
   WriteScopeResponse?: WriteScopeResponseResolvers<ContextType>;
   WriteSupplierResponse?: WriteSupplierResponseResolvers<ContextType>;

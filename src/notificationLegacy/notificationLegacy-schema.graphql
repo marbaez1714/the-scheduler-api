@@ -1,0 +1,39 @@
+# Enums
+enum RecipientRole {
+  contractor
+  reporter
+}
+
+# Documents
+type NotificationLegacy {
+  id: ID!
+  message: String!
+  jobId: String!
+  recipientPhone: String!
+  recipientRole: RecipientRole!
+  success: Boolean!
+
+  jobLegacy: JobLegacy!
+
+  createdBy: String!
+  createdTime: String!
+  archived: Boolean!
+}
+
+# Inputs
+input SendNotificationInput {
+  message: String!
+  jobId: String!
+  recipientPhone: String!
+  recipientRole: RecipientRole!
+}
+
+# Mutation Responses
+type SendNotificationResponse {
+  notification: NotificationLegacy!
+}
+
+# Mutations
+type Mutation {
+  sendNotification(data: SendNotificationInput!): SendNotificationResponse!
+}

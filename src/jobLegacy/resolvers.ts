@@ -28,6 +28,10 @@ export const jobLegacyResolvers: Resolvers = {
       const response = await new JobLegacyDataHandler(context).create(data);
       return response;
     },
+    modifyJobLegacy: async (_, { id, data }, context) => {
+      const response = await new JobLegacyDataHandler(context).modify(id, data);
+      return { message: '', data: response };
+    },
     deleteLineItemLegacy: async (_, { id }, context) => {
       const response = await new LineItemLegacyDataHandler(context).delete(id);
       return response;
