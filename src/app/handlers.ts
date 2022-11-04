@@ -80,11 +80,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Response Meta              */
   /******************************/
-  responseMeta(
-    totalCount: number,
-    pagination?: Pagination,
-    sorting?: Sorting
-  ) {
+  responseMeta(totalCount: number, pagination?: Pagination, sorting?: Sorting) {
     let response: MetaResponse = {
       totalCount,
     };
@@ -112,6 +108,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   writeResponse<TData extends BaseDocument>(data: TData) {
+    console.log({ data, message: `${data.name} written.` });
     return { data, message: `${data.name} written.` };
   }
 

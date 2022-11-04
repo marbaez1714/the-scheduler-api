@@ -58,10 +58,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       contractorId,
       reporterId,
       scopeId,
+      completedDate,
       ...rest
     } = data;
 
-    const startDateTime = startDate ? new Date(startDate) : null;
+    const startDateTime = startDate ? new Date(startDate) : undefined;
+    const completeDateTime = completedDate
+      ? new Date(completedDate)
+      : undefined;
 
     const createLineItems = lineItems
       ?.filter((item) => !item.id)
@@ -86,6 +90,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         reporterId: checkDelete(reporterId),
         scopeId: checkDelete(scopeId),
         startDate: startDateTime,
+        completedDate: completeDateTime,
         updatedBy: this.userEmail,
         lineItems: {
           create: createLineItems,

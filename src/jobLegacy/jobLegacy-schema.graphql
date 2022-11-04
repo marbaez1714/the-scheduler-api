@@ -81,7 +81,7 @@ input ModifyLineItemLegacyInput {
 }
 
 input ModifyJobLegacyInput {
-  name: String!
+  name: String
   areaId: String
   builderId: String
   communityId: String
@@ -90,6 +90,10 @@ input ModifyJobLegacyInput {
   scopeId: String
   startDate: String
   notes: String
+  inProgress: Boolean
+  isImportant: Boolean
+  completedDate: String
+  active: Boolean
   lineItems: [ModifyLineItemLegacyInput!]
 }
 

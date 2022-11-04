@@ -291,12 +291,16 @@ export type MetaResponse = {
 };
 
 export type ModifyJobLegacyInput = {
+  active?: InputMaybe<Scalars['Boolean']>;
   areaId?: InputMaybe<Scalars['String']>;
   builderId?: InputMaybe<Scalars['String']>;
   communityId?: InputMaybe<Scalars['String']>;
+  completedDate?: InputMaybe<Scalars['String']>;
   contractorId?: InputMaybe<Scalars['String']>;
+  inProgress?: InputMaybe<Scalars['Boolean']>;
+  isImportant?: InputMaybe<Scalars['Boolean']>;
   lineItems?: InputMaybe<Array<ModifyLineItemLegacyInput>>;
-  name: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
   notes?: InputMaybe<Scalars['String']>;
   reporterId?: InputMaybe<Scalars['String']>;
   scopeId?: InputMaybe<Scalars['String']>;
