@@ -295,7 +295,7 @@ export type ModifyJobLegacyInput = {
   builderId?: InputMaybe<Scalars['String']>;
   communityId?: InputMaybe<Scalars['String']>;
   contractorId?: InputMaybe<Scalars['String']>;
-  lineItems: Array<ModifyLineItemLegacyInput>;
+  lineItems?: InputMaybe<Array<ModifyLineItemLegacyInput>>;
   name: Scalars['String'];
   notes?: InputMaybe<Scalars['String']>;
   reporterId?: InputMaybe<Scalars['String']>;

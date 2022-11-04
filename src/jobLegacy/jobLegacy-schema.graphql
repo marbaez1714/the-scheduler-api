@@ -90,7 +90,7 @@ input ModifyJobLegacyInput {
   scopeId: String
   startDate: String
   notes: String
-  lineItems: [ModifyLineItemLegacyInput!]!
+  lineItems: [ModifyLineItemLegacyInput!]
 }
 
 # Query Responses

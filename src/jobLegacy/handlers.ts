@@ -64,7 +64,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     const startDateTime = startDate ? new Date(startDate) : null;
 
     const createLineItems = lineItems
-      .filter((item) => !item.id)
+      ?.filter((item) => !item.id)
       .map((item) => ({
         ...item,
         updatedBy: this.userEmail,
@@ -72,7 +72,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       }));
 
     const deleteLineItems = lineItems
-      .filter((item) => item.id && item.delete)
+      ?.filter((item) => item.id && item.delete)
       .map((item) => item.id ?? '');
 
     const updatedDoc = await this.crud.update({
