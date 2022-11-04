@@ -304,6 +304,7 @@ export type ModifyJobLegacyInput = {
 };
 
 export type ModifyLineItemLegacyInput = {
+  delete?: InputMaybe<Scalars['Boolean']>;
   id?: InputMaybe<Scalars['String']>;
   orderNumber: Scalars['String'];
   supplierId: Scalars['String'];

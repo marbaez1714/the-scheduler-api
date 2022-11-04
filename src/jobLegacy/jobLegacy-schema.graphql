@@ -75,6 +75,7 @@ input CreateJobLegacyInput {
 
 input ModifyLineItemLegacyInput {
   id: String
+  delete: Boolean
   orderNumber: String!
   supplierId: String!
 }

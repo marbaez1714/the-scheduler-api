@@ -4,6 +4,7 @@ import { UserInputError } from 'apollo-server';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import { CreateJobLegacyInput, Pagination, Sorting } from '../generated';
+import { checkDelete } from '../utils';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -48,14 +49,55 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   async modify(id: string, data: ModifyJobLegacyInput) {
-    const doc = await this.crud.findUnique({
+    const {
+      lineItems,
+      startDate,
+      areaId,
+      builderId,
+      communityId,
+      contractorId,
+      reporterId,
+      scopeId,
+      ...rest
+    } = data;
+
+    const startDateTime = startDate ? new Date(startDate) : null;
+
+    const createLineItems = lineItems
+      .filter((item) => !item.id)
+      .map((item) => ({
+        ...item,
+        updatedBy: this.userEmail,
+        createdBy: this.userEmail,
+      }));
+
+    const deleteLineItems = lineItems
+      .filter((item) => item.id && item.delete)
+      .map((item) => item.id ?? '');
+
+    const updatedDoc = await this.crud.update({
       where: { id },
+      data: {
+        ...rest,
+        areaId: checkDelete(areaId),
+        builderId: checkDelete(builderId),
+        communityId: checkDelete(communityId),
+        contractorId: checkDelete(contractorId),
+        reporterId: checkDelete(reporterId),
+        scopeId: checkDelete(scopeId),
+        startDate: startDateTime,
+        updatedBy: this.userEmail,
+        lineItems: {
+          create: createLineItems,
+          deleteMany: { id: { in: deleteLineItems } },
+        },
+      },
       include: { lineItems: true },
     });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    const formatted = this.formatJobLegacy(updatedDoc);
 
-    return this.formatJobLegacy(doc);
+    return this.writeResponse(formatted);
   }
 
   async getById(id: string) {
