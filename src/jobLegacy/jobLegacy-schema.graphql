@@ -14,6 +14,8 @@ type LineItemLegacy {
   supplierId: String!
   jobId: String!
 
+  supplier: Supplier!
+
   updatedBy: String!
   createdBy: String!
   createdTime: String!
@@ -118,11 +120,15 @@ type JobsLegacyResponse {
 # Queries
 type Query {
   jobLegacyById(id: ID!): JobLegacy
-  jobLegacyByContractorId(
+  jobsLegacyByContractorId(
     id: ID!
     pagination: Pagination
     sorting: Sorting
     archived: Boolean
+  ): JobsLegacyResponse!
+  archivedJobLegacy(
+    pagination: Pagination
+    sorting: Sorting
   ): JobsLegacyResponse!
 }
 

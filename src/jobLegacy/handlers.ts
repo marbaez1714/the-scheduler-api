@@ -132,9 +132,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         area: true,
         builder: true,
         community: true,
-        lineItems: true,
+        lineItems: { include: { supplier: true } },
         reporter: true,
         scope: true,
+        contractor: true,
       },
       ...this.findArgs(pagination, sorting),
     };

@@ -7,7 +7,7 @@ export const jobLegacyResolvers: Resolvers = {
       const response = await new JobLegacyDataHandler(context).getById(id);
       return response;
     },
-    jobLegacyByContractorId: async (
+    jobsLegacyByContractorId: async (
       _,
       { id, archived, pagination, sorting },
       context
