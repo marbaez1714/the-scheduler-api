@@ -26,6 +26,16 @@ export const jobLegacyResolvers: Resolvers = {
       );
       return response;
     },
+    jobsLegacyByActiveStatus: async (
+      _,
+      { active, archived, pagination, sorting },
+      context
+    ) => {
+      const response = await new JobLegacyDataHandler(
+        context
+      ).getByActiveStatus(active, archived, pagination, sorting);
+      return response;
+    },
   },
   Mutation: {
     archiveJobLegacy: async (_, { id }, context) => {

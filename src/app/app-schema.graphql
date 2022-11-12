@@ -29,6 +29,7 @@ type MetaResponse {
   sortField: String
   sortOrder: SortOrder
   totalCount: Int!
+  totalPages: Int!
 }
 
 type DeleteResponse {

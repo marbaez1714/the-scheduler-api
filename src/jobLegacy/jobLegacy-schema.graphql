@@ -131,6 +131,12 @@ type Query {
     sorting: Sorting
     archived: Boolean
   ): JobsLegacyResponse!
+  jobsLegacyByActiveStatus(
+    active: Boolean!
+    pagination: Pagination
+    sorting: Sorting
+    archived: Boolean
+  ): JobsLegacyResponse!
 }
 
 # Mutations

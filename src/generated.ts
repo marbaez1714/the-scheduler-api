@@ -289,6 +289,7 @@ export type MetaResponse = {
   sortField?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<SortOrder>;
   totalCount: Scalars['Int'];
+  totalPages: Scalars['Int'];
 };
 
 export type ModifyJobLegacyInput = {
@@ -507,6 +508,7 @@ export type Query = {
   contractors: ContractorsResponse;
   jobLegacyById?: Maybe<JobLegacy>;
   jobsLegacy: JobsLegacyResponse;
+  jobsLegacyByActiveStatus: JobsLegacyResponse;
   jobsLegacyByContractorId: JobsLegacyResponse;
   reporterById?: Maybe<Reporter>;
   reporters: ReportersResponse;
@@ -571,6 +573,13 @@ export type QueryJobLegacyByIdArgs = {
 };
 
 export type QueryJobsLegacyArgs = {
+  archived?: InputMaybe<Scalars['Boolean']>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
+};
+
+export type QueryJobsLegacyByActiveStatusArgs = {
+  active: Scalars['Boolean'];
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   sorting?: InputMaybe<Sorting>;
@@ -1444,6 +1453,7 @@ export type MetaResponseResolvers<
     ContextType
   >;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalPages?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1733,6 +1743,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     Partial<QueryJobsLegacyArgs>
+  >;
+  jobsLegacyByActiveStatus?: Resolver<
+    ResolversTypes['JobsLegacyResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryJobsLegacyByActiveStatusArgs, 'active'>
   >;
   jobsLegacyByContractorId?: Resolver<
     ResolversTypes['JobsLegacyResponse'],

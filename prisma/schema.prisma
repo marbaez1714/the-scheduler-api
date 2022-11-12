@@ -199,8 +199,7 @@ model JobLegacy {
   reporter   Reporter?   @relation(fields: [reporterId], references: [id])
   scope      Scope?      @relation(fields: [scopeId], references: [id])
 
-  lineItems          LineItemLegacy[]
-  NotificationLegacy NotificationLegacy[]
+  lineItems LineItemLegacy[]
 
   updatedBy   String
   createdBy   String
@@ -209,19 +208,4 @@ model JobLegacy {
 
   archived Boolean @default(false)
   legacy   Boolean @default(false)
-}
-
-model NotificationLegacy {
-  id             String  @id @default(uuid())
-  message        String
-  jobId          String
-  recipientPhone String
-  success        Boolean
-
-  jobLegacy JobLegacy @relation(fields: [jobId], references: [id])
-
-  createdBy   String
-  createdTime DateTime @default(now())
-
-  archived Boolean @default(false)
 }

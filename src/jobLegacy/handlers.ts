@@ -156,7 +156,6 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     pagination?: Pagination,
     sorting?: Sorting
   ) {
-
     const findArgs = {
       include: {
         contractor: true,
@@ -168,6 +167,37 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scope: true,
       },
       where: { archived: !!archived },
+      ...this.findArgs(pagination, sorting),
+    };
+
+    const [docList, count] = await this.context.prisma.$transaction([
+      this.crud.findMany(findArgs),
+      this.crud.count({ where: findArgs.where }),
+    ]);
+
+    return {
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
+      meta: this.responseMeta(count, pagination, sorting),
+    };
+  }
+
+  async getByActiveStatus(
+    active: boolean,
+    archived?: boolean,
+    pagination?: Pagination,
+    sorting?: Sorting
+  ) {
+    const findArgs = {
+      include: {
+        contractor: true,
+        area: true,
+        builder: true,
+        community: true,
+        lineItems: { include: { supplier: true } },
+        reporter: true,
+        scope: true,
+      },
+      where: { archived: !!archived, active },
       ...this.findArgs(pagination, sorting),
     };
 

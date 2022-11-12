@@ -83,6 +83,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
   responseMeta(totalCount: number, pagination?: Pagination, sorting?: Sorting) {
     let response: MetaResponse = {
       totalCount,
+      totalPages: pagination?.pageSize
+        ? Math.ceil(totalCount / pagination?.pageSize)
+        : 1,
     };
 
     if (pagination) {
