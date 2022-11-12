@@ -65,7 +65,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
       const { page, pageSize } = pagination;
       findArgs = {
         take: pageSize,
-        skip: Math.min(page - 1, 0) * pageSize,
+        skip: Math.max(page - 1, 0) * pageSize,
       };
     }
 
@@ -108,7 +108,6 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   writeResponse<TData extends BaseDocument>(data: TData) {
-    console.log({ data, message: `${data.name} written.` });
     return { data, message: `${data.name} written.` };
   }
 
@@ -214,10 +213,11 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   formatLineItemLegacy(data: PrismaData['lineItemLegacy']): LineItemLegacy {
-    const { createdTime, updatedTime, ...rest } = data;
+    const { createdTime, updatedTime, supplier, ...rest } = data;
 
     return {
       ...rest,
+      supplier: this.formatSupplier(supplier),
       createdTime: createdTime.toJSON(),
       updatedTime: updatedTime.toJSON(),
     };

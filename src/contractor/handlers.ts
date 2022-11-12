@@ -13,7 +13,9 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     const archivedDoc = await this.crud.update({
       where: { id },
       data: this.archiveData,
-      include: { jobsLegacy: { include: { lineItems: true } } },
+      include: {
+        jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
+      },
     });
 
     const formatted = this.formatContractor(archivedDoc);
@@ -28,7 +30,9 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
         updatedBy: this.userEmail,
         createdBy: this.userEmail,
       },
-      include: { jobsLegacy: { include: { lineItems: true } } },
+      include: {
+        jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
+      },
     });
 
     const formatted = this.formatContractor(newDoc);
@@ -40,7 +44,9 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     const updatedDoc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userEmail },
-      include: { jobsLegacy: { include: { lineItems: true } } },
+      include: {
+        jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
+      },
     });
 
     const formatted = this.formatContractor(updatedDoc);
@@ -51,7 +57,9 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
   async getById(id: string) {
     const doc = await this.crud.findUnique({
       where: { id },
-      include: { jobsLegacy: { include: { lineItems: true } } },
+      include: {
+        jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
+      },
     });
 
     if (!doc) throw new UserInputError(`${id} does not exist.`);
@@ -67,7 +75,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     const findArgs = {
       include: {
         jobsLegacy: {
-          include: { lineItems: true },
+          include: { lineItems: { include: { supplier: true } } },
         },
       },
       where: { archived: !!archived },
@@ -93,7 +101,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
       include: {
         jobsLegacy: {
-          include: { lineItems: true },
+          include: { lineItems: { include: { supplier: true } } },
         },
       },
     });

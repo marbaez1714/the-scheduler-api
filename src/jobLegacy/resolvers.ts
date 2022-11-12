@@ -18,6 +18,14 @@ export const jobLegacyResolvers: Resolvers = {
 
       return response;
     },
+    jobsLegacy: async (_, { archived, pagination, sorting }, context) => {
+      const response = await new JobLegacyDataHandler(context).getMany(
+        archived,
+        pagination,
+        sorting
+      );
+      return response;
+    },
   },
   Mutation: {
     archiveJobLegacy: async (_, { id }, context) => {

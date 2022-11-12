@@ -15,7 +15,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     const archivedDoc = await this.crud.update({
       where: { id },
       data: this.archiveData,
-      include: { lineItems: true },
+      include: { lineItems: { include: { supplier: true } } },
     });
     const formatted = this.formatJobLegacy(archivedDoc);
     return this.archiveResponse(formatted);
@@ -40,7 +40,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         createdBy: this.userEmail,
         lineItems: { create: createLineItemsData },
       },
-      include: { lineItems: true },
+      include: { lineItems: { include: { supplier: true } } },
     });
 
     const formatted = this.formatJobLegacy(newJob);
@@ -97,7 +97,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           deleteMany: { id: { in: deleteLineItems } },
         },
       },
-      include: { lineItems: true },
+      include: { lineItems: { include: { supplier: true } } },
     });
 
     const formatted = this.formatJobLegacy(updatedDoc);
@@ -108,7 +108,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   async getById(id: string) {
     const doc = await this.crud.findUnique({
       where: { id },
-      include: { lineItems: true },
+      include: { lineItems: { include: { supplier: true } } },
     });
 
     if (!doc) throw new UserInputError(`${id} does not exist.`);
@@ -137,6 +137,37 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scope: true,
         contractor: true,
       },
+      ...this.findArgs(pagination, sorting),
+    };
+
+    const [docList, count] = await this.context.prisma.$transaction([
+      this.crud.findMany(findArgs),
+      this.crud.count({ where: findArgs.where }),
+    ]);
+
+    return {
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
+      meta: this.responseMeta(count, pagination, sorting),
+    };
+  }
+
+  async getMany(
+    archived?: boolean,
+    pagination?: Pagination,
+    sorting?: Sorting
+  ) {
+
+    const findArgs = {
+      include: {
+        contractor: true,
+        area: true,
+        builder: true,
+        community: true,
+        lineItems: { include: { supplier: true } },
+        reporter: true,
+        scope: true,
+      },
+      where: { archived: !!archived },
       ...this.findArgs(pagination, sorting),
     };
 

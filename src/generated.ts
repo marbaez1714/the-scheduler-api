@@ -494,7 +494,6 @@ export type Pagination = {
 
 export type Query = {
   __typename?: 'Query';
-  archivedJobLegacy: JobsLegacyResponse;
   areaById?: Maybe<Area>;
   areas: AreasResponse;
   assignedContractors: AssignedContractorsResponse;
@@ -507,6 +506,7 @@ export type Query = {
   contractorById?: Maybe<Contractor>;
   contractors: ContractorsResponse;
   jobLegacyById?: Maybe<JobLegacy>;
+  jobsLegacy: JobsLegacyResponse;
   jobsLegacyByContractorId: JobsLegacyResponse;
   reporterById?: Maybe<Reporter>;
   reporters: ReportersResponse;
@@ -514,11 +514,6 @@ export type Query = {
   scopes: ScopesResponse;
   supplierById?: Maybe<Supplier>;
   suppliers: SuppliersResponse;
-};
-
-export type QueryArchivedJobLegacyArgs = {
-  pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryAreaByIdArgs = {
@@ -573,6 +568,12 @@ export type QueryContractorsArgs = {
 
 export type QueryJobLegacyByIdArgs = {
   id: Scalars['ID'];
+};
+
+export type QueryJobsLegacyArgs = {
+  archived?: InputMaybe<Scalars['Boolean']>;
+  pagination?: InputMaybe<Pagination>;
+  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobsLegacyByContractorIdArgs = {
@@ -1656,12 +1657,6 @@ export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
-  archivedJobLegacy?: Resolver<
-    ResolversTypes['JobsLegacyResponse'],
-    ParentType,
-    ContextType,
-    Partial<QueryArchivedJobLegacyArgs>
-  >;
   areaById?: Resolver<
     Maybe<ResolversTypes['Area']>,
     ParentType,
@@ -1732,6 +1727,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryJobLegacyByIdArgs, 'id'>
+  >;
+  jobsLegacy?: Resolver<
+    ResolversTypes['JobsLegacyResponse'],
+    ParentType,
+    ContextType,
+    Partial<QueryJobsLegacyArgs>
   >;
   jobsLegacyByContractorId?: Resolver<
     ResolversTypes['JobsLegacyResponse'],

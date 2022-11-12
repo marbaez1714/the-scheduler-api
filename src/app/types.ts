@@ -35,7 +35,7 @@ export interface PrismaData {
   company: CompanyModel;
   contractor: ContractorModel & { jobsLegacy: PrismaData['jobLegacy'][] };
   jobLegacy: JobLegacyModel & { lineItems: PrismaData['lineItemLegacy'][] };
-  lineItemLegacy: LineItemLegacyModel;
+  lineItemLegacy: LineItemLegacyModel & { supplier: PrismaData['supplier'] };
   reporter: ReporterModel;
   scope: ScopeModel;
   supplier: SupplierModel;
