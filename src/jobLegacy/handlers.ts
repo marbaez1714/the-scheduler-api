@@ -1,4 +1,7 @@
-import { ModifyJobLegacyInput } from './../generated';
+import {
+  JobsLegacyMessageRecipient,
+  ModifyJobLegacyInput,
+} from './../generated';
 import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
@@ -210,6 +213,47 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       meta: this.responseMeta(count, pagination, sorting),
     };
+  }
+
+  async sendMessage(
+    id: string,
+    message: string,
+    recipient: JobsLegacyMessageRecipient
+  ) {
+    // Set up phone number
+    let recipientPhone: string | undefined;
+
+    // Find associated job
+    const jobDoc = await this.crud.findUnique({
+      where: { id },
+      include: { contractor: true, reporter: true },
+    });
+
+    if (!jobDoc) throw new UserInputError(`${id} does not exist.`);
+
+    // Set phone number
+    switch (recipient) {
+      case JobsLegacyMessageRecipient.Contractor:
+        recipientPhone = jobDoc.contractor?.primaryPhone;
+        break;
+      case JobsLegacyMessageRecipient.Reporter:
+        recipientPhone = jobDoc.reporter?.primaryPhone;
+        break;
+      default:
+        throw new UserInputError(`${recipient} does not exist`);
+    }
+
+    // Remove all non number characters
+    const formattedPhoneNumber = `+1${recipientPhone?.replace(/\D/g, '')}`;
+
+    // Send message
+    await this.context.twilio.messages.create({
+      to: formattedPhoneNumber,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      body: message,
+    });
+
+    return { message, recipient };
   }
 }
 

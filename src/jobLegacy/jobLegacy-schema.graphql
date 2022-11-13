@@ -7,6 +7,11 @@ enum JobLegacyStatus {
   willCall
 }
 
+enum JobsLegacyMessageRecipient {
+  contractor
+  reporter
+}
+
 # Documents
 type LineItemLegacy {
   id: ID!
@@ -115,6 +120,11 @@ type JobsLegacyResponse {
   meta: MetaResponse!
 }
 
+type JobsLegacySendMessageResponse {
+  message: String!
+  recipient: JobsLegacyMessageRecipient!
+}
+
 # Mutation Responses
 
 # Queries
@@ -145,4 +155,9 @@ type Mutation {
   createJobLegacy(data: CreateJobLegacyInput!): WriteJobLegacyResponse!
   deleteLineItemLegacy(id: ID!): DeleteResponse!
   modifyJobLegacy(id: ID!, data: ModifyJobLegacyInput!): WriteJobLegacyResponse!
+  sendMessageJobLegacy(
+    id: ID!
+    recipient: JobsLegacyMessageRecipient!
+    message: String!
+  ): JobsLegacySendMessageResponse
 }

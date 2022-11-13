@@ -4,6 +4,7 @@ import { ExpressContext } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { AuthenticationClient } from 'auth0';
+import twilio, { Twilio } from 'twilio';
 
 type DecodedToken = {
   permissions: string[];
@@ -15,17 +16,24 @@ type User = {
 
 export interface Context {
   prisma: PrismaClient;
+  twilio: Twilio;
   user: DecodedToken & User;
 }
 
 // Creates the prisma client
-const prisma = new PrismaClient();
+const prismaClient = new PrismaClient();
 
 // Create auth0 authentication client
 const auth0Client = new AuthenticationClient({
   domain: process.env.AUTH0_DOMAIN ?? '',
   clientId: process.env.AUTH0_CLIENT_ID,
 });
+
+// Create Twilio client
+const twilioClient = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
 // Creates the jwksClient for jwt verification
 const authClient = jwksClient({
@@ -46,7 +54,9 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<ExpressContext, Context | {}> = async ({ req }) => {
+export const context: ContextFunction<ExpressContext, Context | {}> = async ({
+  req,
+}) => {
   const authHeader = req.headers.authorization?.split(' ');
   const token = authHeader?.[1];
 
@@ -72,7 +82,8 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({ r
   }
 
   return {
-    prisma,
+    prisma: prismaClient,
+    twilio: twilioClient,
     user: {
       permissions: decodedToken.permissions,
       email: profile.email,

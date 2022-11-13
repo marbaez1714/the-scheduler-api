@@ -1,3 +1,4 @@
+import { context } from './../context';
 import { Resolvers } from '../generated';
 import { JobLegacyDataHandler, LineItemLegacyDataHandler } from './handlers';
 
@@ -52,6 +53,14 @@ export const jobLegacyResolvers: Resolvers = {
     },
     deleteLineItemLegacy: async (_, { id }, context) => {
       const response = await new LineItemLegacyDataHandler(context).delete(id);
+      return response;
+    },
+    sendMessageJobLegacy: async (_, { id, message, recipient }, context) => {
+      const response = await new JobLegacyDataHandler(context).sendMessage(
+        id,
+        message,
+        recipient
+      );
       return response;
     },
   },
