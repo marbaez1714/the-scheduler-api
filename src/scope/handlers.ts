@@ -28,8 +28,8 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
       },
     });
 
@@ -41,7 +41,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
   async modify(id: string, data: WriteScopeInput) {
     const updatedDoc = await this.crud.update({
       where: { id },
-      data: { ...data, updatedBy: this.userEmail },
+      data: { ...data, updatedBy: this.userId },
     });
 
     const formatted = this.formatScope(updatedDoc);

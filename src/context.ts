@@ -8,26 +8,17 @@ import twilio, { Twilio } from 'twilio';
 
 type DecodedToken = {
   permissions: string[];
-};
-
-type User = {
-  email: string;
+  sub: string;
 };
 
 export interface Context {
   prisma: PrismaClient;
   twilio: Twilio;
-  user: DecodedToken & User;
+  user: DecodedToken;
 }
 
 // Creates the prisma client
 const prismaClient = new PrismaClient();
-
-// Create auth0 authentication client
-const auth0Client = new AuthenticationClient({
-  domain: process.env.AUTH0_DOMAIN ?? '',
-  clientId: process.env.AUTH0_CLIENT_ID,
-});
 
 // Create Twilio client
 const twilioClient = twilio(
@@ -71,14 +62,12 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({
     });
   });
 
-  const profile: User = await auth0Client.getProfile(token);
-
   if (!decodedToken.permissions) {
     throw new AuthenticationError('No permissions given.');
   }
 
-  if (!profile.email) {
-    throw new AuthenticationError('No email provided');
+  if (!decodedToken.sub) {
+    throw new AuthenticationError('No user id');
   }
 
   return {
@@ -86,7 +75,7 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({
     twilio: twilioClient,
     user: {
       permissions: decodedToken.permissions,
-      email: profile.email,
+      sub: decodedToken.sub,
     },
   };
 };

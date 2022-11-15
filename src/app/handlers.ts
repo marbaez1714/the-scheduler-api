@@ -31,7 +31,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   context: Context;
   client: TClient;
   crud: Context['prisma'][TClient];
-  userEmail: string;
+  userId: string;
   archiveData: { archived: true; updatedBy: string };
   todayDate: Date;
 
@@ -46,10 +46,10 @@ export class DataHandler<TClient extends keyof PrismaData> {
     this.client = client;
     // Create the prisma client
     this.crud = context.prisma[client];
-    // Set the user's email
-    this.userEmail = context.user.email;
+    // Set the user's id
+    this.userId = context.user.sub;
     // Set generic archive data
-    this.archiveData = { archived: true, updatedBy: context.user.email };
+    this.archiveData = { archived: true, updatedBy: context.user.sub };
     // Set today's date to midnight
     this.todayDate = new Date();
     this.todayDate.setHours(0, 0, 0, 0);

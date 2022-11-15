@@ -31,16 +31,16 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const createLineItemsData = lineItems.map((item) => ({
       ...item,
-      updatedBy: this.userEmail,
-      createdBy: this.userEmail,
+      updatedBy: this.userId,
+      createdBy: this.userId,
     }));
 
     const newJob = await this.crud.create({
       data: {
         ...rest,
         startDate: startDateTime,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
         lineItems: { create: createLineItemsData },
       },
       include: { lineItems: { include: { supplier: true } } },
@@ -74,8 +74,8 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       ?.filter((item) => !item.id)
       .map((item) => ({
         ...item,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
       }));
 
     const deleteLineItems = lineItems
@@ -94,7 +94,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scopeId: checkDelete(scopeId),
         startDate: startDateTime,
         completedDate: completeDateTime,
-        updatedBy: this.userEmail,
+        updatedBy: this.userId,
         lineItems: {
           create: createLineItems,
           deleteMany: { id: { in: deleteLineItems } },

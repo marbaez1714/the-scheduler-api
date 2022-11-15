@@ -28,8 +28,8 @@ export class AreaDataHandler extends DataHandler<'area'> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
       },
     });
 
@@ -41,7 +41,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
   async modify(id: string, data: WriteAreaInput) {
     const updatedDoc = await this.crud.update({
       where: { id },
-      data: { ...data, updatedBy: this.userEmail },
+      data: { ...data, updatedBy: this.userId },
     });
 
     const formatted = this.formatArea(updatedDoc);

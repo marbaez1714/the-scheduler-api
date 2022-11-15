@@ -27,8 +27,8 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
       },
       include: {
         jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
@@ -43,7 +43,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
   async modify(id: string, data: WriteContractorInput) {
     const updatedDoc = await this.crud.update({
       where: { id },
-      data: { ...data, updatedBy: this.userEmail },
+      data: { ...data, updatedBy: this.userId },
       include: {
         jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
       },

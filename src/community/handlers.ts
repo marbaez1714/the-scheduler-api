@@ -29,8 +29,8 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
-        updatedBy: this.userEmail,
-        createdBy: this.userEmail,
+        updatedBy: this.userId,
+        createdBy: this.userId,
       },
       include: { company: true },
     });
@@ -43,7 +43,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
   async modify(id: string, data: WriteCommunityInput) {
     const updatedDoc = await this.crud.update({
       where: { id },
-      data: { ...data, updatedBy: this.userEmail },
+      data: { ...data, updatedBy: this.userId },
       include: { company: true },
     });
 
