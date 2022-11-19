@@ -297,8 +297,6 @@ export type MetaResponse = {
   __typename?: 'MetaResponse';
   page?: Maybe<Scalars['Int']>;
   pageSize?: Maybe<Scalars['Int']>;
-  sortField?: Maybe<Scalars['String']>;
-  sortOrder?: Maybe<SortOrder>;
   totalCount: Scalars['Int'];
   totalPages: Scalars['Int'];
 };
@@ -524,7 +522,6 @@ export type QueryAreaByIdArgs = {
 export type QueryAreasArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryBuilderByIdArgs = {
@@ -534,13 +531,11 @@ export type QueryBuilderByIdArgs = {
 export type QueryBuildersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCommunitiesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCommunityByIdArgs = {
@@ -550,7 +545,6 @@ export type QueryCommunityByIdArgs = {
 export type QueryCompaniesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryCompanyByIdArgs = {
@@ -564,7 +558,6 @@ export type QueryContractorByIdArgs = {
 export type QueryContractorsArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobLegacyByIdArgs = {
@@ -574,21 +567,18 @@ export type QueryJobLegacyByIdArgs = {
 export type QueryJobsLegacyArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobsLegacyByActiveStatusArgs = {
   active: Scalars['Boolean'];
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryJobsLegacyByContractorIdArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryReporterByIdArgs = {
@@ -598,7 +588,6 @@ export type QueryReporterByIdArgs = {
 export type QueryReportersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QueryScopeByIdArgs = {
@@ -608,7 +597,6 @@ export type QueryScopeByIdArgs = {
 export type QueryScopesArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type QuerySupplierByIdArgs = {
@@ -618,7 +606,6 @@ export type QuerySupplierByIdArgs = {
 export type QuerySuppliersArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
-  sorting?: InputMaybe<Sorting>;
 };
 
 export type Reporter = {
@@ -661,16 +648,6 @@ export type ScopesResponse = {
   __typename?: 'ScopesResponse';
   data: Array<Scope>;
   meta: MetaResponse;
-};
-
-export enum SortOrder {
-  Asc = 'asc',
-  Desc = 'desc',
-}
-
-export type Sorting = {
-  field: Scalars['String'];
-  order: SortOrder;
 };
 
 export type Supplier = {
@@ -952,8 +929,6 @@ export type ResolversTypes = {
   ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
   Scope: ResolverTypeWrapper<Scope>;
   ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
-  SortOrder: SortOrder;
-  Sorting: Sorting;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
@@ -1020,7 +995,6 @@ export type ResolversParentTypes = {
   ReportersResponse: ReportersResponse;
   Scope: Scope;
   ScopesResponse: ScopesResponse;
-  Sorting: Sorting;
   String: Scalars['String'];
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;
@@ -1433,16 +1407,6 @@ export type MetaResponseResolvers<
 > = {
   page?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   pageSize?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  sortField?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  sortOrder?: Resolver<
-    Maybe<ResolversTypes['SortOrder']>,
-    ParentType,
-    ContextType
-  >;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   totalPages?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

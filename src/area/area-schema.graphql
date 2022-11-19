@@ -40,7 +40,7 @@ type WriteAreaResponse {
 # Queries
 type Query {
   areaById(id: ID!): Area
-  areas(pagination: Pagination, sorting: Sorting, archived: Boolean): AreasResponse!
+  areas(pagination: Pagination, archived: Boolean): AreasResponse!
 }
 
 # Mutations

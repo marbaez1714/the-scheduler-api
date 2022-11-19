@@ -2,11 +2,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import {
-  Pagination,
-  Sorting,
-  WriteCompanyInput,
-} from '../generated';
+import { Pagination, WriteCompanyInput } from '../generated';
 
 export class CompanyDataHandler extends DataHandler<'company'> {
   constructor(context: Context) {
@@ -57,14 +53,10 @@ export class CompanyDataHandler extends DataHandler<'company'> {
     return this.formatCompany(doc);
   }
 
-  async getMany(
-    archived?: boolean,
-    pagination?: Pagination,
-    sorting?: Sorting
-  ) {
+  async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.findArgs(pagination, sorting),
+      ...this.findArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -74,7 +66,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
 
     return {
       data: docList.map((doc) => this.formatCompany(doc)),
-      meta: this.responseMeta(count, pagination, sorting),
+      meta: this.responseMeta(count, pagination),
     };
   }
 }

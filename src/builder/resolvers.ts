@@ -7,11 +7,10 @@ export const builderResolvers: Resolvers = {
       const response = await new BuilderDataHandler(context).getById(id);
       return response;
     },
-    builders: async (_, { archived, pagination, sorting }, context) => {
+    builders: async (_, { archived, pagination }, context) => {
       const response = await new BuilderDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

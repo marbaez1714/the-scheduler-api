@@ -46,7 +46,7 @@ type WriteBuilderResponse {
 # Queries
 type Query {
   builderById(id: ID!): Builder
-  builders(pagination: Pagination, sorting: Sorting, archived: Boolean): BuildersResponse!
+  builders(pagination: Pagination, archived: Boolean): BuildersResponse!
 }
 
 # Mutations

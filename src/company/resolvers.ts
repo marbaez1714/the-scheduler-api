@@ -7,11 +7,10 @@ export const companyResolvers: Resolvers = {
       const response = await new CompanyDataHandler(context).getById(id);
       return response;
     },
-    companies: async (_, { archived, pagination, sorting }, context) => {
+    companies: async (_, { archived, pagination }, context) => {
       const response = await new CompanyDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

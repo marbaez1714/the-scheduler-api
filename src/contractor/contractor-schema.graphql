@@ -47,11 +47,7 @@ type WriteContractorResponse {
 type Query {
   assignedContractors: AssignedContractorsResponse!
   contractorById(id: ID!): Contractor
-  contractors(
-    pagination: Pagination
-    sorting: Sorting
-    archived: Boolean
-  ): ContractorsResponse!
+  contractors(pagination: Pagination, archived: Boolean): ContractorsResponse!
 }
 
 # Mutations

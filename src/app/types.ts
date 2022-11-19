@@ -11,8 +11,6 @@ import {
   Supplier as SupplierModel,
 } from '@prisma/client';
 
-import { SortOrder } from '../generated';
-
 /******************************/
 /* Enums                      */
 /******************************/
@@ -46,9 +44,4 @@ export interface PrismaData {
 /******************************/
 type PaginationFindArgs = { take: number; skip: number } | undefined;
 
-type SortingFindArgs = { orderBy: { [field: string]: SortOrder } } | undefined;
-
-export type FindArguments =
-  | PaginationFindArgs
-  | SortingFindArgs
-  | (PaginationFindArgs & SortingFindArgs);
+export type FindArguments = PaginationFindArgs;

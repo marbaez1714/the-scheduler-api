@@ -42,7 +42,7 @@ type WriteReporterResponse {
 # Queries
 type Query {
   reporterById(id: ID!): Reporter
-  reporters(pagination: Pagination, sorting: Sorting, archived: Boolean): ReportersResponse!
+  reporters(pagination: Pagination, archived: Boolean): ReportersResponse!
 }
 
 # Mutations

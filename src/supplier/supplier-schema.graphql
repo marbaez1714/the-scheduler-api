@@ -40,7 +40,7 @@ type WriteSupplierResponse {
 # Queries
 type Query {
   supplierById(id: ID!): Supplier
-  suppliers(pagination: Pagination, sorting: Sorting, archived: Boolean): SuppliersResponse!
+  suppliers(pagination: Pagination, archived: Boolean): SuppliersResponse!
 }
 
 # Mutations

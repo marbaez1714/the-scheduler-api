@@ -11,11 +11,10 @@ export const contractorResolvers: Resolvers = {
       const response = await new ContractorDataHandler(context).getById(id);
       return response;
     },
-    contractors: async (_, { archived, pagination, sorting }, context) => {
+    contractors: async (_, { archived, pagination }, context) => {
       const response = await new ContractorDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

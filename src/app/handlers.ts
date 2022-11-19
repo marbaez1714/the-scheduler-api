@@ -21,7 +21,6 @@ import {
   Pagination,
   Reporter,
   Scope,
-  Sorting,
   Supplier,
 } from '../generated';
 import { GraphQLScalarType } from 'graphql';
@@ -58,7 +57,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Prisma Find Arguments      */
   /******************************/
-  findArgs(pagination?: Pagination, sorting?: Sorting) {
+  findArgs(pagination?: Pagination) {
     let findArgs: FindArguments;
 
     if (pagination) {
@@ -69,18 +68,13 @@ export class DataHandler<TClient extends keyof PrismaData> {
       };
     }
 
-    if (sorting) {
-      const { field, order } = sorting;
-      findArgs = { ...findArgs, orderBy: { [field]: order } };
-    }
-
     return findArgs;
   }
 
   /******************************/
   /* Response Meta              */
   /******************************/
-  responseMeta(totalCount: number, pagination?: Pagination, sorting?: Sorting) {
+  responseMeta(totalCount: number, pagination?: Pagination) {
     let response: MetaResponse = {
       totalCount,
       totalPages: pagination?.pageSize
@@ -90,14 +84,6 @@ export class DataHandler<TClient extends keyof PrismaData> {
 
     if (pagination) {
       response = { ...response, ...pagination };
-    }
-
-    if (sorting) {
-      response = {
-        ...response,
-        sortField: sorting.field,
-        sortOrder: sorting.order,
-      };
     }
 
     return response;

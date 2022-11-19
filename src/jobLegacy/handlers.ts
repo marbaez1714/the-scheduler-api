@@ -6,7 +6,7 @@ import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { CreateJobLegacyInput, Pagination, Sorting } from '../generated';
+import { CreateJobLegacyInput, Pagination } from '../generated';
 import { checkDelete } from '../utils';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
@@ -122,8 +122,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   async getByContractorId(
     id: string,
     archived?: boolean,
-    pagination?: Pagination,
-    sorting?: Sorting
+    pagination?: Pagination
   ) {
     const findArgs = {
       where: {
@@ -140,7 +139,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scope: true,
         contractor: true,
       },
-      ...this.findArgs(pagination, sorting),
+      ...this.findArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -150,15 +149,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination, sorting),
+      meta: this.responseMeta(count, pagination),
     };
   }
 
-  async getMany(
-    archived?: boolean,
-    pagination?: Pagination,
-    sorting?: Sorting
-  ) {
+  async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       include: {
         contractor: true,
@@ -170,7 +165,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scope: true,
       },
       where: { archived: !!archived },
-      ...this.findArgs(pagination, sorting),
+      ...this.findArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -180,15 +175,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination, sorting),
+      meta: this.responseMeta(count, pagination),
     };
   }
 
   async getByActiveStatus(
     active: boolean,
     archived?: boolean,
-    pagination?: Pagination,
-    sorting?: Sorting
+    pagination?: Pagination
   ) {
     const findArgs = {
       include: {
@@ -201,7 +195,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         scope: true,
       },
       where: { archived: !!archived, active },
-      ...this.findArgs(pagination, sorting),
+      ...this.findArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -211,7 +205,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination, sorting),
+      meta: this.responseMeta(count, pagination),
     };
   }
 

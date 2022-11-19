@@ -7,11 +7,10 @@ export const supplierResolvers: Resolvers = {
       const response = await new SupplierDataHandler(context).getById(id);
       return response;
     },
-    suppliers: async (_, { archived, pagination, sorting }, context) => {
+    suppliers: async (_, { archived, pagination }, context) => {
       const response = await new SupplierDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

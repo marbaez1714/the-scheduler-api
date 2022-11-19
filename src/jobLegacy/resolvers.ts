@@ -10,31 +10,30 @@ export const jobLegacyResolvers: Resolvers = {
     },
     jobsLegacyByContractorId: async (
       _,
-      { id, archived, pagination, sorting },
+      { id, archived, pagination },
       context
     ) => {
       const response = await new JobLegacyDataHandler(
         context
-      ).getByContractorId(id, archived, pagination, sorting);
+      ).getByContractorId(id, archived, pagination);
 
       return response;
     },
-    jobsLegacy: async (_, { archived, pagination, sorting }, context) => {
+    jobsLegacy: async (_, { archived, pagination }, context) => {
       const response = await new JobLegacyDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },
     jobsLegacyByActiveStatus: async (
       _,
-      { active, archived, pagination, sorting },
+      { active, archived, pagination },
       context
     ) => {
       const response = await new JobLegacyDataHandler(
         context
-      ).getByActiveStatus(active, archived, pagination, sorting);
+      ).getByActiveStatus(active, archived, pagination);
       return response;
     },
   },

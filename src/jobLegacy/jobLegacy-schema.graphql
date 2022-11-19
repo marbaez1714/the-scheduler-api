@@ -133,18 +133,12 @@ type Query {
   jobsLegacyByContractorId(
     id: ID!
     pagination: Pagination
-    sorting: Sorting
     archived: Boolean
   ): JobsLegacyResponse!
-  jobsLegacy(
-    pagination: Pagination
-    sorting: Sorting
-    archived: Boolean
-  ): JobsLegacyResponse!
+  jobsLegacy(pagination: Pagination, archived: Boolean): JobsLegacyResponse!
   jobsLegacyByActiveStatus(
     active: Boolean!
     pagination: Pagination
-    sorting: Sorting
     archived: Boolean
   ): JobsLegacyResponse!
 }

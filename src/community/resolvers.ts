@@ -7,11 +7,10 @@ export const communityResolvers: Resolvers = {
       const response = await new CommunityDataHandler(context).getById(id);
       return response;
     },
-    communities: async (_, { archived, pagination, sorting }, context) => {
+    communities: async (_, { archived, pagination }, context) => {
       const response = await new CommunityDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

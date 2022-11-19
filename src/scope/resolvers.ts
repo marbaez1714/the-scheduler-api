@@ -7,11 +7,10 @@ export const scopeResolvers: Resolvers = {
       const response = await new ScopeDataHandler(context).getById(id);
       return response;
     },
-    scopes: async (_, { archived, pagination, sorting }, context) => {
+    scopes: async (_, { archived, pagination }, context) => {
       const response = await new ScopeDataHandler(context).getMany(
         archived,
-        pagination,
-        sorting
+        pagination
       );
       return response;
     },

@@ -44,7 +44,7 @@ type WriteCompanyResponse {
 # Queries
 type Query {
   companyById(id: ID!): Company
-  companies(pagination: Pagination, sorting: Sorting, archived: Boolean): CompaniesResponse!
+  companies(pagination: Pagination, archived: Boolean): CompaniesResponse!
 }
 
 # Mutations

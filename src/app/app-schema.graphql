@@ -1,21 +1,10 @@
 # Scalars
 scalar PhoneNumber
 
-# Enums
-enum SortOrder {
-  asc
-  desc
-}
-
 # Inputs
 input Pagination {
   page: Int!
   pageSize: Int!
-}
-
-input Sorting {
-  field: String!
-  order: SortOrder!
 }
 
 # Responses
@@ -26,8 +15,6 @@ type MessageResponse {
 type MetaResponse {
   page: Int
   pageSize: Int
-  sortField: String
-  sortOrder: SortOrder
   totalCount: Int!
   totalPages: Int!
 }
