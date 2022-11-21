@@ -29,7 +29,7 @@ input WriteBuilderInput {
 # Query Responses
 type BuildersResponse {
   data: [Builder!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses

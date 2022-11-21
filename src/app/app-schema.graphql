@@ -12,7 +12,7 @@ type MessageResponse {
   message: String!
 }
 
-type MetaResponse {
+type PaginationResponse {
   page: Int
   pageSize: Int
   totalCount: Int!

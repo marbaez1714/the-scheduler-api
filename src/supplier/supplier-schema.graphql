@@ -23,7 +23,7 @@ input WriteSupplierInput {
 # Query Responses
 type SuppliersResponse {
   data: [Supplier!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses

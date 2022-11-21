@@ -12,6 +12,10 @@ enum JobsLegacyMessageRecipient {
   reporter
 }
 
+enum JobsLegacyFilterField {
+  name
+}
+
 # Documents
 type LineItemLegacy {
   id: ID!
@@ -62,6 +66,7 @@ type JobLegacy {
 }
 
 # Inputs
+
 input CreateLineItemLegacyInput {
   orderNumber: String!
   supplierId: String!
@@ -104,6 +109,11 @@ input ModifyJobLegacyInput {
   lineItems: [ModifyLineItemLegacyInput!]
 }
 
+input JobsLegacyFilterInput {
+  term: String!
+  field: JobsLegacyFilterField!
+}
+
 # Query Responses
 type ArchiveJobLegacyResponse {
   data: JobLegacy!
@@ -117,7 +127,7 @@ type WriteJobLegacyResponse {
 
 type JobsLegacyResponse {
   data: [JobLegacy!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 type JobsLegacySendMessageResponse {
@@ -134,6 +144,7 @@ type Query {
     id: ID!
     pagination: Pagination
     archived: Boolean
+    filter: JobsLegacyFilterInput
   ): JobsLegacyResponse!
   jobsLegacy(pagination: Pagination, archived: Boolean): JobsLegacyResponse!
   jobsLegacyByActiveStatus(

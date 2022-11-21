@@ -25,7 +25,7 @@ input WriteCommunityInput {
 # Query Responses
 type CommunitiesResponse {
   data: [Community!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses

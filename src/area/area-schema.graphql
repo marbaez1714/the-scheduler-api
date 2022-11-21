@@ -23,7 +23,7 @@ input WriteAreaInput {
 # Query Responses
 type AreasResponse {
   data: [Area!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses

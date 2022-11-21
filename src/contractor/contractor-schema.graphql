@@ -25,7 +25,7 @@ input WriteContractorInput {
 # Query Responses
 type ContractorsResponse {
   data: [Contractor!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 type AssignedContractorsResponse {

@@ -17,7 +17,7 @@ import {
   JobLegacy,
   JobLegacyStatus,
   LineItemLegacy,
-  MetaResponse,
+  PaginationResponse,
   Pagination,
   Reporter,
   Scope,
@@ -75,7 +75,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /* Response Meta              */
   /******************************/
   responseMeta(totalCount: number, pagination?: Pagination) {
-    let response: MetaResponse = {
+    let response: PaginationResponse = {
       totalCount,
       totalPages: pagination?.pageSize
         ? Math.ceil(totalCount / pagination?.pageSize)

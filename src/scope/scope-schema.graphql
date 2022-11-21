@@ -25,7 +25,7 @@ input WriteScopeInput {
 # Query Responses
 type ScopesResponse {
   data: [Scope!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses

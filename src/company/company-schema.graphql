@@ -27,7 +27,7 @@ input WriteCompanyInput {
 # Query Responses
 type CompaniesResponse {
   data: [Company!]!
-  meta: MetaResponse!
+  pagination: PaginationResponse!
 }
 
 # Mutation Responses
