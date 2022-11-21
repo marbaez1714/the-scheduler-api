@@ -124,27 +124,32 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     archived?: boolean,
     pagination?: Pagination
   ) {
-    const findArgs = {
-      where: {
-        active: true,
-        contractorId: id || null,
-        archived: !!archived,
-      },
-      include: {
-        area: true,
-        builder: true,
-        community: true,
-        lineItems: { include: { supplier: true } },
-        reporter: true,
-        scope: true,
-        contractor: true,
-      },
-      ...this.findArgs(pagination),
-    };
-
     const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany(findArgs),
-      this.crud.count({ where: findArgs.where }),
+      this.crud.findMany({
+        where: {
+          active: true,
+          contractorId: id || null,
+          archived: !!archived,
+        },
+        include: {
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+          contractor: true,
+        },
+        orderBy: { startDate: 'asc' },
+        ...this.findArgs(pagination),
+      }),
+      this.crud.count({
+        where: {
+          active: true,
+          contractorId: id || null,
+          archived: !!archived,
+        },
+      }),
     ]);
 
     return {
@@ -154,23 +159,21 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   async getMany(archived?: boolean, pagination?: Pagination) {
-    const findArgs = {
-      include: {
-        contractor: true,
-        area: true,
-        builder: true,
-        community: true,
-        lineItems: { include: { supplier: true } },
-        reporter: true,
-        scope: true,
-      },
-      where: { archived: !!archived },
-      ...this.findArgs(pagination),
-    };
-
     const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany(findArgs),
-      this.crud.count({ where: findArgs.where }),
+      this.crud.findMany({
+        include: {
+          contractor: true,
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+        },
+        where: { archived: !!archived },
+        ...this.findArgs(pagination),
+      }),
+      this.crud.count({ where: { archived: !!archived } }),
     ]);
 
     return {
@@ -184,23 +187,21 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     archived?: boolean,
     pagination?: Pagination
   ) {
-    const findArgs = {
-      include: {
-        contractor: true,
-        area: true,
-        builder: true,
-        community: true,
-        lineItems: { include: { supplier: true } },
-        reporter: true,
-        scope: true,
-      },
-      where: { archived: !!archived, active },
-      ...this.findArgs(pagination),
-    };
-
     const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany(findArgs),
-      this.crud.count({ where: findArgs.where }),
+      this.crud.findMany({
+        include: {
+          contractor: true,
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+        },
+        where: { archived: !!archived, active },
+        ...this.findArgs(pagination),
+      }),
+      this.crud.count({ where: { archived: !!archived, active } }),
     ]);
 
     return {
