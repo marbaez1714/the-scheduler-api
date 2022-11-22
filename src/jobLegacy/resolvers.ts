@@ -1,64 +1,52 @@
-import { context } from './../context';
 import { Resolvers } from '../generated';
 import { JobLegacyDataHandler, LineItemLegacyDataHandler } from './handlers';
 
 export const jobLegacyResolvers: Resolvers = {
   Query: {
-    jobLegacyById: async (_, { id }, context) => {
-      const response = await new JobLegacyDataHandler(context).getById(id);
+    jobLegacyById: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).getById(args);
       return response;
     },
-    jobsLegacyByContractorId: async (
-      _,
-      { id, archived, pagination },
-      context
-    ) => {
+    jobsLegacyByContractorId: async (_, args, context) => {
       const response = await new JobLegacyDataHandler(
         context
-      ).getByContractorId(id, archived, pagination);
+      ).getByContractorId(args);
 
       return response;
     },
-    jobsLegacy: async (_, { archived, pagination }, context) => {
-      const response = await new JobLegacyDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+    jobsLegacy: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).getMany(args);
       return response;
     },
-    jobsLegacyByActiveStatus: async (
-      _,
-      { active, archived, pagination },
-      context
-    ) => {
+    jobsLegacyByActiveStatus: async (_, args, context) => {
       const response = await new JobLegacyDataHandler(
         context
-      ).getByActiveStatus(active, archived, pagination);
+      ).getByActiveStatus(args);
       return response;
     },
   },
   Mutation: {
-    archiveJobLegacy: async (_, { id }, context) => {
-      const response = await new JobLegacyDataHandler(context).archive(id);
+    archiveJobLegacy: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).archive(args);
       return response;
     },
-    createJobLegacy: async (_, { data }, context) => {
-      const response = await new JobLegacyDataHandler(context).create(data);
+    createJobLegacy: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).create(args);
       return response;
     },
-    modifyJobLegacy: async (_, { id, data }, context) => {
-      const response = await new JobLegacyDataHandler(context).modify(id, data);
+    modifyJobLegacy: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).modify(args);
       return response;
     },
-    deleteLineItemLegacy: async (_, { id }, context) => {
-      const response = await new LineItemLegacyDataHandler(context).delete(id);
+    deleteLineItemLegacy: async (_, args, context) => {
+      const response = await new LineItemLegacyDataHandler(context).delete(
+        args
+      );
       return response;
     },
-    sendMessageJobLegacy: async (_, { id, message, recipient }, context) => {
+    sendMessageJobLegacy: async (_, args, context) => {
       const response = await new JobLegacyDataHandler(context).sendMessage(
-        id,
-        message,
-        recipient
+        args
       );
       return response;
     },

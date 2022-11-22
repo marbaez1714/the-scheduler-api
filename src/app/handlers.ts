@@ -57,24 +57,20 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Prisma Find Arguments      */
   /******************************/
-  findArgs(pagination?: Pagination) {
-    let findArgs: FindArguments;
-
+  paginationArgs(pagination?: Pagination) {
     if (pagination) {
       const { page, pageSize } = pagination;
-      findArgs = {
+      return {
         take: pageSize,
         skip: Math.max(page - 1, 0) * pageSize,
       };
     }
-
-    return findArgs;
   }
 
   /******************************/
-  /* Response Meta              */
+  /* Pagination Response        */
   /******************************/
-  responseMeta(totalCount: number, pagination?: Pagination) {
+  paginationResponse(totalCount: number, pagination?: Pagination) {
     let response: PaginationResponse = {
       totalCount,
       totalPages: pagination?.pageSize
@@ -87,6 +83,16 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
 
     return response;
+  }
+
+  /******************************/
+  /* Filter Response            */
+  /******************************/
+  filterResponse(filter?: { field: string; term: string }) {
+    return {
+      field: filter?.field ?? '',
+      term: filter?.term ?? '',
+    };
   }
 
   /******************************/

@@ -115,6 +115,11 @@ input JobsLegacyFilterInput {
 }
 
 # Query Responses
+type JobsLegacyFilterResponse {
+  term: String
+  field: JobsLegacyFilterField
+}
+
 type ArchiveJobLegacyResponse {
   data: JobLegacy!
   message: String!
@@ -128,6 +133,7 @@ type WriteJobLegacyResponse {
 type JobsLegacyResponse {
   data: [JobLegacy!]!
   pagination: PaginationResponse!
+  filter: JobsLegacyFilterResponse!
 }
 
 type JobsLegacySendMessageResponse {
@@ -146,11 +152,16 @@ type Query {
     archived: Boolean
     filter: JobsLegacyFilterInput
   ): JobsLegacyResponse!
-  jobsLegacy(pagination: Pagination, archived: Boolean): JobsLegacyResponse!
+  jobsLegacy(
+    pagination: Pagination
+    archived: Boolean
+    filter: JobsLegacyFilterInput
+  ): JobsLegacyResponse!
   jobsLegacyByActiveStatus(
     active: Boolean!
     pagination: Pagination
     archived: Boolean
+    filter: JobsLegacyFilterInput
   ): JobsLegacyResponse!
 }
 

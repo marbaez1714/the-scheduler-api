@@ -63,7 +63,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },
-      ...this.findArgs(pagination),
+      ...this.paginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -73,7 +73,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     return {
       data: docList.map((doc) => this.formatBuilder(doc)),
-      meta: this.responseMeta(count, pagination),
+      pagination: this.paginationResponse(count, pagination),
     };
   }
 }

@@ -75,7 +75,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
         },
       },
       where: { archived: !!archived },
-      ...this.findArgs(pagination),
+      ...this.paginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -85,7 +85,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     return {
       data: docList.map((doc) => this.formatContractor(doc)),
-      meta: this.responseMeta(count, pagination),
+      pagination: this.paginationResponse(count, pagination),
     };
   }
 

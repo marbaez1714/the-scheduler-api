@@ -56,7 +56,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
   async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.findArgs(pagination),
+      ...this.paginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +66,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     return {
       data: docList.map((doc) => this.formatSupplier(doc)),
-      meta: this.responseMeta(count, pagination),
+      pagination: this.paginationResponse(count, pagination),
     };
   }
 }

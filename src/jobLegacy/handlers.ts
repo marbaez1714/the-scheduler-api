@@ -1,12 +1,21 @@
-import {
-  JobsLegacyMessageRecipient,
-  ModifyJobLegacyInput,
-} from './../generated';
+import { JobsLegacyFilterInput } from './../generated';
+import { Prisma } from '.prisma/client';
 import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { CreateJobLegacyInput, Pagination } from '../generated';
+import {
+  JobsLegacyMessageRecipient,
+  MutationCreateJobLegacyArgs,
+  MutationModifyJobLegacyArgs,
+  MutationArchiveJobLegacyArgs,
+  MutationSendMessageJobLegacyArgs,
+  QueryJobLegacyByIdArgs,
+  QueryJobsLegacyArgs,
+  QueryJobsLegacyByActiveStatusArgs,
+  QueryJobsLegacyByContractorIdArgs,
+  MutationDeleteLineItemLegacyArgs,
+} from '../generated';
 import { checkDelete } from '../utils';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
@@ -14,7 +23,149 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     super(context, 'jobLegacy');
   }
 
-  async archive(id: string) {
+  /******************************/
+  /* Utils                      */
+  /******************************/
+  filterArgs(filter?: JobsLegacyFilterInput) {
+    if (filter) {
+      return {
+        [filter.field]: {
+          contains: filter.term,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      };
+    }
+  }
+
+  /******************************/
+  /* Getters                    */
+  /******************************/
+  async getById({ id }: QueryJobLegacyByIdArgs) {
+    const doc = await this.crud.findUnique({
+      where: { id },
+      include: { lineItems: { include: { supplier: true } } },
+    });
+
+    if (!doc) throw new UserInputError(`${id} does not exist.`);
+
+    return this.formatJobLegacy(doc);
+  }
+
+  async getByContractorId({
+    id,
+    archived,
+    pagination,
+    filter,
+  }: QueryJobsLegacyByContractorIdArgs) {
+    const [docList, count] = await this.context.prisma.$transaction([
+      this.crud.findMany({
+        where: {
+          active: true,
+          contractorId: id || null,
+          archived: !!archived,
+          ...this.filterArgs(filter),
+        },
+        include: {
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+          contractor: true,
+        },
+        orderBy: { startDate: 'asc' },
+        ...this.paginationArgs(pagination),
+      }),
+      this.crud.count({
+        where: {
+          active: true,
+          contractorId: id || null,
+          archived: !!archived,
+          ...this.filterArgs(filter),
+        },
+      }),
+    ]);
+
+    return {
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
+      pagination: this.paginationResponse(count, pagination),
+      filter: this.filterResponse(filter),
+    };
+  }
+
+  async getMany({ archived, pagination, filter }: QueryJobsLegacyArgs) {
+    const [docList, count] = await this.context.prisma.$transaction([
+      this.crud.findMany({
+        where: {
+          archived: !!archived,
+          ...this.filterArgs(filter),
+        },
+        include: {
+          contractor: true,
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+        },
+        ...this.paginationArgs(pagination),
+      }),
+      this.crud.count({ where: { archived: !!archived } }),
+    ]);
+
+    return {
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
+      pagination: this.paginationResponse(count, pagination),
+      filter: this.filterResponse(filter),
+    };
+  }
+
+  async getByActiveStatus({
+    active,
+    archived,
+    pagination,
+    filter,
+  }: QueryJobsLegacyByActiveStatusArgs) {
+    const [docList, count] = await this.context.prisma.$transaction([
+      this.crud.findMany({
+        where: {
+          archived: !!archived,
+          active,
+          ...this.filterArgs(filter),
+        },
+        include: {
+          contractor: true,
+          area: true,
+          builder: true,
+          community: true,
+          lineItems: { include: { supplier: true } },
+          reporter: true,
+          scope: true,
+        },
+        ...this.paginationArgs(pagination),
+      }),
+      this.crud.count({
+        where: {
+          archived: !!archived,
+          active,
+          ...this.filterArgs(filter),
+        },
+      }),
+    ]);
+
+    return {
+      data: docList.map((doc) => this.formatJobLegacy(doc)),
+      pagination: this.paginationResponse(count, pagination),
+      filter: this.filterResponse(filter),
+    };
+  }
+
+  /******************************/
+  /* Setters                    */
+  /******************************/
+  async archive({ id }: MutationArchiveJobLegacyArgs) {
     const archivedDoc = await this.crud.update({
       where: { id },
       data: this.archiveData,
@@ -24,7 +175,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return this.archiveResponse(formatted);
   }
 
-  async create(data: CreateJobLegacyInput) {
+  async create({ data }: MutationCreateJobLegacyArgs) {
     const { lineItems, startDate, ...rest } = data;
 
     const startDateTime = startDate ? new Date(startDate) : null;
@@ -51,7 +202,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return this.writeResponse(formatted);
   }
 
-  async modify(id: string, data: ModifyJobLegacyInput) {
+  async modify({ id, data }: MutationModifyJobLegacyArgs) {
     const {
       lineItems,
       startDate,
@@ -108,113 +259,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return this.writeResponse(formatted);
   }
 
-  async getById(id: string) {
-    const doc = await this.crud.findUnique({
-      where: { id },
-      include: { lineItems: { include: { supplier: true } } },
-    });
-
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
-
-    return this.formatJobLegacy(doc);
-  }
-
-  async getByContractorId(
-    id: string,
-    archived?: boolean,
-    pagination?: Pagination
-  ) {
-    const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany({
-        where: {
-          active: true,
-          contractorId: id || null,
-          archived: !!archived,
-        },
-        include: {
-          area: true,
-          builder: true,
-          community: true,
-          lineItems: { include: { supplier: true } },
-          reporter: true,
-          scope: true,
-          contractor: true,
-        },
-        orderBy: { startDate: 'asc' },
-        ...this.findArgs(pagination),
-      }),
-      this.crud.count({
-        where: {
-          active: true,
-          contractorId: id || null,
-          archived: !!archived,
-        },
-      }),
-    ]);
-
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination),
-    };
-  }
-
-  async getMany(archived?: boolean, pagination?: Pagination) {
-    const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany({
-        include: {
-          contractor: true,
-          area: true,
-          builder: true,
-          community: true,
-          lineItems: { include: { supplier: true } },
-          reporter: true,
-          scope: true,
-        },
-        where: { archived: !!archived },
-        ...this.findArgs(pagination),
-      }),
-      this.crud.count({ where: { archived: !!archived } }),
-    ]);
-
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination),
-    };
-  }
-
-  async getByActiveStatus(
-    active: boolean,
-    archived?: boolean,
-    pagination?: Pagination
-  ) {
-    const [docList, count] = await this.context.prisma.$transaction([
-      this.crud.findMany({
-        include: {
-          contractor: true,
-          area: true,
-          builder: true,
-          community: true,
-          lineItems: { include: { supplier: true } },
-          reporter: true,
-          scope: true,
-        },
-        where: { archived: !!archived, active },
-        ...this.findArgs(pagination),
-      }),
-      this.crud.count({ where: { archived: !!archived, active } }),
-    ]);
-
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      meta: this.responseMeta(count, pagination),
-    };
-  }
-
-  async sendMessage(
-    id: string,
-    message: string,
-    recipient: JobsLegacyMessageRecipient
-  ) {
+  async sendMessage({
+    id,
+    message,
+    recipient,
+  }: MutationSendMessageJobLegacyArgs) {
     // Set up phone number
     let recipientPhone: string | undefined;
 
@@ -257,7 +306,7 @@ export class LineItemLegacyDataHandler extends DataHandler<'lineItemLegacy'> {
     super(context, 'lineItemLegacy');
   }
 
-  async delete(id: string) {
+  async delete({ id }: MutationDeleteLineItemLegacyArgs) {
     const deletedDoc = await this.crud.delete({ where: { id: id } });
     return { message: `${deletedDoc.orderNumber} deleted.` };
   }

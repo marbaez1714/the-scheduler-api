@@ -266,6 +266,12 @@ export type JobsLegacyFilterInput = {
   term: Scalars['String'];
 };
 
+export type JobsLegacyFilterResponse = {
+  __typename?: 'JobsLegacyFilterResponse';
+  field?: Maybe<JobsLegacyFilterField>;
+  term?: Maybe<Scalars['String']>;
+};
+
 export enum JobsLegacyMessageRecipient {
   Contractor = 'contractor',
   Reporter = 'reporter',
@@ -274,6 +280,7 @@ export enum JobsLegacyMessageRecipient {
 export type JobsLegacyResponse = {
   __typename?: 'JobsLegacyResponse';
   data: Array<JobLegacy>;
+  filter: JobsLegacyFilterResponse;
   pagination: PaginationResponse;
 };
 
@@ -575,12 +582,14 @@ export type QueryJobLegacyByIdArgs = {
 
 export type QueryJobsLegacyArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
+  filter?: InputMaybe<JobsLegacyFilterInput>;
   pagination?: InputMaybe<Pagination>;
 };
 
 export type QueryJobsLegacyByActiveStatusArgs = {
   active: Scalars['Boolean'];
   archived?: InputMaybe<Scalars['Boolean']>;
+  filter?: InputMaybe<JobsLegacyFilterInput>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -925,6 +934,7 @@ export type ResolversTypes = {
   JobLegacyStatus: JobLegacyStatus;
   JobsLegacyFilterField: JobsLegacyFilterField;
   JobsLegacyFilterInput: JobsLegacyFilterInput;
+  JobsLegacyFilterResponse: ResolverTypeWrapper<JobsLegacyFilterResponse>;
   JobsLegacyMessageRecipient: JobsLegacyMessageRecipient;
   JobsLegacyResponse: ResolverTypeWrapper<JobsLegacyResponse>;
   JobsLegacySendMessageResponse: ResolverTypeWrapper<JobsLegacySendMessageResponse>;
@@ -993,6 +1003,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
   JobsLegacyFilterInput: JobsLegacyFilterInput;
+  JobsLegacyFilterResponse: JobsLegacyFilterResponse;
   JobsLegacyResponse: JobsLegacyResponse;
   JobsLegacySendMessageResponse: JobsLegacySendMessageResponse;
   LineItemLegacy: LineItemLegacy;
@@ -1387,11 +1398,29 @@ export type JobLegacyResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type JobsLegacyFilterResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['JobsLegacyFilterResponse'] = ResolversParentTypes['JobsLegacyFilterResponse']
+> = {
+  field?: Resolver<
+    Maybe<ResolversTypes['JobsLegacyFilterField']>,
+    ParentType,
+    ContextType
+  >;
+  term?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type JobsLegacyResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['JobsLegacyResponse'] = ResolversParentTypes['JobsLegacyResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
+  filter?: Resolver<
+    ResolversTypes['JobsLegacyFilterResponse'],
+    ParentType,
+    ContextType
+  >;
   pagination?: Resolver<
     ResolversTypes['PaginationResponse'],
     ParentType,
@@ -1980,6 +2009,7 @@ export type Resolvers<ContextType = Context> = {
   ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
   DeleteResponse?: DeleteResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
+  JobsLegacyFilterResponse?: JobsLegacyFilterResponseResolvers<ContextType>;
   JobsLegacyResponse?: JobsLegacyResponseResolvers<ContextType>;
   JobsLegacySendMessageResponse?: JobsLegacySendMessageResponseResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
