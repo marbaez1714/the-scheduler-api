@@ -1,4 +1,7 @@
-import { JobsLegacyFilterInput } from './../generated';
+import {
+  JobsLegacyFilterInput,
+  JobsLegacyFilterResponse,
+} from './../generated';
 import { Prisma } from '.prisma/client';
 import { UserInputError } from 'apollo-server';
 
@@ -112,7 +115,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
+      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
     };
   }
 
@@ -146,7 +149,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
+      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
     };
   }
 
@@ -186,7 +189,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
+      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
     };
   }
 
