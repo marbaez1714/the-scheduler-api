@@ -29,10 +29,32 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   filterArgs(filter?: JobsLegacyFilterInput) {
     if (filter) {
       return {
-        [filter.field]: {
-          contains: filter.term,
-          mode: Prisma.QueryMode.insensitive,
-        },
+        OR: [
+          {
+            [filter.field]: {
+              contains: filter.term,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            [filter.field]: {
+              startsWith: filter.term,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            [filter.field]: {
+              endsWith: filter.term,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            [filter.field]: {
+              equals: filter.term,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        ],
       };
     }
   }
@@ -99,6 +121,12 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       this.crud.findMany({
         where: {
           archived: !!archived,
+          OR: [
+            {
+              name: { contains: filter?.term },
+            },
+            { name: { startsWith: filter?.term } },
+          ],
           ...this.filterArgs(filter),
         },
         include: {
