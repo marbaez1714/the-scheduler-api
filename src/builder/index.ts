@@ -1,0 +1,1 @@
+export { builderResolvers } from './resolvers';

@@ -1,18 +1,19 @@
 overwrite: true
-schema: ./src/typeDefs.ts
+schema: ./src/**/*.graphql
 hooks:
   afterAllFileWrite:
     - prettier --write
-documents: null
 generates:
-  src/generated/graphql.ts:
+  src/generated.ts:
     plugins:
       - "typescript"
       - "typescript-resolvers"
       - "typescript-operations"
     config:
       inputMaybeValue: undefined | T
-      contextType: ../context#Context
+      contextType: ./context#Context
+      scalars:
+        PhoneNumber: string
   ./graphql.schema.json:
     plugins:
       - "introspection"

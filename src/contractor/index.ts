@@ -1,0 +1,1 @@
+export { contractorResolvers } from './resolvers';

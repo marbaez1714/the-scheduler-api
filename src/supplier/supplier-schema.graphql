@@ -1,0 +1,51 @@
+# Documents
+type Supplier {
+  id: ID!
+  name: String!
+  primaryPhone: PhoneNumber
+  notes: String
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input WriteSupplierInput {
+  name: String!
+  primaryPhone: PhoneNumber
+  notes: String
+}
+
+# Query Responses
+type SuppliersResponse {
+  data: [Supplier!]!
+  pagination: PaginationResponse!
+}
+
+# Mutation Responses
+type ArchiveSupplierResponse {
+  data: Supplier!
+  message: String!
+}
+
+type WriteSupplierResponse {
+  data: Supplier!
+  message: String!
+}
+
+# Queries
+type Query {
+  supplierById(id: ID!): Supplier
+  suppliers(pagination: Pagination, archived: Boolean): SuppliersResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveSupplier(id: ID!): ArchiveSupplierResponse!
+  createSupplier(data: WriteSupplierInput!): WriteSupplierResponse!
+  modifySupplier(id: ID!, data: WriteSupplierInput!): WriteSupplierResponse!
+}

@@ -1,0 +1,24 @@
+# Scalars
+scalar PhoneNumber
+
+# Inputs
+input Pagination {
+  page: Int!
+  pageSize: Int!
+}
+
+# Responses
+type MessageResponse {
+  message: String!
+}
+
+type PaginationResponse {
+  page: Int
+  pageSize: Int
+  totalCount: Int!
+  totalPages: Int!
+}
+
+type DeleteResponse {
+  message: String!
+}
