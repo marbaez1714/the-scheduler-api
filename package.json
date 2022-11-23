@@ -36,6 +36,10 @@
     "node": "18.x",
     "yarn": "1.x"
   },
+  "engines": {
+    "node": "18.x",
+    "yarn": "1.x"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/server.js",
