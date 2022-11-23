@@ -1,0 +1,1 @@
+export { supplierResolvers } from './resolvers';

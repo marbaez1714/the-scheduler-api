@@ -1,0 +1,1 @@
+export { areaResolvers } from './resolvers';

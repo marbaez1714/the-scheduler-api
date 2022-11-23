@@ -1,0 +1,1 @@
+export { reporterResolvers } from './resolvers';

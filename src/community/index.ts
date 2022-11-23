@@ -1,0 +1,1 @@
+export { communityResolvers } from './resolvers';

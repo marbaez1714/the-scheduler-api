@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Company {
-  id             String @id @default(uuid())
-  name           String @unique
+  id             String  @id @default(uuid())
+  name           String  @unique
   primaryAddress String?
   primaryEmail   String?
   primaryPhone   String?
@@ -120,8 +120,7 @@ model LineItemLegacy {
   createdTime DateTime @default(now())
   updatedTime DateTime @updatedAt
 
-  archived Boolean @default(false)
-  legacy   Boolean @default(false)
+  legacy Boolean @default(false)
 }
 
 model Reporter {
@@ -180,7 +179,7 @@ model Supplier {
 model JobLegacy {
   id            String    @id @default(uuid())
   name          String
-  active        Boolean   @default(false)
+  active        Boolean   @default(true)
   inProgress    Boolean   @default(false)
   isImportant   Boolean   @default(false)
   areaId        String?
