@@ -1,0 +1,57 @@
+# Documents
+type Builder {
+  id: ID!
+  name: String!
+  primaryPhone: PhoneNumber
+  primaryEmail: String
+  companyId: String!
+  notes: String
+
+  company: Company!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input WriteBuilderInput {
+  name: String!
+  primaryPhone: PhoneNumber!
+  primaryEmail: String
+  companyId: String!
+  notes: String
+}
+
+# Query Responses
+type BuildersResponse {
+  data: [Builder!]!
+  pagination: PaginationResponse!
+}
+
+# Mutation Responses
+type ArchiveBuilderResponse {
+  data: Builder!
+  message: String!
+}
+
+type WriteBuilderResponse {
+  data: Builder!
+  message: String!
+}
+
+# Queries
+type Query {
+  builderById(id: ID!): Builder
+  builders(pagination: Pagination, archived: Boolean): BuildersResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveBuilder(id: ID!): ArchiveBuilderResponse!
+  createBuilder(data: WriteBuilderInput!): WriteBuilderResponse!
+  modifyBuilder(id: ID!, data: WriteBuilderInput!): WriteBuilderResponse!
+}

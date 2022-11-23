@@ -1,0 +1,61 @@
+# Documents
+type Contractor {
+  id: ID!
+  name: String!
+  primaryPhone: PhoneNumber!
+  notes: String
+
+  jobsLegacy: [JobLegacy!]!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+input WriteContractorInput {
+  name: String!
+  primaryPhone: PhoneNumber!
+  notes: String
+}
+
+# Query Responses
+type ContractorsResponse {
+  data: [Contractor!]!
+  pagination: PaginationResponse!
+}
+
+type AssignedContractorsResponse {
+  data: [Contractor!]!
+}
+
+# Mutation Responses
+type ArchiveContractorResponse {
+  data: Contractor!
+  message: String!
+}
+
+type WriteContractorResponse {
+  data: Contractor!
+  message: String!
+}
+
+# Queries
+type Query {
+  assignedContractors: AssignedContractorsResponse!
+  contractorById(id: ID!): Contractor
+  contractors(pagination: Pagination, archived: Boolean): ContractorsResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveContractor(id: ID!): ArchiveContractorResponse!
+  createContractor(data: WriteContractorInput!): WriteContractorResponse!
+  modifyContractor(
+    id: ID!
+    data: WriteContractorInput!
+  ): WriteContractorResponse!
+}

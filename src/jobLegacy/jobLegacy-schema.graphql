@@ -1,0 +1,179 @@
+# Enums
+enum JobLegacyStatus {
+  inProgress
+  today
+  pastDue
+  planned
+  willCall
+}
+
+enum JobsLegacyMessageRecipient {
+  contractor
+  reporter
+}
+
+enum JobsLegacyFilterField {
+  name
+}
+
+# Documents
+type LineItemLegacy {
+  id: ID!
+  orderNumber: String!
+  supplierId: String!
+  jobId: String!
+
+  supplier: Supplier!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  legacy: Boolean!
+}
+
+type JobLegacy {
+  id: ID!
+  name: String!
+  active: Boolean!
+  inProgress: Boolean!
+  isImportant: Boolean!
+  status: JobLegacyStatus!
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  completedDate: String
+  startDate: String
+  notes: String
+
+  area: Area
+  builder: Builder
+  community: Community
+  contractor: Contractor
+  reporter: Reporter
+  scope: Scope
+  lineItems: [LineItemLegacy!]!
+
+  updatedBy: String!
+  createdBy: String!
+  createdTime: String!
+  updatedTime: String!
+  archived: Boolean!
+  legacy: Boolean!
+}
+
+# Inputs
+
+input CreateLineItemLegacyInput {
+  orderNumber: String!
+  supplierId: String!
+}
+
+input CreateJobLegacyInput {
+  name: String!
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  startDate: String
+  notes: String
+  lineItems: [CreateLineItemLegacyInput!]!
+}
+
+input ModifyLineItemLegacyInput {
+  id: String
+  delete: Boolean
+  orderNumber: String!
+  supplierId: String!
+}
+
+input ModifyJobLegacyInput {
+  name: String
+  areaId: String
+  builderId: String
+  communityId: String
+  contractorId: String
+  reporterId: String
+  scopeId: String
+  startDate: String
+  notes: String
+  inProgress: Boolean
+  isImportant: Boolean
+  completedDate: String
+  active: Boolean
+  lineItems: [ModifyLineItemLegacyInput!]
+}
+
+input JobsLegacyFilterInput {
+  term: String!
+  field: JobsLegacyFilterField!
+}
+
+# Query Responses
+type JobsLegacyFilterResponse {
+  term: String
+  field: JobsLegacyFilterField
+}
+
+type ArchiveJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type WriteJobLegacyResponse {
+  data: JobLegacy!
+  message: String!
+}
+
+type JobsLegacyResponse {
+  data: [JobLegacy!]!
+  pagination: PaginationResponse!
+  filter: JobsLegacyFilterResponse!
+}
+
+type JobsLegacySendMessageResponse {
+  message: String!
+  recipient: JobsLegacyMessageRecipient!
+}
+
+# Mutation Responses
+
+# Queries
+type Query {
+  jobLegacyById(id: ID!): JobLegacy
+  jobsLegacyByContractorId(
+    id: ID!
+    pagination: Pagination
+    archived: Boolean
+    filter: JobsLegacyFilterInput
+  ): JobsLegacyResponse!
+  jobsLegacy(
+    pagination: Pagination
+    archived: Boolean
+    filter: JobsLegacyFilterInput
+  ): JobsLegacyResponse!
+  jobsLegacyByActiveStatus(
+    active: Boolean!
+    pagination: Pagination
+    archived: Boolean
+    filter: JobsLegacyFilterInput
+  ): JobsLegacyResponse!
+}
+
+# Mutations
+type Mutation {
+  archiveJobLegacy(id: ID!): ArchiveJobLegacyResponse!
+  createJobLegacy(data: CreateJobLegacyInput!): WriteJobLegacyResponse!
+  deleteLineItemLegacy(id: ID!): DeleteResponse!
+  modifyJobLegacy(id: ID!, data: ModifyJobLegacyInput!): WriteJobLegacyResponse!
+  sendMessageJobLegacy(
+    id: ID!
+    recipient: JobsLegacyMessageRecipient!
+    message: String!
+  ): JobsLegacySendMessageResponse
+}

@@ -1,0 +1,1 @@
+export { companyResolvers } from './resolvers';
