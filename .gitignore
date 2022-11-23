@@ -4,3 +4,4 @@ node_modules
 .vscode
 prisma/mockData.ts
 prisma/seed.ts
+dist
