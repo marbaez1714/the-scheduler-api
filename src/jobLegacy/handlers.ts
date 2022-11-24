@@ -63,6 +63,16 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   /******************************/
+  /* Filter Response            */
+  /******************************/
+  filterResponse(filter?: { field: string; term: string }) {
+    return {
+      field: filter?.field ?? '',
+      term: filter?.term ?? '',
+    } as JobsLegacyFilterResponse;
+  }
+
+  /******************************/
   /* Getters                    */
   /******************************/
   async getById({ id }: QueryJobLegacyByIdArgs) {
@@ -115,7 +125,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
+      filter: this.filterResponse(filter),
     };
   }
 
@@ -149,7 +159,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
+      filter: this.filterResponse(filter),
     };
   }
 
@@ -189,7 +199,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter) as JobsLegacyFilterResponse,
+      filter: this.filterResponse(filter),
     };
   }
 
