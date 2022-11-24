@@ -63,6 +63,16 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   /******************************/
+  /* Filter Response            */
+  /******************************/
+  filterResponse(filter?: { field: string; term: string }) {
+    return {
+      field: filter?.field ?? '',
+      term: filter?.term ?? '',
+    } as JobsLegacyFilterResponse;
+  }
+
+  /******************************/
   /* Getters                    */
   /******************************/
   async getById({ id }: QueryJobLegacyByIdArgs) {

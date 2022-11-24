@@ -86,16 +86,6 @@ export class DataHandler<TClient extends keyof PrismaData> {
   }
 
   /******************************/
-  /* Filter Response            */
-  /******************************/
-  filterResponse(filter?: { field: string; term: string }) {
-    return {
-      field: filter?.field ?? '',
-      term: filter?.term ?? '',
-    };
-  }
-
-  /******************************/
   /* General Responses          */
   /******************************/
   archiveResponse<TData extends BaseDocument>(data: TData) {
