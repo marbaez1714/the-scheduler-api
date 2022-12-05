@@ -1,10 +1,26 @@
 # Scalars
 scalar PhoneNumber
 
+# Enum
+enum SortDirection {
+  asc
+  desc
+}
+
 # Inputs
 input Pagination {
   page: Int!
   pageSize: Int!
+}
+
+input FilterInput {
+  term: String!
+  field: String!
+}
+
+input SortInput {
+  field: String!
+  direction: SortDirection!
 }
 
 # Responses
@@ -21,4 +37,14 @@ type PaginationResponse {
 
 type DeleteResponse {
   message: String!
+}
+
+type FilterResponse {
+  term: String!
+  field: String!
+}
+
+type SortResponse {
+  field: String!
+  direction: SortDirection!
 }
