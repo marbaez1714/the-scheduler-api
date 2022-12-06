@@ -1,8 +1,3 @@
-import {
-  JobsLegacyFilterInput,
-  JobsLegacyFilterResponse,
-} from './../generated';
-import { Prisma } from '.prisma/client';
 import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
@@ -27,52 +22,6 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   /******************************/
-  /* Utils                      */
-  /******************************/
-  filterArgs(filter?: JobsLegacyFilterInput) {
-    if (filter) {
-      return {
-        OR: [
-          {
-            [filter.field]: {
-              contains: filter.term,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-          {
-            [filter.field]: {
-              startsWith: filter.term,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-          {
-            [filter.field]: {
-              endsWith: filter.term,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-          {
-            [filter.field]: {
-              equals: filter.term,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-        ],
-      };
-    }
-  }
-
-  /******************************/
-  /* Filter Response            */
-  /******************************/
-  filterResponse(filter?: { field: string; term: string }) {
-    return {
-      field: filter?.field ?? '',
-      term: filter?.term ?? '',
-    } as JobsLegacyFilterResponse;
-  }
-
-  /******************************/
   /* Getters                    */
   /******************************/
   async getById({ id }: QueryJobLegacyByIdArgs) {
@@ -91,6 +40,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     archived,
     pagination,
     filter,
+    sort,
   }: QueryJobsLegacyByContractorIdArgs) {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
@@ -109,7 +59,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           scope: true,
           contractor: true,
         },
-        orderBy: { startDate: 'asc' },
+        orderBy: this.sortingArgs(sort),
         ...this.paginationArgs(pagination),
       }),
       this.crud.count({
@@ -126,20 +76,15 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
       filter: this.filterResponse(filter),
+      sort: this.sortResponse(sort),
     };
   }
 
-  async getMany({ archived, pagination, filter }: QueryJobsLegacyArgs) {
+  async getMany({ archived, pagination, filter, sort }: QueryJobsLegacyArgs) {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
         where: {
           archived: !!archived,
-          OR: [
-            {
-              name: { contains: filter?.term },
-            },
-            { name: { startsWith: filter?.term } },
-          ],
           ...this.filterArgs(filter),
         },
         include: {
@@ -151,6 +96,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
+        orderBy: this.sortingArgs(sort),
         ...this.paginationArgs(pagination),
       }),
       this.crud.count({ where: { archived: !!archived } }),
@@ -160,6 +106,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
       filter: this.filterResponse(filter),
+      sort: this.sortResponse(sort),
     };
   }
 
@@ -168,6 +115,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     archived,
     pagination,
     filter,
+    sort,
   }: QueryJobsLegacyByActiveStatusArgs) {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
@@ -185,6 +133,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
+        orderBy: this.sortingArgs(sort),
         ...this.paginationArgs(pagination),
       }),
       this.crud.count({
@@ -200,6 +149,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
       pagination: this.paginationResponse(count, pagination),
       filter: this.filterResponse(filter),
+      sort: this.sortResponse(sort),
     };
   }
 

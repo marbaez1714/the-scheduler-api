@@ -12,10 +12,6 @@ enum JobsLegacyMessageRecipient {
   reporter
 }
 
-enum JobsLegacyFilterField {
-  name
-}
-
 # Documents
 type LineItemLegacy {
   id: ID!
@@ -109,16 +105,7 @@ input ModifyJobLegacyInput {
   lineItems: [ModifyLineItemLegacyInput!]
 }
 
-input JobsLegacyFilterInput {
-  term: String!
-  field: JobsLegacyFilterField!
-}
-
 # Query Responses
-type JobsLegacyFilterResponse {
-  term: String
-  field: JobsLegacyFilterField
-}
 
 type ArchiveJobLegacyResponse {
   data: JobLegacy!
@@ -133,15 +120,14 @@ type WriteJobLegacyResponse {
 type JobsLegacyResponse {
   data: [JobLegacy!]!
   pagination: PaginationResponse!
-  filter: JobsLegacyFilterResponse!
+  filter: FilterResponse!
+  sort: SortResponse!
 }
 
 type JobsLegacySendMessageResponse {
   message: String!
   recipient: JobsLegacyMessageRecipient!
 }
-
-# Mutation Responses
 
 # Queries
 type Query {
@@ -150,18 +136,21 @@ type Query {
     id: ID!
     pagination: Pagination
     archived: Boolean
-    filter: JobsLegacyFilterInput
+    filter: FilterInput
+    sort: SortInput
   ): JobsLegacyResponse!
   jobsLegacy(
     pagination: Pagination
     archived: Boolean
-    filter: JobsLegacyFilterInput
+    filter: FilterInput
+    sort: SortInput
   ): JobsLegacyResponse!
   jobsLegacyByActiveStatus(
     active: Boolean!
     pagination: Pagination
     archived: Boolean
-    filter: JobsLegacyFilterInput
+    filter: FilterInput
+    sort: SortInput
   ): JobsLegacyResponse!
 }
 

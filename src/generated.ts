@@ -217,6 +217,17 @@ export type DeleteResponse = {
   message: Scalars['String'];
 };
 
+export type FilterInput = {
+  field: Scalars['String'];
+  term: Scalars['String'];
+};
+
+export type FilterResponse = {
+  __typename?: 'FilterResponse';
+  field: Scalars['String'];
+  term: Scalars['String'];
+};
+
 export type JobLegacy = {
   __typename?: 'JobLegacy';
   active: Scalars['Boolean'];
@@ -257,21 +268,6 @@ export enum JobLegacyStatus {
   WillCall = 'willCall',
 }
 
-export enum JobsLegacyFilterField {
-  Name = 'name',
-}
-
-export type JobsLegacyFilterInput = {
-  field: JobsLegacyFilterField;
-  term: Scalars['String'];
-};
-
-export type JobsLegacyFilterResponse = {
-  __typename?: 'JobsLegacyFilterResponse';
-  field?: Maybe<JobsLegacyFilterField>;
-  term?: Maybe<Scalars['String']>;
-};
-
 export enum JobsLegacyMessageRecipient {
   Contractor = 'contractor',
   Reporter = 'reporter',
@@ -280,8 +276,9 @@ export enum JobsLegacyMessageRecipient {
 export type JobsLegacyResponse = {
   __typename?: 'JobsLegacyResponse';
   data: Array<JobLegacy>;
-  filter: JobsLegacyFilterResponse;
+  filter: FilterResponse;
   pagination: PaginationResponse;
+  sort: SortResponse;
 };
 
 export type JobsLegacySendMessageResponse = {
@@ -582,22 +579,25 @@ export type QueryJobLegacyByIdArgs = {
 
 export type QueryJobsLegacyArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<JobsLegacyFilterInput>;
+  filter?: InputMaybe<FilterInput>;
   pagination?: InputMaybe<Pagination>;
+  sort?: InputMaybe<SortInput>;
 };
 
 export type QueryJobsLegacyByActiveStatusArgs = {
   active: Scalars['Boolean'];
   archived?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<JobsLegacyFilterInput>;
+  filter?: InputMaybe<FilterInput>;
   pagination?: InputMaybe<Pagination>;
+  sort?: InputMaybe<SortInput>;
 };
 
 export type QueryJobsLegacyByContractorIdArgs = {
   archived?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<JobsLegacyFilterInput>;
+  filter?: InputMaybe<FilterInput>;
   id: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
+  sort?: InputMaybe<SortInput>;
 };
 
 export type QueryReporterByIdArgs = {
@@ -667,6 +667,22 @@ export type ScopesResponse = {
   __typename?: 'ScopesResponse';
   data: Array<Scope>;
   pagination: PaginationResponse;
+};
+
+export enum SortDirection {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+export type SortInput = {
+  direction: SortDirection;
+  field: Scalars['String'];
+};
+
+export type SortResponse = {
+  __typename?: 'SortResponse';
+  direction: SortDirection;
+  field: Scalars['String'];
 };
 
 export type Supplier = {
@@ -928,13 +944,12 @@ export type ResolversTypes = {
   CreateJobLegacyInput: CreateJobLegacyInput;
   CreateLineItemLegacyInput: CreateLineItemLegacyInput;
   DeleteResponse: ResolverTypeWrapper<DeleteResponse>;
+  FilterInput: FilterInput;
+  FilterResponse: ResolverTypeWrapper<FilterResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JobLegacy: ResolverTypeWrapper<JobLegacy>;
   JobLegacyStatus: JobLegacyStatus;
-  JobsLegacyFilterField: JobsLegacyFilterField;
-  JobsLegacyFilterInput: JobsLegacyFilterInput;
-  JobsLegacyFilterResponse: ResolverTypeWrapper<JobsLegacyFilterResponse>;
   JobsLegacyMessageRecipient: JobsLegacyMessageRecipient;
   JobsLegacyResponse: ResolverTypeWrapper<JobsLegacyResponse>;
   JobsLegacySendMessageResponse: ResolverTypeWrapper<JobsLegacySendMessageResponse>;
@@ -951,6 +966,9 @@ export type ResolversTypes = {
   ReportersResponse: ResolverTypeWrapper<ReportersResponse>;
   Scope: ResolverTypeWrapper<Scope>;
   ScopesResponse: ResolverTypeWrapper<ScopesResponse>;
+  SortDirection: SortDirection;
+  SortInput: SortInput;
+  SortResponse: ResolverTypeWrapper<SortResponse>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Supplier: ResolverTypeWrapper<Supplier>;
   SuppliersResponse: ResolverTypeWrapper<SuppliersResponse>;
@@ -999,11 +1017,11 @@ export type ResolversParentTypes = {
   CreateJobLegacyInput: CreateJobLegacyInput;
   CreateLineItemLegacyInput: CreateLineItemLegacyInput;
   DeleteResponse: DeleteResponse;
+  FilterInput: FilterInput;
+  FilterResponse: FilterResponse;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   JobLegacy: JobLegacy;
-  JobsLegacyFilterInput: JobsLegacyFilterInput;
-  JobsLegacyFilterResponse: JobsLegacyFilterResponse;
   JobsLegacyResponse: JobsLegacyResponse;
   JobsLegacySendMessageResponse: JobsLegacySendMessageResponse;
   LineItemLegacy: LineItemLegacy;
@@ -1019,6 +1037,8 @@ export type ResolversParentTypes = {
   ReportersResponse: ReportersResponse;
   Scope: Scope;
   ScopesResponse: ScopesResponse;
+  SortInput: SortInput;
+  SortResponse: SortResponse;
   String: Scalars['String'];
   Supplier: Supplier;
   SuppliersResponse: SuppliersResponse;
@@ -1323,6 +1343,15 @@ export type DeleteResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FilterResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['FilterResponse'] = ResolversParentTypes['FilterResponse']
+> = {
+  field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  term?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type JobLegacyResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['JobLegacy'] = ResolversParentTypes['JobLegacy']
@@ -1398,34 +1427,18 @@ export type JobLegacyResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type JobsLegacyFilterResponseResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['JobsLegacyFilterResponse'] = ResolversParentTypes['JobsLegacyFilterResponse']
-> = {
-  field?: Resolver<
-    Maybe<ResolversTypes['JobsLegacyFilterField']>,
-    ParentType,
-    ContextType
-  >;
-  term?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type JobsLegacyResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['JobsLegacyResponse'] = ResolversParentTypes['JobsLegacyResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
-  filter?: Resolver<
-    ResolversTypes['JobsLegacyFilterResponse'],
-    ParentType,
-    ContextType
-  >;
+  filter?: Resolver<ResolversTypes['FilterResponse'], ParentType, ContextType>;
   pagination?: Resolver<
     ResolversTypes['PaginationResponse'],
     ParentType,
     ContextType
   >;
+  sort?: Resolver<ResolversTypes['SortResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1871,6 +1884,19 @@ export type ScopesResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SortResponseResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['SortResponse'] = ResolversParentTypes['SortResponse']
+> = {
+  direction?: Resolver<
+    ResolversTypes['SortDirection'],
+    ParentType,
+    ContextType
+  >;
+  field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type SupplierResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Supplier'] = ResolversParentTypes['Supplier']
@@ -2008,8 +2034,8 @@ export type Resolvers<ContextType = Context> = {
   Contractor?: ContractorResolvers<ContextType>;
   ContractorsResponse?: ContractorsResponseResolvers<ContextType>;
   DeleteResponse?: DeleteResponseResolvers<ContextType>;
+  FilterResponse?: FilterResponseResolvers<ContextType>;
   JobLegacy?: JobLegacyResolvers<ContextType>;
-  JobsLegacyFilterResponse?: JobsLegacyFilterResponseResolvers<ContextType>;
   JobsLegacyResponse?: JobsLegacyResponseResolvers<ContextType>;
   JobsLegacySendMessageResponse?: JobsLegacySendMessageResponseResolvers<ContextType>;
   LineItemLegacy?: LineItemLegacyResolvers<ContextType>;
@@ -2022,6 +2048,7 @@ export type Resolvers<ContextType = Context> = {
   ReportersResponse?: ReportersResponseResolvers<ContextType>;
   Scope?: ScopeResolvers<ContextType>;
   ScopesResponse?: ScopesResponseResolvers<ContextType>;
+  SortResponse?: SortResponseResolvers<ContextType>;
   Supplier?: SupplierResolvers<ContextType>;
   SuppliersResponse?: SuppliersResponseResolvers<ContextType>;
   WriteAreaResponse?: WriteAreaResponseResolvers<ContextType>;

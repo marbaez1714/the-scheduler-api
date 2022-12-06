@@ -1,13 +1,9 @@
 /* eslint-disable prefer-const */
 import { AuthenticationError, UserInputError } from 'apollo-server';
+import { Prisma } from '.prisma/client';
 
 import { Context } from '../context';
-import {
-  BaseDocument,
-  PrismaData,
-  PermissionsEnum,
-  FindArguments,
-} from './types';
+import { BaseDocument, PrismaData, PermissionsEnum } from './types';
 import {
   Area,
   Builder,
@@ -22,6 +18,9 @@ import {
   Reporter,
   Scope,
   Supplier,
+  FilterInput,
+  SortInput,
+  SortDirection,
 } from '../generated';
 import { GraphQLScalarType } from 'graphql';
 import { regexPatterns } from '../utils';
@@ -67,6 +66,61 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
   }
 
+  filterArgs(filter?: FilterInput) {
+    if (filter) {
+      switch (filter?.field) {
+        default:
+          return {
+            OR: [
+              {
+                [filter.field]: {
+                  contains: filter.term,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+              {
+                [filter.field]: {
+                  startsWith: filter.term,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+              {
+                [filter.field]: {
+                  endsWith: filter.term,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+              {
+                [filter.field]: {
+                  equals: filter.term,
+                  mode: Prisma.QueryMode.insensitive,
+                },
+              },
+            ],
+          };
+      }
+    }
+  }
+
+  sortingArgs(sort?: SortInput) {
+    if (sort) {
+      switch (sort.field) {
+        case 'area':
+        case 'builder':
+        case 'community':
+        case 'company':
+        case 'contractor':
+        case 'jobLegacy':
+        case 'reporter':
+        case 'scope':
+        case 'supplier':
+          return { [sort.field]: { name: sort.direction } };
+        default:
+          return { [sort.field]: sort.direction };
+      }
+    }
+  }
+
   /******************************/
   /* Pagination Response        */
   /******************************/
@@ -98,6 +152,20 @@ export class DataHandler<TClient extends keyof PrismaData> {
 
   deleteResponse<TData extends BaseDocument>(data: TData) {
     return { message: `${data.name} deleted.` };
+  }
+
+  filterResponse(filter?: FilterInput) {
+    return {
+      field: filter?.field ?? '',
+      term: filter?.term ?? '',
+    };
+  }
+
+  sortResponse(sort?: SortInput) {
+    return {
+      field: sort?.field ?? '',
+      direction: sort?.direction ?? SortDirection.Asc,
+    };
   }
 
   /******************************/

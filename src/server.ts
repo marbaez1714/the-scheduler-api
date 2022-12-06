@@ -11,7 +11,6 @@ async function main() {
     resolvers,
     context,
     cache: 'bounded',
-    introspection: true,
     csrfPrevention: true,
   });
 
