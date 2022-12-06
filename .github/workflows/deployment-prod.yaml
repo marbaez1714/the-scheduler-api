@@ -1,0 +1,32 @@
+name: deploy-api-to-test
+
+on:
+  push:
+    branches: ["test"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Prisma Deploy
+        run: yarn prisma:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_PROD }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
