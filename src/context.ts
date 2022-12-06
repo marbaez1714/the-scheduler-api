@@ -33,7 +33,6 @@ const authClient = jwksClient({
 
 // Sets the options for decoding jwt tokens
 const authOptions: jwt.VerifyOptions = {
-  audience: process.env.AUTH0_AUDIENCE,
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
 };
