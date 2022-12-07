@@ -11,6 +11,7 @@
     "@graphql-codegen/typescript-operations": "^2.5.2",
     "@graphql-codegen/typescript-resolvers": "2.7.2",
     "@types/auth0": "^2.35.3",
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "eslint": "^8.20.0",
@@ -30,11 +31,8 @@
     "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.1.4",
+    "lodash": "^4.17.21",
     "twilio": "^3.83.0"
-  },
-  "engines": {
-    "node": "18.x",
-    "yarn": "1.x"
   },
   "engines": {
     "node": "18.x",
@@ -48,6 +46,7 @@
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma migrate deploy",
     "postinstall": "yarn prisma:generate && yarn generate",
-    "seed:test": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seed.ts"
+    "seed:parse": "ts-node-dev --transpile-only --no-notify --exit-child prisma/parseData.ts",
+    "seed": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seedTables.ts"
   }
 }
