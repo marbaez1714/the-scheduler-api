@@ -5,5 +5,5 @@ node_modules
 prisma/mockData.ts
 prisma/seed.ts
 dist
-prisma/oldData/*
+prisma/oldData/*.txt
 
