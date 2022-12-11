@@ -100,6 +100,9 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
           include: { lineItems: { include: { supplier: true } } },
         },
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
 
     return { data: docList.map((doc) => this.formatContractor(doc)) };
