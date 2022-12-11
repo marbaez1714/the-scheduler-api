@@ -7,3 +7,4 @@ prisma/seed.ts
 dist
 prisma/oldData/*.txt
 
+
