@@ -267,7 +267,7 @@ const formattedScopes = createUniqueNames(scopes as OldScope[]).map(
 const formattedJobsLegacy = (jobs as OldJob[]).map((job) => ({
   id: job._id,
   name: job.address,
-  active: job.completedDate ? false : job.active || undefined,
+  active: job.active || false,
   inProgress: job.inProgress || undefined,
   isImportant: job.isImportant || undefined,
   areaId: job.areaId || undefined,
@@ -278,7 +278,7 @@ const formattedJobsLegacy = (jobs as OldJob[]).map((job) => ({
   scopeId: job.sowId || undefined,
   notes: job.comments || undefined,
   completedDate: job.completedDate ? new Date(job.completedDate) : undefined,
-  startDate: job.date ? new Date(`${job.date}T05:00:00Z`) : undefined,
+  startDate: job.date ? new Date(`${job.date}T06:00:00Z`) : undefined,
   ...metadata,
 }));
 
