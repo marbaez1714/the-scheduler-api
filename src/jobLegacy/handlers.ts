@@ -207,7 +207,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       ...rest
     } = data;
 
-    const startDateTime = startDate ? new Date(startDate) : undefined;
+    const startDateTime = startDate ? new Date(startDate) : null;
     const completeDateTime = completedDate
       ? new Date(completedDate)
       : undefined;
