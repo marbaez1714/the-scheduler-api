@@ -9,7 +9,12 @@ const parseData = async (type: string) => {
     .readFile(path.resolve(__dirname, `./oldData/${type}.txt`), {
       encoding: 'utf8',
     })
-    .then((data) => data.split('\n').map((line) => JSON.parse(line)));
+    .then((data) =>
+      data
+        .split('\n')
+        .map((line) => JSON.parse(line))
+        .reverse()
+    );
 
   await fs.writeFile(
     path.resolve(__dirname, `./oldData/${type}.json`),
