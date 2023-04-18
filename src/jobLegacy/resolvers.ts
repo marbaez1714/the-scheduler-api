@@ -50,5 +50,9 @@ export const jobLegacyResolvers: Resolvers = {
       );
       return response;
     },
+    reenableJobLegacy: async (_, args, context) => {
+      const response = await new JobLegacyDataHandler(context).reenable(args);
+      return response;
+    },
   },
 };

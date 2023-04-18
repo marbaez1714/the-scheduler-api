@@ -160,6 +160,7 @@ type Mutation {
   createJobLegacy(data: CreateJobLegacyInput!): WriteJobLegacyResponse!
   deleteLineItemLegacy(id: ID!): DeleteResponse!
   modifyJobLegacy(id: ID!, data: ModifyJobLegacyInput!): WriteJobLegacyResponse!
+  reenableJobLegacy(id: ID!): WriteJobLegacyResponse!
   sendMessageJobLegacy(
     id: ID!
     recipient: JobsLegacyMessageRecipient!
