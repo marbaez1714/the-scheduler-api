@@ -360,6 +360,7 @@ export type Mutation = {
   modifyReporter: WriteReporterResponse;
   modifyScope: WriteScopeResponse;
   modifySupplier: WriteSupplierResponse;
+  reenableJobLegacy: WriteJobLegacyResponse;
   sendMessageJobLegacy?: Maybe<JobsLegacySendMessageResponse>;
 };
 
@@ -481,6 +482,10 @@ export type MutationModifyScopeArgs = {
 
 export type MutationModifySupplierArgs = {
   data: WriteSupplierInput;
+  id: Scalars['ID'];
+};
+
+export type MutationReenableJobLegacyArgs = {
   id: Scalars['ID'];
 };
 
@@ -1651,6 +1656,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationModifySupplierArgs, 'data' | 'id'>
+  >;
+  reenableJobLegacy?: Resolver<
+    ResolversTypes['WriteJobLegacyResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationReenableJobLegacyArgs, 'id'>
   >;
   sendMessageJobLegacy?: Resolver<
     Maybe<ResolversTypes['JobsLegacySendMessageResponse']>,

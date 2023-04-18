@@ -1,3 +1,4 @@
+import { MutationReenableJobLegacyArgs } from './../generated';
 import { UserInputError } from 'apollo-server';
 
 import { DataHandler } from '../app';
@@ -241,6 +242,21 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           create: createLineItems,
           deleteMany: { id: { in: deleteLineItems } },
         },
+      },
+      include: { lineItems: { include: { supplier: true } } },
+    });
+
+    const formatted = this.formatJobLegacy(updatedDoc);
+
+    return this.writeResponse(formatted);
+  }
+
+  async reenable({ id }: MutationReenableJobLegacyArgs) {
+    const updatedDoc = await this.crud.update({
+      where: { id },
+      data: {
+        active: true,
+        completedDate: null,
       },
       include: { lineItems: { include: { supplier: true } } },
     });
