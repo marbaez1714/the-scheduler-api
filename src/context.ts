@@ -3,10 +3,9 @@ import { ContextFunction, AuthenticationError } from 'apollo-server-core';
 import { ExpressContext } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import { AuthenticationClient } from 'auth0';
 import twilio, { Twilio } from 'twilio';
 
-type DecodedToken = {
+export type DecodedUserToken = {
   permissions: string[];
   sub: string;
 };
@@ -14,7 +13,7 @@ type DecodedToken = {
 export interface Context {
   prisma: PrismaClient;
   twilio: Twilio;
-  user: DecodedToken;
+  user: DecodedUserToken;
 }
 
 // Creates the prisma client
@@ -55,12 +54,14 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({
     return {};
   }
 
-  const decodedToken = await new Promise<DecodedToken>((resolve, reject) => {
-    jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
-      err && reject(err);
-      decoded && resolve(decoded as DecodedToken);
-    });
-  });
+  const decodedToken = await new Promise<DecodedUserToken>(
+    (resolve, reject) => {
+      jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
+        err && reject(err);
+        decoded && resolve(decoded as DecodedUserToken);
+      });
+    }
+  );
 
   if (!decodedToken.permissions) {
     throw new AuthenticationError('No permissions given.');

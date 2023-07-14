@@ -17,7 +17,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     const formatted = this.formatSupplier(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteSupplierInput) {
@@ -31,7 +31,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     const formatted = this.formatSupplier(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteSupplierInput) {
@@ -42,7 +42,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     const formatted = this.formatSupplier(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -56,7 +56,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
   async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +66,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     return {
       data: docList.map((doc) => this.formatSupplier(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }

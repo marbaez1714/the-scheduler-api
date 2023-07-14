@@ -17,7 +17,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     const formatted = this.formatScope(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteScopeInput) {
@@ -31,7 +31,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     const formatted = this.formatScope(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteScopeInput) {
@@ -42,7 +42,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     const formatted = this.formatScope(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -56,7 +56,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
   async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +66,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     return {
       data: docList.map((doc) => this.formatScope(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }

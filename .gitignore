@@ -6,5 +6,5 @@ prisma/mockData.ts
 prisma/seed.ts
 dist
 prisma/oldData/*.txt
-
+coverage
 
