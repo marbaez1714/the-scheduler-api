@@ -1,117 +1,26 @@
+import {
+  generatePrismaBuilder,
+  generatePrismaCommunity,
+  generatePrismaLineItemLegacy,
+  generatePrismaReporter,
+  generatePrismaScope,
+  generatePrismaSupplier,
+  generatePrismaArea,
+  generatePrismaCompany,
+  generatePrismaJobLegacy,
+  generatePrismaContractor,
+  generateSortInput,
+  generatePaginationInput,
+} from './../__mocks__/data';
 import { createMockContext } from '../__mocks__/context';
 import { DataHandler } from '../app';
-import {
-  BuilderWithCompanyModel,
-  CommunityWithCompanyModel,
-  LineItemLegacyWithSupplierModel,
-  PermissionsEnum,
-} from '../app/types';
+import { PermissionsEnum } from '../app/types';
 import { SortDirection } from '../generated';
-import {
-  Area as AreaModel,
-  Builder as BuilderModel,
-  Community as CommunityModel,
-  Company as CompanyModel,
-  Contractor as ContractorModel,
-  JobLegacy as JobLegacyModel,
-  LineItemLegacy as LineItemLegacyModel,
-  Reporter as ReporterModel,
-  Scope as ScopeModel,
-  Supplier as SupplierModel,
-} from '@prisma/client';
 
 const mockClient = 'area';
 const mockTotalCount = 100;
-const mockCreatedTime = new Date();
-const mockUpdatedTime = new Date();
-const mockCreatedBy = 'some-user-created-id';
-const mockUpdatedBy = 'some-user-updated-id';
-const mockPaginationArgs = { page: 1, pageSize: 10 };
-const mockFilterArgs = { field: 'some-field', term: 'some-term' };
-const mockAreaSortArgs = { field: 'area', direction: SortDirection.Asc };
-const mockBuilderSortArgs = { field: 'builder', direction: SortDirection.Asc };
-const mockCommunitySortArgs = { field: 'community', direction: SortDirection.Asc };
-const mockCompanySortArgs = { field: 'company', direction: SortDirection.Asc };
-const mockContractorSortArgs = { field: 'contractor', direction: SortDirection.Asc };
-const mockJobLegacySortArgs = { field: 'jobLegacy', direction: SortDirection.Asc };
-const mockReporterSortArgs = { field: 'reporter', direction: SortDirection.Asc };
-const mockScopeSortArgs = { field: 'scope', direction: SortDirection.Asc };
-const mockSupplierSortArgs = { field: 'supplier', direction: SortDirection.Asc };
-const mockDefaultSortArgs = { field: 'some-field', direction: SortDirection.Asc };
+const mockPaginationArgs = generatePaginationInput();
 const mockBaseDocument = { name: 'some-name', id: 'some-id' };
-const mockPrismaBase = {
-  archived: false,
-  createdBy: mockCreatedBy,
-  updatedBy: mockUpdatedBy,
-  createdTime: mockCreatedTime,
-  updatedTime: mockUpdatedTime,
-  legacy: false,
-};
-const mockPrismaArea: AreaModel = {
-  ...mockPrismaBase,
-  nameSpanish: 'some-spanish-name',
-  name: 'some-area-name',
-  notes: 'some-area-notes',
-  id: 'some-area-id',
-};
-const mockPrismaCompany: CompanyModel = {
-  ...mockPrismaBase,
-  name: 'some-company-name',
-  notes: 'some-company-notes',
-  id: 'some-company-id',
-  primaryAddress: 'some-company-primary-address',
-  primaryEmail: 'some-company-primary-email',
-  primaryPhone: 'some-company-primary-phone',
-};
-const mockPrismaBuilder: BuilderWithCompanyModel = {
-  ...mockPrismaBase,
-  companyId: mockPrismaCompany.id,
-  notes: 'some-builder-notes',
-  primaryEmail: 'some-builder-primary-email',
-  primaryPhone: 'some-builder-primary-phone',
-  id: 'some-builder-id',
-  name: 'some-builder-name',
-  company: mockPrismaCompany,
-};
-const mockPrismaCommunity: CommunityWithCompanyModel = {
-  ...mockPrismaBase,
-  name: 'some-community-name',
-  notes: 'some-community-notes',
-  id: 'some-community-id',
-  companyId: mockPrismaCompany.id,
-  company: mockPrismaCompany,
-};
-const mockPrismaReporter: ReporterModel = {
-  ...mockPrismaBase,
-  name: 'some-reporter-name',
-  notes: 'some-reporter-notes',
-  id: 'some-reporter-id',
-  primaryEmail: 'some-reporter-primary-email',
-  primaryPhone: 'some-reporter-primary-phone',
-};
-const mockPrismaScope: ScopeModel = {
-  ...mockPrismaBase,
-  name: 'some-scope-name',
-  notes: 'some-scope-notes',
-  id: 'some-scope-id',
-  description: 'some-scope-description',
-  nameSpanish: 'some-scope-spanish-name',
-};
-const mockPrismaSupplier: SupplierModel = {
-  ...mockPrismaBase,
-  name: 'some-supplier-name',
-  notes: 'some-supplier-notes',
-  id: 'some-supplier-id',
-  primaryPhone: 'some-supplier-primary-phone',
-};
-const mockPrismaLineItemLegacy: LineItemLegacyWithSupplierModel = {
-  ...mockPrismaBase,
-  id: 'some-line-item-legacy-id',
-  orderNumber: 'some-line-item-legacy-order-number',
-  supplierId: mockPrismaSupplier.id,
-  supplier: mockPrismaSupplier,
-  jobId: 'some-line-item-legacy-job-id',
-};
 
 describe('DataHandler', () => {
   describe('when user is not an admin', () => {
@@ -176,13 +85,14 @@ describe('DataHandler', () => {
         });
 
         it('should return filter args if filter is passed', () => {
-          const args = appHandler.generateFilterArgs(mockFilterArgs);
+          const input = { field: 'some-field', term: 'some-term' };
+          const args = appHandler.generateFilterArgs(input);
           const expectedFilterArgs = {
             OR: [
-              { 'some-field': { contains: 'some-term', mode: 'insensitive' } },
-              { 'some-field': { startsWith: 'some-term', mode: 'insensitive' } },
-              { 'some-field': { endsWith: 'some-term', mode: 'insensitive' } },
-              { 'some-field': { equals: 'some-term', mode: 'insensitive' } },
+              { [input.field]: { contains: input.term, mode: 'insensitive' } },
+              { [input.field]: { startsWith: input.term, mode: 'insensitive' } },
+              { [input.field]: { endsWith: input.term, mode: 'insensitive' } },
+              { [input.field]: { equals: input.term, mode: 'insensitive' } },
             ],
           };
 
@@ -198,89 +108,81 @@ describe('DataHandler', () => {
         });
 
         it('should return area sort args if sort.field is area', () => {
-          const args = appHandler.generateSortingArgs(mockAreaSortArgs);
-          const expectedSortArgs = {
-            [mockAreaSortArgs.field]: { name: mockAreaSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'area' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return builder sort args if sort.field is builder', () => {
-          const args = appHandler.generateSortingArgs(mockBuilderSortArgs);
-          const expectedSortArgs = {
-            [mockBuilderSortArgs.field]: { name: mockBuilderSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'builder' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return community sort args if sort.field is community', () => {
-          const args = appHandler.generateSortingArgs(mockCommunitySortArgs);
-          const expectedSortArgs = {
-            [mockCommunitySortArgs.field]: { name: mockCommunitySortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'community' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return company sort args if sort.field is company', () => {
-          const args = appHandler.generateSortingArgs(mockCompanySortArgs);
-          const expectedSortArgs = {
-            [mockCompanySortArgs.field]: { name: mockCompanySortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'company' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return contractor sort args if sort.field is contractor', () => {
-          const args = appHandler.generateSortingArgs(mockContractorSortArgs);
-          const expectedSortArgs = {
-            [mockContractorSortArgs.field]: { name: mockContractorSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'contractor' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return jobLegacy sort args if sort.field is jobLegacy', () => {
-          const args = appHandler.generateSortingArgs(mockJobLegacySortArgs);
-          const expectedSortArgs = {
-            [mockJobLegacySortArgs.field]: { name: mockJobLegacySortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'jobLegacy' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return reporter sort args if sort.field is reporter', () => {
-          const args = appHandler.generateSortingArgs(mockReporterSortArgs);
-          const expectedSortArgs = {
-            [mockReporterSortArgs.field]: { name: mockReporterSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'reporter' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return scope sort args if sort.field is scope', () => {
-          const args = appHandler.generateSortingArgs(mockScopeSortArgs);
-          const expectedSortArgs = {
-            [mockScopeSortArgs.field]: { name: mockScopeSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'scope' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it('should return supplier sort args if sort.field is supplier', () => {
-          const args = appHandler.generateSortingArgs(mockSupplierSortArgs);
-          const expectedSortArgs = {
-            [mockSupplierSortArgs.field]: { name: mockSupplierSortArgs.direction },
-          };
+          const input = generateSortInput({ field: 'supplier' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: { name: input.direction } };
 
           expect(args).toEqual(expectedSortArgs);
         });
 
         it("should return default sort args if sort.field isn't supplier", () => {
-          const args = appHandler.generateSortingArgs(mockDefaultSortArgs);
-          const expectedSortArgs = { [mockDefaultSortArgs.field]: mockDefaultSortArgs.direction };
+          const input = generateSortInput({ field: 'some-field' });
+          const args = appHandler.generateSortingArgs(input);
+          const expectedSortArgs = { [input.field]: input.direction };
 
           expect(args).toEqual(expectedSortArgs);
         });
@@ -346,9 +248,10 @@ describe('DataHandler', () => {
         });
 
         it('should return a filter response when a filter is passed', () => {
-          const response = appHandler.generateFilterResponse(mockFilterArgs);
+          const input = { field: 'some-field', term: 'some-term' };
+          const response = appHandler.generateFilterResponse(input);
 
-          expect(response).toEqual({ field: mockFilterArgs.field, term: mockFilterArgs.term });
+          expect(response).toEqual({ field: input.field, term: input.term });
         });
       });
 
@@ -360,61 +263,123 @@ describe('DataHandler', () => {
         });
 
         it('should return a sort response when a sort is passed', () => {
-          const response = appHandler.generateSortResponse(mockDefaultSortArgs);
+          const input = generateSortInput();
+          const response = appHandler.generateSortResponse(input);
 
-          expect(response).toEqual({
-            field: mockDefaultSortArgs.field,
-            direction: mockDefaultSortArgs.direction,
-          });
+          expect(response).toEqual({ field: input.field, direction: input.direction });
         });
       });
 
       describe('formatArea', () => {
         it('should return a formatted area', () => {
-          const formattedArea = appHandler.formatArea(mockPrismaArea);
+          const area = generatePrismaArea();
+          const formattedArea = appHandler.formatArea(area);
 
           expect(formattedArea).toEqual({
-            ...mockPrismaArea,
-            createdTime: mockPrismaArea.createdTime.toJSON(),
-            updatedTime: mockPrismaArea.updatedTime.toJSON(),
+            ...area,
+            createdTime: area.createdTime.toJSON(),
+            updatedTime: area.updatedTime.toJSON(),
           });
         });
       });
 
       describe('formatBuilder', () => {
         it('should return a formatted builder', () => {
-          const formattedBuilder = appHandler.formatBuilder(mockPrismaBuilder);
+          const company = generatePrismaCompany();
+          const builder = { ...generatePrismaBuilder({ companyId: company.id }), company };
+          const formattedBuilder = appHandler.formatBuilder(builder);
 
           expect(formattedBuilder).toEqual({
-            ...mockPrismaBuilder,
-            company: appHandler.formatCompany(mockPrismaBuilder.company),
-            createdTime: mockPrismaBuilder.createdTime.toJSON(),
-            updatedTime: mockPrismaBuilder.updatedTime.toJSON(),
-          });
-        });
-      });
-
-      describe('formatCommunity', () => {
-        it('should return a formatted community', () => {
-          const formattedCommunity = appHandler.formatCommunity(mockPrismaCommunity);
-
-          expect(formattedCommunity).toEqual({
-            ...mockPrismaCommunity,
-            company: appHandler.formatCompany(mockPrismaCommunity.company),
-            createdTime: mockPrismaCommunity.createdTime.toJSON(),
-            updatedTime: mockPrismaCommunity.updatedTime.toJSON(),
+            ...builder,
+            company: appHandler.formatCompany(builder.company),
+            createdTime: builder.createdTime.toJSON(),
+            updatedTime: builder.updatedTime.toJSON(),
           });
         });
       });
 
       describe('formatCompany', () => {
         it('should return a formatted company', () => {
-          const formattedCompany = appHandler.formatCompany(mockPrismaCompany);
+          const company = generatePrismaCompany();
+          const formattedCompany = appHandler.formatCompany(company);
 
           expect(formattedCompany).toEqual({
-            ...mockPrismaCompany,
-            createdTime: mockPrismaCompany.createdTime.toJSON(),
-            updatedTime: mockPrismaCompany.updatedTime.toJSON(),
+            ...company,
+            createdTime: company.createdTime.toJSON(),
+            updatedTime: company.updatedTime.toJSON(),
+          });
+        });
+      });
+
+      describe('formatCommunity', () => {
+        it('should return a formatted community', () => {
+          const company = generatePrismaCompany();
+          const community = { ...generatePrismaCommunity({ companyId: company.id }), company };
+          const formattedCommunity = appHandler.formatCommunity(community);
+
+          expect(formattedCommunity).toEqual({
+            ...community,
+            company: appHandler.formatCompany(community.company),
+            createdTime: community.createdTime.toJSON(),
+            updatedTime: community.updatedTime.toJSON(),
+          });
+        });
+      });
+
+      describe('formatContractor', () => {
+        it('should return a formatted contractor', () => {
+          const supplier = generatePrismaSupplier();
+          const lineItems = [
+            { ...generatePrismaLineItemLegacy({ supplierId: supplier.id }), supplier },
+          ];
+          const jobsLegacy = [{ ...generatePrismaJobLegacy(), lineItems }];
+          const contractor = { ...generatePrismaContractor(), jobsLegacy };
+          const formattedContractor = appHandler.formatContractor(contractor);
+
+          expect(formattedContractor).toEqual({
+            ...contractor,
+            jobsLegacy: contractor.jobsLegacy.map((job) => appHandler.formatJobLegacy(job)),
+            createdTime: contractor.createdTime.toJSON(),
+            updatedTime: contractor.updatedTime.toJSON(),
+          });
+        });
+      });
+
+      describe('formatReporter', () => {
+        it('should return a formatted reporter', () => {
+          const reporter = generatePrismaReporter();
+          const formattedReporter = appHandler.formatReporter(reporter);
+
+          expect(formattedReporter).toEqual({
+            ...reporter,
+            createdTime: reporter.createdTime.toJSON(),
+            updatedTime: reporter.updatedTime.toJSON(),
+          });
+        });
+      });
+
+      describe('formatSupplier', () => {
+        it('should return a formatted supplier', () => {
+          const supplier = generatePrismaSupplier();
+          const formattedSupplier = appHandler.formatSupplier(supplier);
+
+          expect(formattedSupplier).toEqual({
+            ...supplier,
+            createdTime: supplier.createdTime.toJSON(),
+            updatedTime: supplier.updatedTime.toJSON(),
+          });
+        });
+      });
+
+      describe('formatScope', () => {
+        it('should return a formatted scope', () => {
+          const scope = generatePrismaScope();
+          const formattedScope = appHandler.formatScope(scope);
+
+          expect(formattedScope).toEqual({
+            ...scope,
+            createdTime: scope.createdTime.toJSON(),
+            updatedTime: scope.updatedTime.toJSON(),
           });
         });
       });
