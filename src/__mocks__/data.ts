@@ -1,16 +1,6 @@
-import {
-  Area as AreaModel,
-  Builder as BuilderModel,
-  Community as CommunityModel,
-  Contractor as ContractorModel,
-  JobLegacy as JobLegacyModel,
-  LineItemLegacy as LineItemLegacyModel,
-  Company as CompanyModel,
-  Reporter as ReporterModel,
-  Scope as ScopeModel,
-  Supplier as SupplierModel,
-} from '@prisma/client';
-import { FilterInput, Pagination, SortDirection, SortInput } from '../generated';
+import { Prisma } from '@prisma/client';
+import { Pagination, SortDirection, SortInput } from '../generated';
+import { PrismaModels } from '../app/types';
 
 const defaultDate = new Date();
 defaultDate.setHours(0, 0, 0, 0);
@@ -23,7 +13,7 @@ const mockPrismaBase = {
   updatedTime: defaultDate,
 };
 
-export const generatePrismaArea = (data?: Partial<AreaModel>): AreaModel => {
+export const generatePrismaArea = (data?: Partial<PrismaModels['area']>): PrismaModels['area'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-area-id',
@@ -38,7 +28,9 @@ export const generatePrismaArea = (data?: Partial<AreaModel>): AreaModel => {
   };
 };
 
-export const generatePrismaBuilder = (data?: Partial<BuilderModel>): BuilderModel => {
+export const generatePrismaBuilder = (
+  data?: Partial<PrismaModels['builder']>
+): PrismaModels['builder'] => {
   const defaultData = {
     ...mockPrismaBase,
     notes: 'some-builder-notes',
@@ -55,7 +47,9 @@ export const generatePrismaBuilder = (data?: Partial<BuilderModel>): BuilderMode
   };
 };
 
-export const generatePrismaCompany = (data?: Partial<CompanyModel>): CompanyModel => {
+export const generatePrismaCompany = (
+  data?: Partial<PrismaModels['company']>
+): PrismaModels['company'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-company-id',
@@ -72,7 +66,9 @@ export const generatePrismaCompany = (data?: Partial<CompanyModel>): CompanyMode
   };
 };
 
-export const generatePrismaContractor = (data?: Partial<ContractorModel>): ContractorModel => {
+export const generatePrismaContractor = (
+  data?: Partial<PrismaModels['contractor']>
+): PrismaModels['contractor'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-contractor-id',
@@ -87,7 +83,9 @@ export const generatePrismaContractor = (data?: Partial<ContractorModel>): Contr
   };
 };
 
-export const generatePrismaCommunity = (data?: Partial<CommunityModel>): CommunityModel => {
+export const generatePrismaCommunity = (
+  data?: Partial<PrismaModels['community']>
+): PrismaModels['community'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-community-id',
@@ -102,7 +100,9 @@ export const generatePrismaCommunity = (data?: Partial<CommunityModel>): Communi
   };
 };
 
-export const generatePrismaJobLegacy = (data?: Partial<JobLegacyModel>): JobLegacyModel => {
+export const generatePrismaJobLegacy = (
+  data?: Partial<PrismaModels['jobLegacy']>
+): PrismaModels['jobLegacy'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-job-legacy-id',
@@ -127,7 +127,9 @@ export const generatePrismaJobLegacy = (data?: Partial<JobLegacyModel>): JobLega
   };
 };
 
-export const generatePrismaReporter = (data?: Partial<ReporterModel>): ReporterModel => {
+export const generatePrismaReporter = (
+  data?: Partial<PrismaModels['reporter']>
+): PrismaModels['reporter'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-reporter-id',
@@ -143,7 +145,9 @@ export const generatePrismaReporter = (data?: Partial<ReporterModel>): ReporterM
   };
 };
 
-export const generatePrismaScope = (data?: Partial<ScopeModel>): ScopeModel => {
+export const generatePrismaScope = (
+  data?: Partial<PrismaModels['scope']>
+): PrismaModels['scope'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-scope-id',
@@ -159,7 +163,9 @@ export const generatePrismaScope = (data?: Partial<ScopeModel>): ScopeModel => {
   };
 };
 
-export const generatePrismaSupplier = (data?: Partial<SupplierModel>): SupplierModel => {
+export const generatePrismaSupplier = (
+  data?: Partial<PrismaModels['supplier']>
+): PrismaModels['supplier'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-supplier-id',
@@ -175,8 +181,8 @@ export const generatePrismaSupplier = (data?: Partial<SupplierModel>): SupplierM
 };
 
 export const generatePrismaLineItemLegacy = (
-  data?: Partial<LineItemLegacyModel>
-): LineItemLegacyModel => {
+  data?: Partial<PrismaModels['lineItemLegacy']>
+): PrismaModels['lineItemLegacy'] => {
   const defaultData = {
     ...mockPrismaBase,
     id: 'some-line-item-legacy-id',
@@ -213,4 +219,19 @@ export const generateSortInput = (data?: Partial<SortInput>): SortInput => {
     ...defaultData,
     ...data,
   };
+};
+
+export const generateAreaCreateInput = (
+  index: number,
+  data?: Partial<Prisma.AreaCreateInput>
+): Prisma.AreaCreateInput => {
+  const defaultData: Prisma.AreaCreateInput = {
+    name: `area-name-${index}`,
+    nameSpanish: `area-name-spanish-${index}`,
+    createdBy: `area-created-by-${index}`,
+    updatedBy: `area-updated-by-${index}`,
+    id: `area-id-${index}`,
+  };
+
+  return { ...defaultData, ...data };
 };

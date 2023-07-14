@@ -12,12 +12,12 @@ import { Context } from '../context';
 import {
   BaseDocument,
   PermissionsEnum,
-  PrismaClients,
   LineItemLegacyWithSupplierModel,
   JobLegacyWithLineItemsModel,
   ContractorWithJobsLegacyModel,
   BuilderWithCompanyModel,
   CommunityWithCompanyModel,
+  PrismaModels,
 } from './types';
 import {
   Area,
@@ -38,7 +38,7 @@ import {
   SortDirection,
 } from '../generated';
 
-export class DataHandler<TClient extends PrismaClients> {
+export class DataHandler<TClient extends keyof PrismaModels> {
   context: Context;
   client: TClient;
   crud: Context['prisma'][TClient];
@@ -135,8 +135,8 @@ export class DataHandler<TClient extends PrismaClients> {
     }
   }
 
-  generatePaginationResponse(totalCount: number, pagination?: Pagination) {
-    let response: PaginationResponse = {
+  generatePaginationResponse(totalCount: number, pagination?: Pagination): PaginationResponse {
+    let response = {
       totalCount,
       totalPages: pagination?.pageSize ? Math.ceil(totalCount / pagination.pageSize) : 1,
     };

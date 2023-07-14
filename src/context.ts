@@ -46,6 +46,7 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({ r
   const token = authHeader?.[1];
 
   if (!token) {
+    prismaClient.$disconnect();
     return {};
   }
 

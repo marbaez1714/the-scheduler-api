@@ -4,14 +4,14 @@ import { Twilio } from 'twilio';
 import { DecodedUserToken, Context } from '../context';
 
 export type MockContext = {
-  prisma: DeepMockProxy<PrismaClient>;
+  prisma: PrismaClient;
   twilio: DeepMockProxy<Twilio>;
   user: DecodedUserToken;
 };
 
 export const createMockContext = (permissions?: string[]) =>
   ({
-    prisma: mockDeep<PrismaClient>(),
+    prisma: new PrismaClient(),
     twilio: mockDeep<Twilio>(),
     user: {
       permissions: permissions ?? ['some-permission'],

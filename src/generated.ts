@@ -1,23 +1,11 @@
-import {
-  GraphQLResolveInfo,
-  GraphQLScalarType,
-  GraphQLScalarTypeConfig,
-} from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = undefined | T;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
-  [P in K]-?: NonNullable<T[P]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -855,18 +843,8 @@ export interface SubscriptionSubscriberObject<
   TContext,
   TArgs
 > {
-  subscribe: SubscriptionSubscribeFn<
-    { [key in TKey]: TResult },
-    TParent,
-    TContext,
-    TArgs
-  >;
-  resolve?: SubscriptionResolveFn<
-    TResult,
-    { [key in TKey]: TResult },
-    TContext,
-    TArgs
-  >;
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
 }
 
 export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
@@ -874,13 +852,7 @@ export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
   resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
 }
 
-export type SubscriptionObject<
-  TResult,
-  TKey extends string,
-  TParent,
-  TContext,
-  TArgs
-> =
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
   | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
   | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
 
@@ -891,9 +863,7 @@ export type SubscriptionResolver<
   TContext = {},
   TArgs = {}
 > =
-  | ((
-      ...args: any[]
-    ) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
   | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
 
 export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
@@ -910,12 +880,7 @@ export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
 
 export type NextResolverFn<T> = () => Promise<T>;
 
-export type DirectiveResolverFn<
-  TResult = {},
-  TParent = {},
-  TContext = {},
-  TArgs = {}
-> = (
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
   next: NextResolverFn<TResult>,
   parent: TParent,
   args: TArgs,
@@ -1169,11 +1134,7 @@ export type AreasResponseResolvers<
   ParentType extends ResolversParentTypes['AreasResponse'] = ResolversParentTypes['AreasResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Area']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1198,16 +1159,8 @@ export type BuilderResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryEmail?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  primaryPhone?: Resolver<
-    Maybe<ResolversTypes['PhoneNumber']>,
-    ParentType,
-    ContextType
-  >;
+  primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1218,11 +1171,7 @@ export type BuildersResponseResolvers<
   ParentType extends ResolversParentTypes['BuildersResponse'] = ResolversParentTypes['BuildersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Builder']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1231,11 +1180,7 @@ export type CommunitiesResponseResolvers<
   ParentType extends ResolversParentTypes['CommunitiesResponse'] = ResolversParentTypes['CommunitiesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Community']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1262,11 +1207,7 @@ export type CompaniesResponseResolvers<
   ParentType extends ResolversParentTypes['CompaniesResponse'] = ResolversParentTypes['CompaniesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Company']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1281,21 +1222,9 @@ export type CompanyResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryAddress?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  primaryEmail?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  primaryPhone?: Resolver<
-    Maybe<ResolversTypes['PhoneNumber']>,
-    ParentType,
-    ContextType
-  >;
+  primaryAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1309,19 +1238,11 @@ export type ContractorResolvers<
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  jobsLegacy?: Resolver<
-    Array<ResolversTypes['JobLegacy']>,
-    ParentType,
-    ContextType
-  >;
+  jobsLegacy?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<
-    ResolversTypes['PhoneNumber'],
-    ParentType,
-    ContextType
-  >;
+  primaryPhone?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1332,11 +1253,7 @@ export type ContractorsResponseResolvers<
   ParentType extends ResolversParentTypes['ContractorsResponse'] = ResolversParentTypes['ContractorsResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Contractor']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1366,66 +1283,26 @@ export type JobLegacyResolvers<
   area?: Resolver<Maybe<ResolversTypes['Area']>, ParentType, ContextType>;
   areaId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   builder?: Resolver<Maybe<ResolversTypes['Builder']>, ParentType, ContextType>;
-  builderId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  community?: Resolver<
-    Maybe<ResolversTypes['Community']>,
-    ParentType,
-    ContextType
-  >;
-  communityId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  completedDate?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  contractor?: Resolver<
-    Maybe<ResolversTypes['Contractor']>,
-    ParentType,
-    ContextType
-  >;
-  contractorId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  builderId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  community?: Resolver<Maybe<ResolversTypes['Community']>, ParentType, ContextType>;
+  communityId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  completedDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  contractor?: Resolver<Maybe<ResolversTypes['Contractor']>, ParentType, ContextType>;
+  contractorId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   inProgress?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isImportant?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  lineItems?: Resolver<
-    Array<ResolversTypes['LineItemLegacy']>,
-    ParentType,
-    ContextType
-  >;
+  lineItems?: Resolver<Array<ResolversTypes['LineItemLegacy']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  reporter?: Resolver<
-    Maybe<ResolversTypes['Reporter']>,
-    ParentType,
-    ContextType
-  >;
-  reporterId?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  reporter?: Resolver<Maybe<ResolversTypes['Reporter']>, ParentType, ContextType>;
+  reporterId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   scope?: Resolver<Maybe<ResolversTypes['Scope']>, ParentType, ContextType>;
   scopeId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  startDate?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  startDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['JobLegacyStatus'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1438,11 +1315,7 @@ export type JobsLegacyResponseResolvers<
 > = {
   data?: Resolver<Array<ResolversTypes['JobLegacy']>, ParentType, ContextType>;
   filter?: Resolver<ResolversTypes['FilterResponse'], ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   sort?: Resolver<ResolversTypes['SortResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1452,11 +1325,7 @@ export type JobsLegacySendMessageResponseResolvers<
   ParentType extends ResolversParentTypes['JobsLegacySendMessageResponse'] = ResolversParentTypes['JobsLegacySendMessageResponse']
 > = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  recipient?: Resolver<
-    ResolversTypes['JobsLegacyMessageRecipient'],
-    ParentType,
-    ContextType
-  >;
+  recipient?: Resolver<ResolversTypes['JobsLegacyMessageRecipient'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1667,10 +1536,7 @@ export type MutationResolvers<
     Maybe<ResolversTypes['JobsLegacySendMessageResponse']>,
     ParentType,
     ContextType,
-    RequireFields<
-      MutationSendMessageJobLegacyArgs,
-      'id' | 'message' | 'recipient'
-    >
+    RequireFields<MutationSendMessageJobLegacyArgs, 'id' | 'message' | 'recipient'>
   >;
 };
 
@@ -1832,16 +1698,8 @@ export type ReporterResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryEmail?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  primaryPhone?: Resolver<
-    ResolversTypes['PhoneNumber'],
-    ParentType,
-    ContextType
-  >;
+  primaryEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  primaryPhone?: Resolver<ResolversTypes['PhoneNumber'], ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1852,11 +1710,7 @@ export type ReportersResponseResolvers<
   ParentType extends ResolversParentTypes['ReportersResponse'] = ResolversParentTypes['ReportersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Reporter']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1867,11 +1721,7 @@ export type ScopeResolvers<
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1887,11 +1737,7 @@ export type ScopesResponseResolvers<
   ParentType extends ResolversParentTypes['ScopesResponse'] = ResolversParentTypes['ScopesResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Scope']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1899,11 +1745,7 @@ export type SortResponseResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['SortResponse'] = ResolversParentTypes['SortResponse']
 > = {
-  direction?: Resolver<
-    ResolversTypes['SortDirection'],
-    ParentType,
-    ContextType
-  >;
+  direction?: Resolver<ResolversTypes['SortDirection'], ParentType, ContextType>;
   field?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1919,11 +1761,7 @@ export type SupplierResolvers<
   legacy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  primaryPhone?: Resolver<
-    Maybe<ResolversTypes['PhoneNumber']>,
-    ParentType,
-    ContextType
-  >;
+  primaryPhone?: Resolver<Maybe<ResolversTypes['PhoneNumber']>, ParentType, ContextType>;
   updatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1934,11 +1772,7 @@ export type SuppliersResponseResolvers<
   ParentType extends ResolversParentTypes['SuppliersResponse'] = ResolversParentTypes['SuppliersResponse']
 > = {
   data?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType>;
-  pagination?: Resolver<
-    ResolversTypes['PaginationResponse'],
-    ParentType,
-    ContextType
-  >;
+  pagination?: Resolver<ResolversTypes['PaginationResponse'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
