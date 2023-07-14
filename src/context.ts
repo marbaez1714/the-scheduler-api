@@ -20,10 +20,7 @@ export interface Context {
 const prismaClient = new PrismaClient();
 
 // Create Twilio client
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 // Creates the jwksClient for jwt verification
 const authClient = jwksClient({
@@ -44,9 +41,7 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<ExpressContext, Context | {}> = async ({
-  req,
-}) => {
+export const context: ContextFunction<ExpressContext, Context | {}> = async ({ req }) => {
   const authHeader = req.headers.authorization?.split(' ');
   const token = authHeader?.[1];
 
@@ -54,14 +49,20 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({
     return {};
   }
 
-  const decodedToken = await new Promise<DecodedUserToken>(
-    (resolve, reject) => {
-      jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
-        err && reject(err);
-        decoded && resolve(decoded as DecodedUserToken);
-      });
-    }
-  );
+  const decodedToken = await new Promise<DecodedUserToken>((resolve, reject) => {
+    jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
+      if (err) {
+        reject(err);
+      }
+
+      if (decoded) {
+        const permissions = (decoded as Partial<DecodedUserToken>).permissions ?? [];
+        const sub = (decoded as Partial<DecodedUserToken>).sub ?? '';
+
+        resolve({ permissions, sub });
+      }
+    });
+  });
 
   if (!decodedToken.permissions) {
     throw new AuthenticationError('No permissions given.');

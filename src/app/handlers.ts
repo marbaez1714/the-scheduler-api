@@ -1,7 +1,13 @@
 /* eslint-disable prefer-const */
-import { AuthenticationError, UserInputError } from 'apollo-server';
-import { Prisma } from '.prisma/client';
-
+import { AuthenticationError } from 'apollo-server';
+import {
+  Prisma,
+  Area as AreaModel,
+  Company as CompanyModel,
+  Reporter as ReporterModel,
+  Scope as ScopeModel,
+  Supplier as SupplierModel,
+} from '@prisma/client';
 import { Context } from '../context';
 import {
   BaseDocument,
@@ -31,20 +37,6 @@ import {
   SortInput,
   SortDirection,
 } from '../generated';
-import { GraphQLScalarType } from 'graphql';
-import { regexPatterns } from '../utils';
-import {
-  Area as AreaModel,
-  Builder as BuilderModel,
-  Community as CommunityModel,
-  Company as CompanyModel,
-  Contractor as ContractorModel,
-  JobLegacy as JobLegacyModel,
-  LineItemLegacy as LineItemLegacyModel,
-  Reporter as ReporterModel,
-  Scope as ScopeModel,
-  Supplier as SupplierModel,
-} from '@prisma/client';
 
 export class DataHandler<TClient extends PrismaClients> {
   context: Context;
@@ -56,7 +48,7 @@ export class DataHandler<TClient extends PrismaClients> {
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
-    if (!context.user?.permissions?.includes(PermissionsEnum.Admin)) {
+    if (!context.user.permissions.includes(PermissionsEnum.Admin)) {
       throw new AuthenticationError('Missing permissions');
     }
     // Set context
@@ -76,7 +68,7 @@ export class DataHandler<TClient extends PrismaClients> {
   }
 
   /******************************/
-  /* Prisma Find Arguments      */
+  /* Generate Responses         */
   /******************************/
   generatePaginationArgs(pagination?: Pagination) {
     if (pagination) {
@@ -143,9 +135,6 @@ export class DataHandler<TClient extends PrismaClients> {
     }
   }
 
-  /******************************/
-  /* Pagination Response        */
-  /******************************/
   generatePaginationResponse(totalCount: number, pagination?: Pagination) {
     let response: PaginationResponse = {
       totalCount,
@@ -159,9 +148,6 @@ export class DataHandler<TClient extends PrismaClients> {
     return response;
   }
 
-  /******************************/
-  /* General Responses          */
-  /******************************/
   generateArchiveResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} archived.` };
   }
@@ -260,9 +246,9 @@ export class DataHandler<TClient extends PrismaClients> {
       // todayDate > startDate = past due
       // todayDate < startDate = planned
       // todayDate === startDate = today
-      const isPastDue = this.todayDate > startDate;
-      const isPlanned = this.todayDate < startDate;
-      const isToday = this.todayDate === startDate;
+      const isPastDue = this.todayDate.getTime() > startDate.getTime();
+      const isPlanned = this.todayDate.getTime() < startDate.getTime();
+      const isToday = this.todayDate.getTime() === startDate.getTime();
 
       if (isPastDue) {
         status = JobLegacyStatus.PastDue;
@@ -330,21 +316,3 @@ export class DataHandler<TClient extends PrismaClients> {
     };
   }
 }
-
-export const ScalarDefs = {
-  PhoneNumber: new GraphQLScalarType<string, string>({
-    name: 'PhoneNumber',
-    description: 'Formatted phone number with only numeric characters.',
-    parseValue: (value) => {
-      if (typeof value !== 'string') {
-        throw new UserInputError('Phone Number must be a string');
-      }
-
-      if (!regexPatterns.phoneNumber.test(value)) {
-        throw new UserInputError(`Invalid phone format - ${value}`);
-      }
-
-      return value;
-    },
-  }),
-};

@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { ScalarDefs } from './handlers';
+import { ScalarDefs } from './scalars';
 
 export const appResolvers: Resolvers = {
   PhoneNumber: ScalarDefs.PhoneNumber,

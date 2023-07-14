@@ -13,6 +13,7 @@ import {
 import { FilterInput, Pagination, SortDirection, SortInput } from '../generated';
 
 const defaultDate = new Date();
+defaultDate.setHours(0, 0, 0, 0);
 const mockPrismaBase = {
   archived: false,
   legacy: false,
