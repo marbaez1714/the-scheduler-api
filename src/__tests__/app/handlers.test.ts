@@ -21,18 +21,6 @@ const mockClient = 'area';
 const mockTotalCount = 100;
 const mockPaginationArgs = generatePaginationInput();
 const mockBaseDocument = { name: 'some-name', id: 'some-id' };
-
-const mockYesterdayDate = new Date();
-mockYesterdayDate.setHours(0, 0, 0, 0);
-mockYesterdayDate.setDate(mockYesterdayDate.getDate() - 1);
-
-const mockTomorrowDate = new Date();
-mockTomorrowDate.setHours(0, 0, 0, 0);
-mockTomorrowDate.setDate(mockTomorrowDate.getDate() + 1);
-
-const mockTodayDate = new Date();
-mockTodayDate.setHours(0, 0, 0, 0);
-
 const mockArea = generatePrismaArea();
 const mockCompany = generatePrismaCompany();
 const mockSupplier = generatePrismaSupplier();
@@ -41,10 +29,23 @@ const mockCommunity = generatePrismaCommunity({ companyId: mockCompany.id });
 const mockLineItem = generatePrismaLineItemLegacy({ supplierId: mockSupplier.id });
 const mockReporter = generatePrismaReporter();
 const mockContractor = generatePrismaContractor();
+const mockScope = generatePrismaScope();
+
+const mockDates = {
+  yesterday: new Date(),
+  tomorrow: new Date(),
+  today: new Date(),
+};
+mockDates.yesterday.setHours(0, 0, 0, 0);
+mockDates.yesterday.setDate(mockDates.yesterday.getDate() - 1);
+mockDates.tomorrow.setHours(0, 0, 0, 0);
+mockDates.tomorrow.setDate(mockDates.tomorrow.getDate() + 1);
+mockDates.today.setHours(0, 0, 0, 0);
 
 describe('DataHandler', () => {
   describe('when user is not an admin', () => {
     const mockContext = createMockContext();
+
     it('should throw an error', () => {
       expect(() => new DataHandler(mockContext, mockClient)).toThrowError();
     });
@@ -76,7 +77,7 @@ describe('DataHandler', () => {
       });
 
       it('should have a todayDate', () => {
-        expect(appHandler.todayDate).toEqual(mockTodayDate);
+        expect(appHandler.todayDate).toEqual(mockDates.today);
       });
     });
 
@@ -445,14 +446,13 @@ describe('DataHandler', () => {
       });
 
       describe('formatScope', () => {
-        const scope = generatePrismaScope();
-        const formattedScope = appHandler.formatScope(scope);
+        const formattedScope = appHandler.formatScope(mockScope);
 
         it('should return a formatted scope', () => {
           expect(formattedScope).toEqual({
-            ...scope,
-            createdTime: scope.createdTime.toJSON(),
-            updatedTime: scope.updatedTime.toJSON(),
+            ...mockScope,
+            createdTime: mockScope.createdTime.toJSON(),
+            updatedTime: mockScope.updatedTime.toJSON(),
           });
         });
       });
@@ -507,12 +507,12 @@ describe('DataHandler', () => {
           describe('when startDate is not null', () => {
             describe('when todayDate > startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockYesterdayDate }),
+                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.yesterday }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
 
-              it('returns a formatted job legacy with a status of JobLegacyStatus.PastDue', () => {
+              it('should return a formatted job legacy with a status of JobLegacyStatus.PastDue', () => {
                 expect(formattedJobLegacy).toEqual({
                   ...jobLegacy,
                   lineItems: formattedLineItems,
@@ -527,12 +527,12 @@ describe('DataHandler', () => {
 
             describe('when todayDate < startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockTomorrowDate }),
+                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.tomorrow }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
 
-              it('returns a formatted job legacy with a status of JobLegacyStatus.Planned', () => {
+              it('should return a formatted job legacy with a status of JobLegacyStatus.Planned', () => {
                 expect(formattedJobLegacy).toEqual({
                   ...jobLegacy,
                   lineItems: formattedLineItems,
@@ -547,12 +547,12 @@ describe('DataHandler', () => {
 
             describe('when todayDate === startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockTodayDate }),
+                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.today }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
 
-              it('returns a formatted job legacy with a status of JobLegacyStatus.Today', () => {
+              it('should return a formatted job legacy with a status of JobLegacyStatus.Today', () => {
                 expect(formattedJobLegacy).toEqual({
                   ...jobLegacy,
                   lineItems: formattedLineItems,
