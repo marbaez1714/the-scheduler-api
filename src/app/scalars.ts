@@ -1,5 +1,5 @@
-import { GraphQLScalarType } from 'graphql';
-import { UserInputError } from 'apollo-server';
+import { GraphQLError, GraphQLScalarType } from 'graphql';
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { regexPatterns } from '../utils';
 
 export const ScalarDefs = {
@@ -8,11 +8,15 @@ export const ScalarDefs = {
     description: 'Formatted phone number with only numeric characters.',
     parseValue: (value) => {
       if (typeof value !== 'string') {
-        throw new UserInputError('Phone Number must be a string');
+        throw new GraphQLError('Phone Number must be a string', {
+          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+        });
       }
 
       if (!regexPatterns.phoneNumber.test(value)) {
-        throw new UserInputError(`Invalid phone format - ${value}`);
+        throw new GraphQLError(`Invalid phone format - ${value}`, {
+          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+        });
       }
 
       return value;

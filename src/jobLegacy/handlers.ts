@@ -1,6 +1,5 @@
 import { MutationReenableJobLegacyArgs } from './../generated';
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
@@ -16,6 +15,7 @@ import {
   MutationDeleteLineItemLegacyArgs,
 } from '../generated';
 import { checkDelete } from '../utils';
+import { GraphQLError } from 'graphql';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -31,7 +31,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatJobLegacy(doc);
   }
@@ -209,9 +213,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     } = data;
 
     const startDateTime = startDate ? new Date(startDate) : startDate;
-    const completeDateTime = completedDate
-      ? new Date(completedDate)
-      : undefined;
+    const completeDateTime = completedDate ? new Date(completedDate) : undefined;
 
     const createLineItems = lineItems
       ?.filter((item) => !item.id)
@@ -266,11 +268,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return this.generateWriteResponse(formatted);
   }
 
-  async sendMessage({
-    id,
-    message,
-    recipient,
-  }: MutationSendMessageJobLegacyArgs) {
+  async sendMessage({ id, message, recipient }: MutationSendMessageJobLegacyArgs) {
     // Set up phone number
     let recipientPhone: string | undefined;
 
@@ -280,7 +278,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { contractor: true, reporter: true },
     });
 
-    if (!jobDoc) throw new UserInputError(`${id} does not exist.`);
+    if (!jobDoc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     // Set phone number
     switch (recipient) {
@@ -291,7 +293,9 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         recipientPhone = jobDoc.reporter?.primaryPhone;
         break;
       default:
-        throw new UserInputError(`${recipient} does not exist`);
+        throw new GraphQLError(`${recipient} does not exist`, {
+          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+        });
     }
 
     // Remove all non number characters

@@ -1,5 +1,3 @@
-/* eslint-disable prefer-const */
-import { AuthenticationError } from 'apollo-server';
 import {
   Prisma,
   Area as AreaModel,
@@ -37,6 +35,7 @@ import {
   SortInput,
   SortDirection,
 } from '../generated';
+import { GraphQLError } from 'graphql';
 
 export class DataHandler<TClient extends keyof PrismaModels> {
   context: Context;
@@ -49,7 +48,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
     if (!context.user.permissions.includes(PermissionsEnum.Admin)) {
-      throw new AuthenticationError('Missing permissions');
+      throw new GraphQLError('Missing permissions.', { extensions: { code: 'UNAUTHENTICATED' } });
     }
     // Set context
     this.context = context;
