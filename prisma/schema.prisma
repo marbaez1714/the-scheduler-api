@@ -10,6 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Consent {
+  NEEDED
+  PENDING
+  OPTED_IN
+  OPTED_OUT
+}
+
 model Company {
   id             String  @id @default(uuid())
   name           String  @unique
@@ -93,6 +100,7 @@ model Contractor {
   id           String  @id @default(uuid())
   name         String  @unique
   primaryPhone String
+  smsConsent   Consent @default(NEEDED)
   notes        String?
 
   jobsLegacy JobLegacy[]
@@ -127,6 +135,7 @@ model Reporter {
   id           String  @id @default(uuid())
   name         String  @unique
   primaryPhone String
+  smsConsent   Consent @default(NEEDED)
   primaryEmail String?
   notes        String?
 

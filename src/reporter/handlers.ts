@@ -1,8 +1,8 @@
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import { Pagination, WriteReporterInput } from '../generated';
+import { GraphQLError } from 'graphql';
 
 export class ReporterDataHandler extends DataHandler<'reporter'> {
   constructor(context: Context) {
@@ -48,7 +48,11 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
   async getById(id: string) {
     const doc = await this.crud.findUnique({ where: { id } });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatReporter(doc);
   }

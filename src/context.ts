@@ -1,6 +1,7 @@
+import { ContextFunction } from '@apollo/server';
+import { StandaloneServerContextFunctionArgument } from '@apollo/server/dist/esm/standalone';
 import { PrismaClient } from '@prisma/client';
-import { ContextFunction, AuthenticationError } from 'apollo-server-core';
-import { ExpressContext } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import twilio, { Twilio } from 'twilio';
@@ -41,7 +42,10 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<ExpressContext, Context | {}> = async ({ req }) => {
+export const context: ContextFunction<
+  [StandaloneServerContextFunctionArgument],
+  Context | {}
+> = async ({ req }) => {
   const authHeader = req.headers.authorization?.split(' ');
   const token = authHeader?.[1];
 
@@ -66,11 +70,11 @@ export const context: ContextFunction<ExpressContext, Context | {}> = async ({ r
   });
 
   if (!decodedToken.permissions) {
-    throw new AuthenticationError('No permissions given.');
+    throw new GraphQLError('No permissions given.', { extensions: { code: 'UNAUTHENTICATED' } });
   }
 
   if (!decodedToken.sub) {
-    throw new AuthenticationError('No user id');
+    throw new GraphQLError('No user id.', { extensions: { code: 'UNAUTHENTICATED' } });
   }
 
   return {
