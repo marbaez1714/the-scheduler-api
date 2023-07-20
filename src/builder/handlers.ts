@@ -18,7 +18,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteBuilderInput) {
@@ -33,7 +33,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteBuilderInput) {
@@ -45,7 +45,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -63,7 +63,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -73,7 +73,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     return {
       data: docList.map((doc) => this.formatBuilder(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }

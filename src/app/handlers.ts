@@ -1,9 +1,24 @@
 /* eslint-disable prefer-const */
-import { AuthenticationError, UserInputError } from 'apollo-server';
-import { Prisma } from '.prisma/client';
-
+import { AuthenticationError } from 'apollo-server';
+import {
+  Prisma,
+  Area as AreaModel,
+  Company as CompanyModel,
+  Reporter as ReporterModel,
+  Scope as ScopeModel,
+  Supplier as SupplierModel,
+} from '@prisma/client';
 import { Context } from '../context';
-import { BaseDocument, PrismaData, PermissionsEnum } from './types';
+import {
+  BaseDocument,
+  PermissionsEnum,
+  LineItemLegacyWithSupplierModel,
+  JobLegacyWithLineItemsModel,
+  ContractorWithJobsLegacyModel,
+  BuilderWithCompanyModel,
+  CommunityWithCompanyModel,
+  PrismaModels,
+} from './types';
 import {
   Area,
   Builder,
@@ -22,10 +37,8 @@ import {
   SortInput,
   SortDirection,
 } from '../generated';
-import { GraphQLScalarType } from 'graphql';
-import { regexPatterns } from '../utils';
 
-export class DataHandler<TClient extends keyof PrismaData> {
+export class DataHandler<TClient extends keyof PrismaModels> {
   context: Context;
   client: TClient;
   crud: Context['prisma'][TClient];
@@ -35,7 +48,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
-    if (!context.user?.permissions?.includes(PermissionsEnum.Admin)) {
+    if (!context.user.permissions.includes(PermissionsEnum.Admin)) {
       throw new AuthenticationError('Missing permissions');
     }
     // Set context
@@ -49,14 +62,15 @@ export class DataHandler<TClient extends keyof PrismaData> {
     // Set generic archive data
     this.archiveData = { archived: true, updatedBy: context.user.sub };
     // Set today's date to midnight
-    this.todayDate = new Date();
-    this.todayDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    this.todayDate = today;
   }
 
   /******************************/
-  /* Prisma Find Arguments      */
+  /* Generate Responses         */
   /******************************/
-  paginationArgs(pagination?: Pagination) {
+  generatePaginationArgs(pagination?: Pagination) {
     if (pagination) {
       const { page, pageSize } = pagination;
       return {
@@ -66,9 +80,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
   }
 
-  filterArgs(filter?: FilterInput) {
+  generateFilterArgs(filter?: FilterInput) {
     if (filter) {
-      switch (filter?.field) {
+      switch (filter.field) {
         default:
           return {
             OR: [
@@ -102,7 +116,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
   }
 
-  sortingArgs(sort?: SortInput) {
+  generateSortingArgs(sort?: SortInput) {
     if (sort) {
       switch (sort.field) {
         case 'area':
@@ -121,15 +135,10 @@ export class DataHandler<TClient extends keyof PrismaData> {
     }
   }
 
-  /******************************/
-  /* Pagination Response        */
-  /******************************/
-  paginationResponse(totalCount: number, pagination?: Pagination) {
-    let response: PaginationResponse = {
+  generatePaginationResponse(totalCount: number, pagination?: Pagination): PaginationResponse {
+    let response = {
       totalCount,
-      totalPages: pagination?.pageSize
-        ? Math.ceil(totalCount / pagination?.pageSize)
-        : 1,
+      totalPages: pagination?.pageSize ? Math.ceil(totalCount / pagination.pageSize) : 1,
     };
 
     if (pagination) {
@@ -139,29 +148,26 @@ export class DataHandler<TClient extends keyof PrismaData> {
     return response;
   }
 
-  /******************************/
-  /* General Responses          */
-  /******************************/
-  archiveResponse<TData extends BaseDocument>(data: TData) {
+  generateArchiveResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} archived.` };
   }
 
-  writeResponse<TData extends BaseDocument>(data: TData) {
+  generateWriteResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} written.` };
   }
 
-  deleteResponse<TData extends BaseDocument>(data: TData) {
+  generateDeleteResponse<TData extends BaseDocument>(data: TData) {
     return { message: `${data.name} deleted.` };
   }
 
-  filterResponse(filter?: FilterInput) {
+  generateFilterResponse(filter?: FilterInput) {
     return {
       field: filter?.field ?? '',
       term: filter?.term ?? '',
     };
   }
 
-  sortResponse(sort?: SortInput) {
+  generateSortResponse(sort?: SortInput) {
     return {
       field: sort?.field ?? '',
       direction: sort?.direction ?? SortDirection.Asc,
@@ -171,7 +177,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
   /******************************/
   /* Formatting                 */
   /******************************/
-  formatArea(data: PrismaData['area']): Area {
+  formatArea(data: AreaModel): Area {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -181,7 +187,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatBuilder(data: PrismaData['builder']): Builder {
+  formatBuilder(data: BuilderWithCompanyModel): Builder {
     const { createdTime, updatedTime, company, ...rest } = data;
 
     return {
@@ -192,7 +198,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatCommunity(data: PrismaData['community']): Community {
+  formatCommunity(data: CommunityWithCompanyModel): Community {
     const { createdTime, updatedTime, company, ...rest } = data;
 
     return {
@@ -203,7 +209,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatCompany(data: PrismaData['company']): Company {
+  formatCompany(data: CompanyModel): Company {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -213,7 +219,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatContractor(data: PrismaData['contractor']): Contractor {
+  formatContractor(data: ContractorWithJobsLegacyModel): Contractor {
     const { jobsLegacy, createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -224,16 +230,9 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatJobLegacy(data: PrismaData['jobLegacy']): JobLegacy {
-    const {
-      lineItems,
-      startDate,
-      completedDate,
-      createdTime,
-      updatedTime,
-      inProgress,
-      ...rest
-    } = data;
+  formatJobLegacy(data: JobLegacyWithLineItemsModel): JobLegacy {
+    const { lineItems, startDate, completedDate, createdTime, updatedTime, inProgress, ...rest } =
+      data;
 
     // By default the job is will call
     let status: JobLegacyStatus = JobLegacyStatus.WillCall;
@@ -241,16 +240,27 @@ export class DataHandler<TClient extends keyof PrismaData> {
     // if the job is in progress, override all other statuses
     if (inProgress) {
       status = JobLegacyStatus.InProgress;
-    } else if (startDate) {
+    }
+
+    if (!inProgress && startDate) {
       // todayDate > startDate = past due
       // todayDate < startDate = planned
       // todayDate === startDate = today
-      status =
-        this.todayDate > startDate
-          ? JobLegacyStatus.PastDue
-          : this.todayDate < startDate
-          ? JobLegacyStatus.Planned
-          : JobLegacyStatus.Today;
+      const isPastDue = this.todayDate.getTime() > startDate.getTime();
+      const isPlanned = this.todayDate.getTime() < startDate.getTime();
+      const isToday = this.todayDate.getTime() === startDate.getTime();
+
+      if (isPastDue) {
+        status = JobLegacyStatus.PastDue;
+      }
+
+      if (isPlanned) {
+        status = JobLegacyStatus.Planned;
+      }
+
+      if (isToday) {
+        status = JobLegacyStatus.Today;
+      }
     }
 
     return {
@@ -265,7 +275,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatLineItemLegacy(data: PrismaData['lineItemLegacy']): LineItemLegacy {
+  formatLineItemLegacy(data: LineItemLegacyWithSupplierModel): LineItemLegacy {
     const { createdTime, updatedTime, supplier, ...rest } = data;
 
     return {
@@ -276,7 +286,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatReporter(data: PrismaData['reporter']): Reporter {
+  formatReporter(data: ReporterModel): Reporter {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -286,7 +296,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatScope(data: PrismaData['scope']): Scope {
+  formatScope(data: ScopeModel): Scope {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -296,7 +306,7 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 
-  formatSupplier(data: PrismaData['supplier']): Supplier {
+  formatSupplier(data: SupplierModel): Supplier {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -306,21 +316,3 @@ export class DataHandler<TClient extends keyof PrismaData> {
     };
   }
 }
-
-export const ScalarDefs = {
-  PhoneNumber: new GraphQLScalarType<string, string>({
-    name: 'PhoneNumber',
-    description: 'Formatted phone number with only numeric characters.',
-    parseValue: (value) => {
-      if (typeof value !== 'string') {
-        throw new UserInputError('Phone Number must be a string');
-      }
-
-      if (!regexPatterns.phoneNumber.test(value)) {
-        throw new UserInputError(`Invalid phone format - ${value}`);
-      }
-
-      return value;
-    },
-  }),
-};

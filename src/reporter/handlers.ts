@@ -17,7 +17,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteReporterInput) {
@@ -31,7 +31,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteReporterInput) {
@@ -42,7 +42,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -56,7 +56,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
   async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +66,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     return {
       data: docList.map((doc) => this.formatReporter(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }

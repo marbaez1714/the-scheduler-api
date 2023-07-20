@@ -49,7 +49,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           active: true,
           contractorId: id || null,
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           area: true,
@@ -60,24 +60,24 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           scope: true,
           contractor: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({
         where: {
           active: true,
           contractorId: id || null,
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
       }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -86,7 +86,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       this.crud.findMany({
         where: {
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           contractor: true,
@@ -97,17 +97,17 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({ where: { archived: !!archived } }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -123,7 +123,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         where: {
           archived: !!archived,
           active,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           contractor: true,
@@ -134,23 +134,23 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({
         where: {
           archived: !!archived,
           active,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
       }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -164,7 +164,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
     const formatted = this.formatJobLegacy(archivedDoc);
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create({ data }: MutationCreateJobLegacyArgs) {
@@ -191,7 +191,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(newJob);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify({ id, data }: MutationModifyJobLegacyArgs) {
@@ -248,7 +248,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async reenable({ id }: MutationReenableJobLegacyArgs) {
@@ -263,7 +263,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async sendMessage({
