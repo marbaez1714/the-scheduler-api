@@ -1,42 +1,34 @@
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import express from 'express';
 import http from 'http';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import { loadFiles } from '@graphql-tools/load-files';
-import { context, Context } from './context';
-import { resolvers } from './resolvers';
+import { setupApolloServer } from './apolloServer';
+import { setupSMSResponse } from './smsResponse';
 
-async function main() {
-  // Configure Port
-  const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
+async function startServer() {
+  try {
+    // Configure Port
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 
-  // setup express
-  const app = express();
+    // setup express
+    const app = express();
 
-  // setup http server
-  const httpServer = http.createServer(app);
+    // setup http server
+    const httpServer = http.createServer(app);
 
-  // setup apollo server with ApolloServerPluginDrainHttpServer
-  const server = new ApolloServer<Context | {}>({
-    typeDefs: await loadFiles('src/**/*.graphql'),
-    resolvers,
-    cache: 'bounded',
-    csrfPrevention: true,
-    allowBatchedHttpRequests: true,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
+    // setup graphql router
+    app.use('/graphql', await setupApolloServer(httpServer));
 
-  // start apollo server
-  await server.start();
+    // setup sms router
+    app.use('/sms', setupSMSResponse());
 
-  // setup express middleware
-  app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(server, { context }));
+    // start the http server
+    await httpServer.listen(port);
 
-  // start the http server
-  await new Promise<void>((resolve) => httpServer.listen(port, resolve));
+    // log the port
+    console.log(`Server is running on http://localhost:${port}`);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
 
-main();
+startServer();
