@@ -10,8 +10,21 @@ export const setupSMSResponse = () => {
   router.use(bodyParser.urlencoded({ extended: false }));
 
   if (isTest) {
-    router.post('/', twilio.webhook(), async (req, res) => {
-      console.log(JSON.stringify(req.body, null, 2));
+    router.post('/', async (req, res) => {
+      const twilioSignature = req.headers['x-twilio-signature'] as string;
+      const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN as string;
+      const url = `${process.env.URL}/sms`;
+      const isTwilioRequestValid = twilio.validateRequest(
+        twilioAuthToken,
+        twilioSignature,
+        url,
+        req.body
+      );
+
+      if (!isTwilioRequestValid) {
+        return res.status(403).send('Invalid Twilio request.');
+      }
+
       const twilioResponse = new twilio.twiml.MessagingResponse();
 
       twilioResponse.message(`Success! Message from: ${req.body.From}`);

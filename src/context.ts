@@ -29,7 +29,7 @@ const authClient = jwksClient({
 const authOptions: jwt.VerifyOptions = {
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
-  audience: process.env.AUTH0_AUD,
+  audience: process.env.URL,
 };
 
 // Gets the public key for jwt token
