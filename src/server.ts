@@ -1,48 +1,34 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { loadFiles } from '@graphql-tools/load-files';
+import express from 'express';
+import http from 'http';
+import { setupApolloServer } from './apolloServer';
+import { setupSMSResponse } from './smsResponse';
 
-import { context, Context } from './context';
-import { resolvers } from './resolvers';
+async function startServer() {
+  try {
+    // Configure Port
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 
-async function main() {
-  const server = new ApolloServer<Context | {}>({
-    typeDefs: await loadFiles('src/**/*.graphql'),
-    resolvers,
-    cache: 'bounded',
-    csrfPrevention: true,
-    allowBatchedHttpRequests: true,
-  });
+    // setup express
+    const app = express();
 
-  const port = process.env.PORT || 4000;
+    // setup http server
+    const httpServer = http.createServer(app);
 
-  const { url } = await startStandaloneServer(server, {
-    context,
-    listen: { port: parseInt(`${port}`) },
-  });
+    // setup graphql router
+    app.use('/graphql', await setupApolloServer(httpServer));
 
-  console.log(`🚀  Server ready at ${url}`);
+    // setup sms router
+    app.use('/sms', setupSMSResponse());
+
+    // start the http server
+    await httpServer.listen(port);
+
+    // log the port
+    console.log(`Server is running on http://localhost:${port}`);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
 
-main();
-
-// async function mainOld() {
-//   // Setup Server
-//   const server = new ApolloServerOld({
-//     typeDefs: await loadFiles('src/**/*.graphql'),
-//     resolvers,
-//     context,
-//     cache: 'bounded',
-//     csrfPrevention: true,
-//   });
-
-//   // Configure Port
-//   const port = process.env.PORT || 4000;
-
-//   // Start Server
-//   server.listen({ port }).then(({ url }) => {
-//     console.log(`🚀  Server ready at ${url}`);
-//   });
-// }
-
-// mainOld();
+startServer();
