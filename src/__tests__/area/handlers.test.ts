@@ -20,7 +20,6 @@ describe('AreaDataHandler', () => {
   });
 
   afterAll(async () => {
-    await mockContext.prisma.area.deleteMany();
     await mockContext.prisma.$disconnect();
   });
 

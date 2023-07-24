@@ -20,9 +20,6 @@ export interface Context {
 // Creates the prisma client
 const prismaClient = new PrismaClient();
 
-// Create Twilio client
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
 // Creates the jwksClient for jwt verification
 const authClient = jwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
@@ -79,7 +76,7 @@ export const context: ContextFunction<
 
   return {
     prisma: prismaClient,
-    twilio: twilioClient,
+    twilio: twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN),
     user: {
       permissions: decodedToken.permissions,
       sub: decodedToken.sub,

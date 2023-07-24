@@ -288,17 +288,17 @@ const formattedLineItems = getLineItems(jobs as OldJob[]);
 /* Seed Data                  */
 /******************************/
 const main = async () => {
-  await prisma.area.deleteMany();
-  await prisma.builder.deleteMany();
-  await prisma.community.deleteMany();
-  await prisma.company.deleteMany();
-  await prisma.contractor.deleteMany();
-  await prisma.lineItemLegacy.deleteMany();
-  await prisma.jobLegacy.deleteMany();
-  await prisma.reporter.deleteMany();
-  await prisma.scope.deleteMany();
-  await prisma.supplier.deleteMany();
-
+  // await prisma.area.deleteMany();
+  // await prisma.builder.deleteMany();
+  // await prisma.community.deleteMany();
+  // await prisma.company.deleteMany();
+  // await prisma.contractor.deleteMany();
+  // await prisma.lineItemLegacy.deleteMany();
+  // await prisma.jobLegacy.deleteMany();
+  // await prisma.reporter.deleteMany();
+  // await prisma.scope.deleteMany();
+  // await prisma.supplier.deleteMany();
+ 
   const { count: areasCount } = await prisma.area.createMany({
     data: formattedAreas,
   });
