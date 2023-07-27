@@ -304,7 +304,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     // Send message
     await this.context.twilio.messages.create({
       to: formattedPhoneNumber,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
       body: message,
     });
 
