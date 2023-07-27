@@ -1,8 +1,8 @@
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import { Pagination, WriteContractorInput } from '../generated';
+import { GraphQLError } from 'graphql';
 
 export class ContractorDataHandler extends DataHandler<'contractor'> {
   constructor(context: Context) {
@@ -20,7 +20,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     const formatted = this.formatContractor(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteContractorInput) {
@@ -37,7 +37,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     const formatted = this.formatContractor(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteContractorInput) {
@@ -51,7 +51,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     const formatted = this.formatContractor(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -62,7 +62,11 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatContractor(doc);
   }
@@ -75,7 +79,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
         },
       },
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -85,7 +89,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     return {
       data: docList.map((doc) => this.formatContractor(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 

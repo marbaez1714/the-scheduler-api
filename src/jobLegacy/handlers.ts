@@ -1,6 +1,5 @@
 import { MutationReenableJobLegacyArgs } from './../generated';
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
@@ -16,6 +15,7 @@ import {
   MutationDeleteLineItemLegacyArgs,
 } from '../generated';
 import { checkDelete } from '../utils';
+import { GraphQLError } from 'graphql';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -31,7 +31,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatJobLegacy(doc);
   }
@@ -49,7 +53,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           active: true,
           contractorId: id || null,
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           area: true,
@@ -60,24 +64,24 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           scope: true,
           contractor: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({
         where: {
           active: true,
           contractorId: id || null,
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
       }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -86,7 +90,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       this.crud.findMany({
         where: {
           archived: !!archived,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           contractor: true,
@@ -97,17 +101,17 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({ where: { archived: !!archived } }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -123,7 +127,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         where: {
           archived: !!archived,
           active,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
         include: {
           contractor: true,
@@ -134,23 +138,23 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           reporter: true,
           scope: true,
         },
-        orderBy: this.sortingArgs(sort),
-        ...this.paginationArgs(pagination),
+        orderBy: this.generateSortingArgs(sort),
+        ...this.generatePaginationArgs(pagination),
       }),
       this.crud.count({
         where: {
           archived: !!archived,
           active,
-          ...this.filterArgs(filter),
+          ...this.generateFilterArgs(filter),
         },
       }),
     ]);
 
     return {
       data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.paginationResponse(count, pagination),
-      filter: this.filterResponse(filter),
-      sort: this.sortResponse(sort),
+      pagination: this.generatePaginationResponse(count, pagination),
+      filter: this.generateFilterResponse(filter),
+      sort: this.generateSortResponse(sort),
     };
   }
 
@@ -164,7 +168,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
     const formatted = this.formatJobLegacy(archivedDoc);
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create({ data }: MutationCreateJobLegacyArgs) {
@@ -191,7 +195,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(newJob);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify({ id, data }: MutationModifyJobLegacyArgs) {
@@ -209,9 +213,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     } = data;
 
     const startDateTime = startDate ? new Date(startDate) : startDate;
-    const completeDateTime = completedDate
-      ? new Date(completedDate)
-      : undefined;
+    const completeDateTime = completedDate ? new Date(completedDate) : undefined;
 
     const createLineItems = lineItems
       ?.filter((item) => !item.id)
@@ -248,7 +250,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async reenable({ id }: MutationReenableJobLegacyArgs) {
@@ -263,14 +265,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     const formatted = this.formatJobLegacy(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
-  async sendMessage({
-    id,
-    message,
-    recipient,
-  }: MutationSendMessageJobLegacyArgs) {
+  async sendMessage({ id, message, recipient }: MutationSendMessageJobLegacyArgs) {
     // Set up phone number
     let recipientPhone: string | undefined;
 
@@ -280,7 +278,11 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { contractor: true, reporter: true },
     });
 
-    if (!jobDoc) throw new UserInputError(`${id} does not exist.`);
+    if (!jobDoc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     // Set phone number
     switch (recipient) {
@@ -291,7 +293,9 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
         recipientPhone = jobDoc.reporter?.primaryPhone;
         break;
       default:
-        throw new UserInputError(`${recipient} does not exist`);
+        throw new GraphQLError(`${recipient} does not exist`, {
+          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+        });
     }
 
     // Remove all non number characters

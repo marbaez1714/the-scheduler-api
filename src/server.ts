@@ -1,26 +1,34 @@
-import { ApolloServer } from 'apollo-server';
-import { loadFiles } from '@graphql-tools/load-files';
+import express from 'express';
+import http from 'http';
+import { setupApolloServer } from './apolloServer';
+import { setupSMSResponse } from './smsResponse';
 
-import { context } from './context';
-import { resolvers } from './resolvers';
+async function startServer() {
+  try {
+    // Configure Port
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 
-async function main() {
-  // Setup Server
-  const server = new ApolloServer({
-    typeDefs: await loadFiles('src/**/*.graphql'),
-    resolvers,
-    context,
-    cache: 'bounded',
-    csrfPrevention: true,
-  });
+    // setup express
+    const app = express();
 
-  // Configure Port
-  const port = process.env.PORT || 4000;
+    // setup http server
+    const httpServer = http.createServer(app);
 
-  // Start Server
-  server.listen({ port }).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+    // setup graphql router
+    app.use('/graphql', await setupApolloServer(httpServer));
+
+    // setup sms router
+    app.use('/sms', setupSMSResponse());
+
+    // start the http server
+    await httpServer.listen(port);
+
+    // log the port
+    console.log(`Server is running on http://localhost:${port}`);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
 
-main();
+startServer();

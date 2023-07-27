@@ -1,12 +1,12 @@
+import { ContextFunction } from '@apollo/server';
+import { StandaloneServerContextFunctionArgument } from '@apollo/server/dist/esm/standalone';
 import { PrismaClient } from '@prisma/client';
-import { ContextFunction, AuthenticationError } from 'apollo-server-core';
-import { ExpressContext } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import { AuthenticationClient } from 'auth0';
 import twilio, { Twilio } from 'twilio';
 
-type DecodedToken = {
+export type DecodedUserToken = {
   permissions: string[];
   sub: string;
 };
@@ -14,17 +14,11 @@ type DecodedToken = {
 export interface Context {
   prisma: PrismaClient;
   twilio: Twilio;
-  user: DecodedToken;
+  user: DecodedUserToken;
 }
 
 // Creates the prisma client
 const prismaClient = new PrismaClient();
-
-// Create Twilio client
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
 
 // Creates the jwksClient for jwt verification
 const authClient = jwksClient({
@@ -35,7 +29,6 @@ const authClient = jwksClient({
 const authOptions: jwt.VerifyOptions = {
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
-  audience: process.env.AUTH0_AUD,
 };
 
 // Gets the public key for jwt token
@@ -45,34 +38,44 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<ExpressContext, Context | {}> = async ({
-  req,
-}) => {
+export const context: ContextFunction<
+  [StandaloneServerContextFunctionArgument],
+  Context | {}
+> = async ({ req }) => {
   const authHeader = req.headers.authorization?.split(' ');
   const token = authHeader?.[1];
 
   if (!token) {
+    prismaClient.$disconnect();
     return {};
   }
 
-  const decodedToken = await new Promise<DecodedToken>((resolve, reject) => {
+  const decodedToken = await new Promise<DecodedUserToken>((resolve, reject) => {
     jwt.verify(token, authGetKey, authOptions, (err, decoded) => {
-      err && reject(err);
-      decoded && resolve(decoded as DecodedToken);
+      if (err) {
+        reject(err);
+      }
+
+      if (decoded) {
+        const permissions = (decoded as Partial<DecodedUserToken>).permissions ?? [];
+        const sub = (decoded as Partial<DecodedUserToken>).sub ?? '';
+
+        resolve({ permissions, sub });
+      }
     });
   });
 
   if (!decodedToken.permissions) {
-    throw new AuthenticationError('No permissions given.');
+    throw new GraphQLError('No permissions given.', { extensions: { code: 'UNAUTHENTICATED' } });
   }
 
   if (!decodedToken.sub) {
-    throw new AuthenticationError('No user id');
+    throw new GraphQLError('No user id.', { extensions: { code: 'UNAUTHENTICATED' } });
   }
 
   return {
     prisma: prismaClient,
-    twilio: twilioClient,
+    twilio: twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN),
     user: {
       permissions: decodedToken.permissions,
       sub: decodedToken.sub,

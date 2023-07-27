@@ -1,10 +1,11 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.test
 .vscode
 prisma/mockData.ts
 prisma/seed.ts
 dist
 prisma/oldData/*.txt
-
+coverage
 

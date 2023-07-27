@@ -1,8 +1,8 @@
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import { Pagination, WriteReporterInput } from '../generated';
+import { GraphQLError } from 'graphql';
 
 export class ReporterDataHandler extends DataHandler<'reporter'> {
   constructor(context: Context) {
@@ -17,7 +17,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteReporterInput) {
@@ -31,7 +31,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteReporterInput) {
@@ -42,13 +42,17 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     const formatted = this.formatReporter(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
     const doc = await this.crud.findUnique({ where: { id } });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatReporter(doc);
   }
@@ -56,7 +60,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
   async getMany(archived?: boolean, pagination?: Pagination) {
     const findArgs = {
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -66,7 +70,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     return {
       data: docList.map((doc) => this.formatReporter(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }

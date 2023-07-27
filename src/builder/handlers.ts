@@ -1,8 +1,8 @@
-import { UserInputError } from 'apollo-server';
-
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import { Pagination, WriteBuilderInput } from '../generated';
+import { GraphQLError } from 'graphql';
 
 export class BuilderDataHandler extends DataHandler<'builder'> {
   constructor(context: Context) {
@@ -18,7 +18,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(archivedDoc);
 
-    return this.archiveResponse(formatted);
+    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteBuilderInput) {
@@ -33,7 +33,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(newDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteBuilderInput) {
@@ -45,7 +45,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     const formatted = this.formatBuilder(updatedDoc);
 
-    return this.writeResponse(formatted);
+    return this.generateWriteResponse(formatted);
   }
 
   async getById(id: string) {
@@ -54,7 +54,11 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    if (!doc) throw new UserInputError(`${id} does not exist.`);
+    if (!doc) {
+      throw new GraphQLError(`${id} does not exist.`, {
+        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+      });
+    }
 
     return this.formatBuilder(doc);
   }
@@ -63,7 +67,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },
-      ...this.paginationArgs(pagination),
+      ...this.generatePaginationArgs(pagination),
     };
 
     const [docList, count] = await this.context.prisma.$transaction([
@@ -73,7 +77,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     return {
       data: docList.map((doc) => this.formatBuilder(doc)),
-      pagination: this.paginationResponse(count, pagination),
+      pagination: this.generatePaginationResponse(count, pagination),
     };
   }
 }
