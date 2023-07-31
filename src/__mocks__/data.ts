@@ -1,4 +1,4 @@
-import { Consent, Prisma } from '@prisma/client';
+import { SMSConsent, Prisma } from '@prisma/client';
 import { Pagination, SortDirection, SortInput } from '../generated';
 import { PrismaModels } from '../app/types';
 
@@ -75,7 +75,7 @@ export const generatePrismaContractor = (
     name: 'some-contractor-name',
     notes: 'some-contractor-notes',
     primaryPhone: 'some-contractor-primary-phone',
-    smsConsent: Consent.NEEDED,
+    smsConsent: SMSConsent.NEEDED,
   };
 
   return {
@@ -138,7 +138,7 @@ export const generatePrismaReporter = (
     notes: 'some-reporter-notes',
     primaryEmail: 'some-reporter-primary-email',
     primaryPhone: 'some-reporter-primary-phone',
-    smsConsent: Consent.NEEDED,
+    smsConsent: SMSConsent.NEEDED,
   };
 
   return {
