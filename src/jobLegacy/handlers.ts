@@ -16,6 +16,7 @@ import {
 } from '../generated';
 import { checkDelete } from '../utils';
 import { GraphQLError } from 'graphql';
+import { GRAPHQL_ERRORS } from '../constants';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -269,9 +270,6 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   }
 
   async sendMessage({ id, message, recipient }: MutationSendMessageJobLegacyArgs) {
-    // Set up phone number
-    let recipientPhone: string | undefined;
-
     // Find associated job
     const jobDoc = await this.crud.findUnique({
       where: { id },
@@ -279,34 +277,28 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     });
 
     if (!jobDoc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.jobNotFound;
     }
 
     // Set phone number
     switch (recipient) {
       case JobsLegacyMessageRecipient.Contractor:
-        recipientPhone = jobDoc.contractor?.primaryPhone;
+        if (!jobDoc.contractor) {
+          throw GRAPHQL_ERRORS.contractorNotFound;
+        }
+
+        await this.sendContractorSMSById(jobDoc.contractor.id, message);
         break;
       case JobsLegacyMessageRecipient.Reporter:
-        recipientPhone = jobDoc.reporter?.primaryPhone;
+        if (!jobDoc.reporter) {
+          throw GRAPHQL_ERRORS.reporterNotFound;
+        }
+
+        await this.sendReporterSMSById(jobDoc.reporter.id, message);
         break;
       default:
-        throw new GraphQLError(`${recipient} does not exist`, {
-          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-        });
+        throw GRAPHQL_ERRORS.invalidRecipient;
     }
-
-    // Remove all non number characters
-    const formattedPhoneNumber = `+1${recipientPhone?.replace(/\D/g, '')}`;
-
-    // Send message
-    await this.context.twilio.messages.create({
-      to: formattedPhoneNumber,
-      messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
-      body: message,
-    });
 
     return { message, recipient };
   }

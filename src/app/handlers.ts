@@ -5,6 +5,7 @@ import {
   Reporter as ReporterModel,
   Scope as ScopeModel,
   Supplier as SupplierModel,
+  SMSConsent,
 } from '@prisma/client';
 import { Context } from '../context';
 import {
@@ -36,6 +37,8 @@ import {
   SortDirection,
 } from '../generated';
 import { GraphQLError } from 'graphql';
+import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
+import { delay } from 'lodash';
 
 export class DataHandler<TClient extends keyof PrismaModels> {
   context: Context;
@@ -44,6 +47,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   userId: string;
   archiveData: { archived: true; updatedBy: string };
   todayDate: Date;
+  messagingServiceSid: string;
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
@@ -64,6 +68,8 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     this.todayDate = today;
+    // Set messaging service sid
+    this.messagingServiceSid = `${process.env.TWILIO_MESSAGING_SERVICE_SID}`;
   }
 
   /******************************/
@@ -314,4 +320,118 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       updatedTime: updatedTime.toJSON(),
     };
   }
+
+  //region - Shared
+
+  async sendSMSConsentRequest(phoneNumber: string) {
+    const payload = {
+      to: phoneNumber,
+      messagingServiceSid: this.messagingServiceSid,
+      body: SMS_MESSAGES.optInRequest,
+    };
+
+    return this.context.twilio.messages.create(payload, (err) => {
+      if (err) throw GRAPHQL_ERRORS.smsConsentRequestFailed;
+    });
+  }
+
+  async sendSMSConsentReminder(phoneNumber: string) {
+    const payload = {
+      to: phoneNumber,
+      messagingServiceSid: this.messagingServiceSid,
+      body: SMS_MESSAGES.optInReminder,
+    };
+
+    return this.context.twilio.messages.create(payload, (err) => {
+      if (err) throw GRAPHQL_ERRORS.smsConsentReminderFailed;
+    });
+  }
+
+  async sendContractorSMSById(id: string, message: string) {
+    const contractor = await this.context.prisma.contractor.findUnique({ where: { id } });
+    const formattedPhoneNumber = `+1${contractor?.primaryPhone.replace(/\D/g, '')}`;
+    const smsPayload = {
+      to: formattedPhoneNumber,
+      messagingServiceSid: this.messagingServiceSid,
+      body: message,
+    };
+
+    if (!contractor) {
+      throw GRAPHQL_ERRORS.contractorNotFound;
+    }
+
+    if (!message) {
+      throw GRAPHQL_ERRORS.messageRequired;
+    }
+
+    switch (contractor.smsConsent) {
+      case SMSConsent.NEEDED:
+        await this.sendSMSConsentRequest(formattedPhoneNumber);
+        await this.context.prisma.contractor.update({
+          where: { id },
+          data: { smsConsent: SMSConsent.PENDING },
+        });
+        break;
+      case SMSConsent.PENDING:
+        await this.sendSMSConsentReminder(formattedPhoneNumber);
+        break;
+      case SMSConsent.OPTED_OUT:
+        throw GRAPHQL_ERRORS.contractorSMSOptedOut;
+      default:
+        break;
+    }
+
+    delay(() => {
+      // delay the message by 500ms to ensure the consent request is sent first
+    }, 500);
+
+    return this.context.twilio.messages.create(smsPayload, (err) => {
+      if (err) throw GRAPHQL_ERRORS.contractorSMSFailed;
+    });
+  }
+
+  async sendReporterSMSById(id: string, message: string) {
+    const reporter = await this.context.prisma.reporter.findUnique({ where: { id } });
+    const formattedPhoneNumber = `+1${reporter?.primaryPhone.replace(/\D/g, '')}`;
+    const smsPayload = {
+      to: formattedPhoneNumber,
+      messagingServiceSid: this.messagingServiceSid,
+      body: message,
+    };
+
+    if (!reporter) {
+      throw GRAPHQL_ERRORS.reporterNotFound;
+    }
+
+    if (!message) {
+      throw GRAPHQL_ERRORS.messageRequired;
+    }
+
+    switch (reporter.smsConsent) {
+      case SMSConsent.NEEDED:
+        await this.sendSMSConsentRequest(formattedPhoneNumber);
+        await this.context.prisma.reporter.update({
+          where: { id },
+          data: { smsConsent: SMSConsent.PENDING },
+        });
+        break;
+      case SMSConsent.PENDING:
+        await this.sendSMSConsentReminder(formattedPhoneNumber);
+        break;
+      case SMSConsent.OPTED_OUT:
+        throw GRAPHQL_ERRORS.reporterSMSOptedOut;
+      default:
+        break;
+    }
+
+    delay(() => {
+      // delay the message by 500ms to ensure the consent request is sent first
+    }, 500);
+
+    return this.context.twilio.messages.create(smsPayload, (err) => {
+      if (err) throw GRAPHQL_ERRORS.reporterSMSFailed;
+    });
+  }
+
+  //endregion
 }

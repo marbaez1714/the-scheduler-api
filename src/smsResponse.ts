@@ -34,7 +34,7 @@ const twilioWebhookRequestHandler: express.RequestHandler = async (req, res) => 
     // Create a Twilio response
     const twilioResponse = new twilio.twiml.MessagingResponse();
     // Response message
-    const responseMessage = isOptIn ? SMS_MESSAGES.optIn : SMS_MESSAGES.optOut;
+    const responseMessage = isOptIn ? SMS_MESSAGES.optInResponse : SMS_MESSAGES.outOutResponse;
     // Prisma transaction helpers
     const searchCondition = { primaryPhone: messagePhoneNumber };
     const updateData = { smsConsent: isOptIn ? SMSConsent.OPTED_IN : SMSConsent.OPTED_OUT };

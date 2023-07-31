@@ -1,6 +1,6 @@
-import { GraphQLError, GraphQLScalarType } from 'graphql';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { GraphQLScalarType } from 'graphql';
 import { regexPatterns } from '../utils';
+import { GRAPHQL_ERRORS } from '../constants';
 
 export const ScalarDefs = {
   PhoneNumber: new GraphQLScalarType<string, string>({
@@ -9,16 +9,12 @@ export const ScalarDefs = {
     parseValue: (value) => {
       // Check if the value is a string
       if (typeof value !== 'string') {
-        throw new GraphQLError('Phone Number must be a string', {
-          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-        });
+        throw GRAPHQL_ERRORS.phoneNumberMustBeString;
       }
 
       // Check if the value is a valid phone number
       if (!regexPatterns.phoneNumber.test(value)) {
-        throw new GraphQLError(`Invalid phone format - ${value}`, {
-          extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-        });
+        throw GRAPHQL_ERRORS.phoneNumberFormatInvalid(value);
       }
 
       // Remove all special characters and return the value
