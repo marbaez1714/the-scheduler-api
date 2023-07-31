@@ -2,201 +2,227 @@ import { SMSConsent, Prisma } from '@prisma/client';
 import { Pagination, SortDirection, SortInput } from '../generated';
 import { PrismaModels } from '../app/types';
 
-const defaultDate = new Date();
-defaultDate.setHours(0, 0, 0, 0);
-const mockPrismaBase = {
-  archived: false,
-  legacy: false,
-  createdBy: 'some-user-created-id',
-  updatedBy: 'some-user-updated-id',
-  createdTime: defaultDate,
-  updatedTime: defaultDate,
-};
+// Default created time is January 1, 2023
+const defaultCreatedTime = new Date(2023, 0, 1, 0, 0, 0, 0);
 
-export const generatePrismaArea = (data?: Partial<PrismaModels['area']>): PrismaModels['area'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-area-id',
-    nameSpanish: 'some-spanish-name',
-    name: 'some-area-name',
-    notes: 'some-area-notes',
+// Default updated time is January 15, 2023
+const defaultUpdatedTime = new Date(2023, 0, 15, 0, 0, 0, 0);
+
+export const generateDBArea = (
+  index: number,
+  data?: Partial<PrismaModels['area']>
+): PrismaModels['area'] => {
+  const defaultData: PrismaModels['area'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-area-id-${index}`,
+    nameSpanish: `some-spanish-name-${index}`,
+    name: `some-area-name-${index}`,
+    notes: null,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaBuilder = (
+export const generateDBBuilder = (
+  index: number,
   data?: Partial<PrismaModels['builder']>
 ): PrismaModels['builder'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    notes: 'some-builder-notes',
-    primaryEmail: 'some-builder-primary-email',
-    primaryPhone: 'some-builder-primary-phone',
-    id: 'some-builder-id',
-    name: 'some-builder-name',
-    companyId: 'some-company-id',
+  const defaultData: PrismaModels['builder'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    notes: null,
+    companyId: `some-company-id-${index}`,
+    id: `some-builder-id-${index}`,
+    name: `some-builder-name-${index}`,
+    primaryEmail: null,
+    primaryPhone: null,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaCompany = (
+export const generateDBCompany = (
+  index: number,
   data?: Partial<PrismaModels['company']>
 ): PrismaModels['company'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-company-id',
-    name: 'some-company-name',
-    notes: 'some-company-notes',
-    primaryAddress: 'some-company-primary-address',
-    primaryEmail: 'some-company-primary-email',
-    primaryPhone: 'some-company-primary-phone',
+  const defaultData: PrismaModels['company'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-company-id-${index}`,
+    name: `some-company-name-${index}`,
+    notes: null,
+    primaryAddress: null,
+    primaryEmail: null,
+    primaryPhone: null,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaContractor = (
+export const generateDBContractor = (
+  index: number,
   data?: Partial<PrismaModels['contractor']>
 ): PrismaModels['contractor'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-contractor-id',
-    name: 'some-contractor-name',
-    notes: 'some-contractor-notes',
-    primaryPhone: 'some-contractor-primary-phone',
+  const defaultData: PrismaModels['contractor'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-contractor-id-${index}`,
+    name: `some-contractor-name-${index}`,
+    notes: null,
+    primaryPhone: `some-contractor-primary-phone-${index}`,
     smsConsent: SMSConsent.NEEDED,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaCommunity = (
+export const generateDBCommunity = (
+  index: number,
   data?: Partial<PrismaModels['community']>
 ): PrismaModels['community'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-community-id',
-    name: 'some-community-name',
-    notes: 'some-community-notes',
-    companyId: 'some-company-id',
+  const defaultData: PrismaModels['community'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-community-id-${index}`,
+    name: `some-community-name-${index}`,
+    notes: null,
+    companyId: `some-company-id-${index}`,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaJobLegacy = (
+export const generateDBJobLegacy = (
+  index: number,
   data?: Partial<PrismaModels['jobLegacy']>
 ): PrismaModels['jobLegacy'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-job-legacy-id',
-    name: 'some-job-legacy-name',
-    notes: 'some-job-legacy-notes',
+  const defaultData: PrismaModels['jobLegacy'] = {
+    archived: false,
+    legacy: false,
     active: true,
-    areaId: 'some-area-id',
-    builderId: 'some-builder-id',
-    communityId: 'some-community-id',
-    contractorId: 'some-contractor-id',
-    scopeId: 'some-scope-id',
-    completedDate: defaultDate,
-    startDate: defaultDate,
-    inProgress: true,
-    reporterId: 'some-reporter-id',
-    isImportant: true,
+    areaId: null,
+    builderId: null,
+    communityId: null,
+    contractorId: null,
+    reporterId: null,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-job-legacy-id-${index}`,
+    name: `some-job-legacy-name-${index}`,
+    notes: null,
+    inProgress: false,
+    isImportant: false,
+    completedDate: null,
+    scopeId: null,
+    startDate: null,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaReporter = (
+export const generateDBReporter = (
+  index: number,
   data?: Partial<PrismaModels['reporter']>
 ): PrismaModels['reporter'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-reporter-id',
-    name: 'some-reporter-name',
-    notes: 'some-reporter-notes',
-    primaryEmail: 'some-reporter-primary-email',
-    primaryPhone: 'some-reporter-primary-phone',
+  const defaultData: PrismaModels['reporter'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-reporter-id-${index}`,
+    name: `some-reporter-name-${index}`,
+    notes: null,
+    primaryPhone: `some-reporter-primary-phone-${index}`,
     smsConsent: SMSConsent.NEEDED,
+    primaryEmail: null,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaScope = (
+export const generateDBScope = (
+  index: number,
   data?: Partial<PrismaModels['scope']>
 ): PrismaModels['scope'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-scope-id',
-    name: 'some-scope-name',
-    nameSpanish: 'some-scope-spanish-name',
-    notes: 'some-scope-notes',
-    description: 'some-scope-description',
+  const defaultData: PrismaModels['scope'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedTime: defaultUpdatedTime,
+    id: `some-scope-id-${index}`,
+    name: `some-scope-name-${index}`,
+    notes: null,
+    description: null,
+    nameSpanish: `some-scope-name-spanish-${index}`,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaSupplier = (
+export const generateDBSupplier = (
+  index: number,
   data?: Partial<PrismaModels['supplier']>
 ): PrismaModels['supplier'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-supplier-id',
-    name: 'some-supplier-name',
-    notes: 'some-supplier-notes',
-    primaryPhone: 'some-supplier-primary-phone',
+  const defaultData: PrismaModels['supplier'] = {
+    archived: false,
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    createdTime: defaultCreatedTime,
+    updatedBy: `some-user-updated-id-${index}`,
+    updatedTime: defaultUpdatedTime,
+    id: `some-supplier-id-${index}`,
+    name: `some-supplier-name-${index}`,
+    notes: null,
+    primaryPhone: `some-supplier-primary-phone-${index}`,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
-export const generatePrismaLineItemLegacy = (
+export const generateDBLineItemLegacy = (
+  index: number,
   data?: Partial<PrismaModels['lineItemLegacy']>
 ): PrismaModels['lineItemLegacy'] => {
-  const defaultData = {
-    ...mockPrismaBase,
-    id: 'some-line-item-legacy-id',
-    orderNumber: 'some-line-item-legacy-order-number',
-    supplierId: 'some-supplier-id',
-    jobId: 'some-line-item-legacy-job-id',
+  const defaultData: PrismaModels['lineItemLegacy'] = {
+    legacy: false,
+    createdBy: `some-user-created-id-${index}`,
+    createdTime: defaultCreatedTime,
+    id: `some-line-item-legacy-id-${index}`,
+    jobId: `some-job-legacy-id-${index}`,
+    orderNumber: `some-line-item-legacy-order-number-${index}`,
+    supplierId: `some-supplier-id-${index}`,
+    updatedBy: `some-user-updated-id-${index}`,
+    updatedTime: defaultUpdatedTime,
   };
 
-  return {
-    ...defaultData,
-    ...data,
-  };
+  return { ...defaultData, ...data };
 };
 
 export const generatePaginationInput = (data?: Partial<Pagination>): Pagination => {
@@ -221,19 +247,4 @@ export const generateSortInput = (data?: Partial<SortInput>): SortInput => {
     ...defaultData,
     ...data,
   };
-};
-
-export const generateAreaCreateInput = (
-  index: number,
-  data?: Partial<Prisma.AreaCreateInput>
-): Prisma.AreaCreateInput => {
-  const defaultData: Prisma.AreaCreateInput = {
-    name: `area-name-${index}`,
-    nameSpanish: `area-name-spanish-${index}`,
-    createdBy: `area-created-by-${index}`,
-    updatedBy: `area-updated-by-${index}`,
-    id: `area-id-${index}`,
-  };
-
-  return { ...defaultData, ...data };
 };

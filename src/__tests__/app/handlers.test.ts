@@ -1,16 +1,16 @@
 import {
-  generatePrismaBuilder,
-  generatePrismaCommunity,
-  generatePrismaLineItemLegacy,
-  generatePrismaReporter,
-  generatePrismaScope,
-  generatePrismaSupplier,
-  generatePrismaArea,
-  generatePrismaCompany,
-  generatePrismaJobLegacy,
-  generatePrismaContractor,
   generateSortInput,
   generatePaginationInput,
+  generateDBArea,
+  generateDBCompany,
+  generateDBJobLegacy,
+  generateDBSupplier,
+  generateDBBuilder,
+  generateDBCommunity,
+  generateDBLineItemLegacy,
+  generateDBReporter,
+  generateDBContractor,
+  generateDBScope,
 } from '../../__mocks__/data';
 import { createMockContext } from '../../__mocks__/context';
 import { DataHandler } from '../../app';
@@ -21,15 +21,15 @@ const mockClient = 'area';
 const mockTotalCount = 100;
 const mockPaginationArgs = generatePaginationInput();
 const mockBaseDocument = { name: 'some-name', id: 'some-id' };
-const mockArea = generatePrismaArea();
-const mockCompany = generatePrismaCompany();
-const mockSupplier = generatePrismaSupplier();
-const mockBuilder = generatePrismaBuilder({ companyId: mockCompany.id });
-const mockCommunity = generatePrismaCommunity({ companyId: mockCompany.id });
-const mockLineItem = generatePrismaLineItemLegacy({ supplierId: mockSupplier.id });
-const mockReporter = generatePrismaReporter();
-const mockContractor = generatePrismaContractor();
-const mockScope = generatePrismaScope();
+const mockArea = generateDBArea(0);
+const mockCompany = generateDBCompany(0);
+const mockSupplier = generateDBSupplier(0);
+const mockBuilder = generateDBBuilder(0, { companyId: mockCompany.id });
+const mockCommunity = generateDBCommunity(0, { companyId: mockCompany.id });
+const mockLineItem = generateDBLineItemLegacy(0, { supplierId: mockSupplier.id });
+const mockReporter = generateDBReporter(0);
+const mockContractor = generateDBContractor(0);
+const mockScope = generateDBScope(0);
 
 const mockDates = {
   yesterday: new Date(),
@@ -404,7 +404,7 @@ describe('DataHandler', () => {
       describe('formatContractor', () => {
         const jobsLegacy = [
           {
-            ...generatePrismaJobLegacy(),
+            ...generateDBJobLegacy(0),
             lineItems: [{ ...mockLineItem, supplier: mockSupplier }],
           },
         ];
@@ -465,7 +465,7 @@ describe('DataHandler', () => {
 
         describe('when inProgress is true', () => {
           const jobLegacy = {
-            ...generatePrismaJobLegacy({ inProgress: true, completedDate: null }),
+            ...generateDBJobLegacy(0, { inProgress: true, completedDate: null }),
             lineItems,
           };
           const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
@@ -486,7 +486,7 @@ describe('DataHandler', () => {
         describe('when inProgress is false', () => {
           describe('when startDate is null', () => {
             const jobLegacy = {
-              ...generatePrismaJobLegacy({ inProgress: false, startDate: null }),
+              ...generateDBJobLegacy(0, { inProgress: false, startDate: null }),
               lineItems,
             };
             const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
@@ -507,7 +507,7 @@ describe('DataHandler', () => {
           describe('when startDate is not null', () => {
             describe('when todayDate > startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.yesterday }),
+                ...generateDBJobLegacy(0, { inProgress: false, startDate: mockDates.yesterday }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
@@ -527,7 +527,7 @@ describe('DataHandler', () => {
 
             describe('when todayDate < startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.tomorrow }),
+                ...generateDBJobLegacy(0, { inProgress: false, startDate: mockDates.tomorrow }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
@@ -547,7 +547,7 @@ describe('DataHandler', () => {
 
             describe('when todayDate === startDate', () => {
               const jobLegacy = {
-                ...generatePrismaJobLegacy({ inProgress: false, startDate: mockDates.today }),
+                ...generateDBJobLegacy(0, { inProgress: false, startDate: mockDates.today }),
                 lineItems,
               };
               const formattedJobLegacy = appHandler.formatJobLegacy(jobLegacy);
