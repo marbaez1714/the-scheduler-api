@@ -46,7 +46,6 @@ export const context: ContextFunction<
   const token = authHeader?.[1];
 
   if (!token) {
-    prismaClient.$disconnect();
     return {};
   }
 

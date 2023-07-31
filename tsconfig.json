@@ -8,6 +8,14 @@
     "outDir": "dist",
     "sourceMap": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-  }
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules",
+    "src/__tests__/**",
+    "src/__mocks__/**",
+    "jest.config.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
 }
