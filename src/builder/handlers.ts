@@ -16,7 +16,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = this.formatBuilder(archivedDoc);
+    const formatted = this.formatBuilderWithCompany(archivedDoc);
 
     return this.generateArchiveResponse(formatted);
   }
@@ -31,7 +31,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = this.formatBuilder(newDoc);
+    const formatted = this.formatBuilderWithCompany(newDoc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -43,7 +43,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = this.formatBuilder(updatedDoc);
+    const formatted = this.formatBuilderWithCompany(updatedDoc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -60,7 +60,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       });
     }
 
-    return this.formatBuilder(doc);
+    return this.formatBuilderWithCompany(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination) {
@@ -76,7 +76,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatBuilder(doc)),
+      data: docList.map((doc) => this.formatBuilderWithCompany(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

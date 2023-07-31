@@ -66,4 +66,7 @@ export const GRAPHQL_ERRORS = {
   jobNotFound: new GraphQLError('Job not found.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
+  invalidRecipientType: new GraphQLError('Invalid recipient type.', {
+    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+  }),
 };

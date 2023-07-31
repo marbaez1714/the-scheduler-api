@@ -287,14 +287,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           throw GRAPHQL_ERRORS.contractorNotFound;
         }
 
-        await this.sendContractorSMSById(jobDoc.contractor.id, message);
+        await this.sendSMS(jobDoc.contractor, recipient, message);
         break;
       case JobsLegacyMessageRecipient.Reporter:
         if (!jobDoc.reporter) {
           throw GRAPHQL_ERRORS.reporterNotFound;
         }
 
-        await this.sendReporterSMSById(jobDoc.reporter.id, message);
+        await this.sendSMS(jobDoc.reporter, recipient, message);
         break;
       default:
         throw GRAPHQL_ERRORS.invalidRecipient;

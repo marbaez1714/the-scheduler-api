@@ -355,12 +355,12 @@ describe('DataHandler', () => {
         });
       });
 
-      describe('formatBuilder', () => {
+      describe('formatBuilderWithCompany', () => {
         const builder = {
           ...mockBuilder,
           company: mockCompany,
         };
-        const formattedBuilder = appHandler.formatBuilder(builder);
+        const formattedBuilder = appHandler.formatBuilderWithCompany(builder);
 
         it('should return a formatted builder', () => {
           expect(formattedBuilder).toEqual({

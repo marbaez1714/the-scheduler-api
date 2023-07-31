@@ -1,12 +1,4 @@
-import {
-  Prisma,
-  Area as AreaModel,
-  Company as CompanyModel,
-  Reporter as ReporterModel,
-  Scope as ScopeModel,
-  Supplier as SupplierModel,
-  SMSConsent,
-} from '@prisma/client';
+import { Prisma, SMSConsent } from '@prisma/client';
 import { Context } from '../context';
 import {
   BaseDocument,
@@ -182,7 +174,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   /******************************/
   /* Formatting                 */
   /******************************/
-  formatArea(data: AreaModel): Area {
+  formatArea(data: PrismaModels['area']): Area {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -192,7 +184,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  formatBuilder(data: BuilderWithCompanyModel): Builder {
+  formatBuilderWithCompany(data: BuilderWithCompanyModel): Builder {
     const { createdTime, updatedTime, company, ...rest } = data;
 
     return {
@@ -214,7 +206,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  formatCompany(data: CompanyModel): Company {
+  formatCompany(data: PrismaModels['company']): Company {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -291,7 +283,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  formatReporter(data: ReporterModel): Reporter {
+  formatReporter(data: PrismaModels['reporter']): Reporter {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -301,7 +293,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  formatScope(data: ScopeModel): Scope {
+  formatScope(data: PrismaModels['scope']): Scope {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -311,7 +303,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  formatSupplier(data: SupplierModel): Supplier {
+  formatSupplier(data: PrismaModels['supplier']): Supplier {
     const { createdTime, updatedTime, ...rest } = data;
 
     return {
@@ -323,60 +315,78 @@ export class DataHandler<TClient extends keyof PrismaModels> {
 
   //region - Shared
 
-  async sendSMSConsentRequest(phoneNumber: string) {
-    const payload = {
-      to: phoneNumber,
-      messagingServiceSid: this.messagingServiceSid,
-      body: SMS_MESSAGES.optInRequest,
-    };
-
-    return this.context.twilio.messages.create(payload, (err) => {
-      if (err) throw GRAPHQL_ERRORS.smsConsentRequestFailed;
-    });
-  }
-
-  async sendSMSConsentReminder(phoneNumber: string) {
-    const payload = {
-      to: phoneNumber,
-      messagingServiceSid: this.messagingServiceSid,
-      body: SMS_MESSAGES.optInReminder,
-    };
-
-    return this.context.twilio.messages.create(payload, (err) => {
-      if (err) throw GRAPHQL_ERRORS.smsConsentReminderFailed;
-    });
-  }
-
-  async sendContractorSMSById(id: string, message: string) {
-    const contractor = await this.context.prisma.contractor.findUnique({ where: { id } });
-    const formattedPhoneNumber = `+1${contractor?.primaryPhone.replace(/\D/g, '')}`;
-    const smsPayload = {
-      to: formattedPhoneNumber,
-      messagingServiceSid: this.messagingServiceSid,
-      body: message,
-    };
-
-    if (!contractor) {
-      throw GRAPHQL_ERRORS.contractorNotFound;
+  async sendSMS(
+    recipient: { id: string; smsConsent: SMSConsent; primaryPhone: string },
+    recipientType: 'contractor' | 'reporter',
+    message: string
+  ) {
+    // Errors
+    if (!recipient.primaryPhone) {
+      throw GRAPHQL_ERRORS.phoneNumberRequired;
     }
 
     if (!message) {
       throw GRAPHQL_ERRORS.messageRequired;
     }
 
-    switch (contractor.smsConsent) {
+    if (recipientType !== 'contractor' && recipientType !== 'reporter') {
+      throw GRAPHQL_ERRORS.invalidRecipientType;
+    }
+
+    // Format phone number
+    const formattedPhoneNumber = `+1${recipient.primaryPhone.replace(/\D/g, '')}`;
+
+    // Check if the recipient has consented to receive SMS messages
+    switch (recipient.smsConsent) {
       case SMSConsent.NEEDED:
-        await this.sendSMSConsentRequest(formattedPhoneNumber);
-        await this.context.prisma.contractor.update({
-          where: { id },
-          data: { smsConsent: SMSConsent.PENDING },
-        });
+        await this.context.twilio.messages.create(
+          {
+            to: formattedPhoneNumber,
+            messagingServiceSid: this.messagingServiceSid,
+            body: SMS_MESSAGES.optInRequest,
+          },
+          (err) => {
+            if (err) throw GRAPHQL_ERRORS.smsConsentRequestFailed;
+          }
+        );
+
+        if (recipientType === 'contractor') {
+          await this.context.prisma.contractor.update({
+            where: { id: recipient.id },
+            data: { smsConsent: SMSConsent.PENDING },
+          });
+        }
+
+        if (recipientType === 'reporter') {
+          await this.context.prisma.reporter.update({
+            where: { id: recipient.id },
+            data: { smsConsent: SMSConsent.PENDING },
+          });
+        }
+
         break;
       case SMSConsent.PENDING:
-        await this.sendSMSConsentReminder(formattedPhoneNumber);
+        await this.context.twilio.messages.create(
+          {
+            to: formattedPhoneNumber,
+            messagingServiceSid: this.messagingServiceSid,
+            body: SMS_MESSAGES.optInReminder,
+          },
+          (err) => {
+            if (err) throw GRAPHQL_ERRORS.smsConsentReminderFailed;
+          }
+        );
         break;
       case SMSConsent.OPTED_OUT:
-        throw GRAPHQL_ERRORS.contractorSMSOptedOut;
+        if (recipientType === 'contractor') {
+          throw GRAPHQL_ERRORS.contractorSMSOptedOut;
+        }
+
+        if (recipientType === 'reporter') {
+          throw GRAPHQL_ERRORS.reporterSMSOptedOut;
+        }
+
+        break;
       default:
         break;
     }
@@ -385,52 +395,19 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       // delay the message by 500ms to ensure the consent request is sent first
     }, 500);
 
-    return this.context.twilio.messages.create(smsPayload, (err) => {
-      if (err) throw GRAPHQL_ERRORS.contractorSMSFailed;
-    });
-  }
+    // Send the message
+    return this.context.twilio.messages.create(
+      { to: formattedPhoneNumber, messagingServiceSid: this.messagingServiceSid, body: message },
+      (err) => {
+        if (err && recipientType === 'contractor') {
+          throw GRAPHQL_ERRORS.contractorSMSFailed;
+        }
 
-  async sendReporterSMSById(id: string, message: string) {
-    const reporter = await this.context.prisma.reporter.findUnique({ where: { id } });
-    const formattedPhoneNumber = `+1${reporter?.primaryPhone.replace(/\D/g, '')}`;
-    const smsPayload = {
-      to: formattedPhoneNumber,
-      messagingServiceSid: this.messagingServiceSid,
-      body: message,
-    };
-
-    if (!reporter) {
-      throw GRAPHQL_ERRORS.reporterNotFound;
-    }
-
-    if (!message) {
-      throw GRAPHQL_ERRORS.messageRequired;
-    }
-
-    switch (reporter.smsConsent) {
-      case SMSConsent.NEEDED:
-        await this.sendSMSConsentRequest(formattedPhoneNumber);
-        await this.context.prisma.reporter.update({
-          where: { id },
-          data: { smsConsent: SMSConsent.PENDING },
-        });
-        break;
-      case SMSConsent.PENDING:
-        await this.sendSMSConsentReminder(formattedPhoneNumber);
-        break;
-      case SMSConsent.OPTED_OUT:
-        throw GRAPHQL_ERRORS.reporterSMSOptedOut;
-      default:
-        break;
-    }
-
-    delay(() => {
-      // delay the message by 500ms to ensure the consent request is sent first
-    }, 500);
-
-    return this.context.twilio.messages.create(smsPayload, (err) => {
-      if (err) throw GRAPHQL_ERRORS.reporterSMSFailed;
-    });
+        if (err && recipientType === 'reporter') {
+          throw GRAPHQL_ERRORS.reporterSMSFailed;
+        }
+      }
+    );
   }
 
   //endregion
