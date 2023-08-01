@@ -28,7 +28,6 @@ import {
   SortInput,
   SortDirection,
 } from '../generated';
-import { GraphQLError } from 'graphql';
 import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
 import { delay } from 'lodash';
 
@@ -44,7 +43,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
     if (!context.user.permissions.includes(PermissionsEnum.Admin)) {
-      throw new GraphQLError('Missing permissions.', { extensions: { code: 'UNAUTHENTICATED' } });
+      throw GRAPHQL_ERRORS.missingPermissions;
     }
     // Set context
     this.context = context;
@@ -174,15 +173,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   /******************************/
   /* Formatting                 */
   /******************************/
-  formatArea(data: PrismaModels['area']): Area {
-    const { createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
 
   formatBuilderWithCompany(data: BuilderWithCompanyModel): Builder {
     const { createdTime, updatedTime, company, ...rest } = data;
@@ -313,7 +303,142 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  //region - Shared
+  //#region - DB Data Formatting
+
+  formatDBArea(data: PrismaModels['area']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBBuilder(data: PrismaModels['builder']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBCommunity(data: PrismaModels['community']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBCompany(data: PrismaModels['company']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBContractor(data: PrismaModels['contractor']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBJobLegacy(data: PrismaModels['jobLegacy']) {
+    const { createdTime, updatedTime, completedDate, startDate, ...rest } = data;
+
+    // By default the job is will call
+    let status: JobLegacyStatus = JobLegacyStatus.WillCall;
+
+    // if the job is in progress, override all other statuses
+    if (rest.inProgress) {
+      status = JobLegacyStatus.InProgress;
+    }
+
+    if (!rest.inProgress && startDate) {
+      // todayDate > startDate = past due
+      // todayDate < startDate = planned
+      // todayDate === startDate = today
+      const isPastDue = this.todayDate.getTime() > startDate.getTime();
+      const isPlanned = this.todayDate.getTime() < startDate.getTime();
+      const isToday = this.todayDate.getTime() === startDate.getTime();
+
+      if (isPastDue) {
+        status = JobLegacyStatus.PastDue;
+      }
+
+      if (isPlanned) {
+        status = JobLegacyStatus.Planned;
+      }
+
+      if (isToday) {
+        status = JobLegacyStatus.Today;
+      }
+    }
+
+    return {
+      ...rest,
+      status,
+      startDate: startDate?.toJSON() ?? null,
+      completedDate: completedDate?.toJSON() ?? null,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBReporter(data: PrismaModels['reporter']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBScope(data: PrismaModels['scope']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBSupplier(data: PrismaModels['supplier']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  formatDBLineItemLegacy(data: PrismaModels['lineItemLegacy']) {
+    const { createdTime, updatedTime, ...rest } = data;
+
+    return {
+      ...rest,
+      createdTime: createdTime.toJSON(),
+      updatedTime: updatedTime.toJSON(),
+    };
+  }
+
+  //#endregion
+  //#region - Shared
 
   async sendSMS(
     recipient: { id: string; smsConsent: SMSConsent; primaryPhone: string },
@@ -410,5 +535,5 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     );
   }
 
-  //endregion
+  //#endregion
 }

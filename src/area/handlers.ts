@@ -1,7 +1,14 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { Pagination, WriteAreaInput } from '../generated';
+import {
+  ArchiveAreaResponse,
+  Area,
+  AreasResponse,
+  Pagination,
+  WriteAreaInput,
+  WriteAreaResponse,
+} from '../generated';
 import { GraphQLError } from 'graphql';
 
 export class AreaDataHandler extends DataHandler<'area'> {
@@ -9,18 +16,18 @@ export class AreaDataHandler extends DataHandler<'area'> {
     super(context, 'area');
   }
 
-  async archive(id: string) {
+  async archive(id: string): Promise<ArchiveAreaResponse> {
     const archivedDoc = await this.crud.update({
       where: { id },
       data: this.archiveData,
     });
 
-    const formatted = this.formatArea(archivedDoc);
+    const formatted = this.formatDBArea(archivedDoc);
 
     return this.generateArchiveResponse(formatted);
   }
 
-  async create(data: WriteAreaInput) {
+  async create(data: WriteAreaInput): Promise<WriteAreaResponse> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
@@ -29,23 +36,23 @@ export class AreaDataHandler extends DataHandler<'area'> {
       },
     });
 
-    const formatted = this.formatArea(newDoc);
+    const formatted = this.formatDBArea(newDoc);
 
     return this.generateWriteResponse(formatted);
   }
 
-  async modify(id: string, data: WriteAreaInput) {
+  async modify(id: string, data: WriteAreaInput): Promise<WriteAreaResponse> {
     const updatedDoc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
     });
 
-    const formatted = this.formatArea(updatedDoc);
+    const formatted = this.formatDBArea(updatedDoc);
 
     return this.generateWriteResponse(formatted);
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Area> {
     const doc = await this.crud.findUnique({ where: { id } });
 
     if (!doc) {
@@ -54,10 +61,10 @@ export class AreaDataHandler extends DataHandler<'area'> {
       });
     }
 
-    return this.formatArea(doc);
+    return this.formatDBArea(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination) {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<AreasResponse> {
     const findArgs = {
       where: { archived: !!archived },
       ...this.generatePaginationArgs(pagination),
@@ -69,7 +76,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatArea(doc)),
+      data: docList.map((doc) => this.formatDBArea(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

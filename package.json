@@ -56,9 +56,7 @@
     "postinstall": "yarn prisma:generate && yarn generate",
     "seed:parse": "ts-node-dev --transpile-only --no-notify --exit-child prisma/parseData.ts",
     "seed": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seedTables.ts",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
     "jest:test": "dotenv -e .env.test -- jest --runInBand",
-    "test": "yarn docker:up && yarn prisma:deploy:test && yarn jest:test && yarn docker:down"
+    "test": "docker-compose up -d && yarn prisma:deploy:test && yarn jest:test && docker-compose down"
   }
 }

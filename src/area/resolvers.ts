@@ -8,10 +8,7 @@ export const areaResolvers: Resolvers = {
       return response;
     },
     areas: async (_, { archived, pagination }, context) => {
-      const response = await new AreaDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new AreaDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

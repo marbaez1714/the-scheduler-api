@@ -1,7 +1,14 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { Pagination, WriteBuilderInput } from '../generated';
+import {
+  ArchiveBuilderResponse,
+  Builder,
+  BuildersResponse,
+  Pagination,
+  WriteBuilderInput,
+  WriteBuilderResponse,
+} from '../generated';
 import { GraphQLError } from 'graphql';
 
 export class BuilderDataHandler extends DataHandler<'builder'> {
@@ -9,7 +16,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     super(context, 'builder');
   }
 
-  async archive(id: string) {
+  async archive(id: string): Promise<ArchiveBuilderResponse> {
     const archivedDoc = await this.crud.update({
       where: { id },
       data: this.archiveData,
@@ -21,7 +28,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     return this.generateArchiveResponse(formatted);
   }
 
-  async create(data: WriteBuilderInput) {
+  async create(data: WriteBuilderInput): Promise<WriteBuilderResponse> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
@@ -36,7 +43,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     return this.generateWriteResponse(formatted);
   }
 
-  async modify(id: string, data: WriteBuilderInput) {
+  async modify(id: string, data: WriteBuilderInput): Promise<WriteBuilderResponse> {
     const updatedDoc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
@@ -48,7 +55,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     return this.generateWriteResponse(formatted);
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Builder> {
     const doc = await this.crud.findUnique({
       where: { id },
       include: { company: true },
@@ -63,7 +70,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     return this.formatBuilderWithCompany(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination) {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<BuildersResponse> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },

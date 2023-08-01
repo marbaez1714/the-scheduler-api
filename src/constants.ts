@@ -69,4 +69,10 @@ export const GRAPHQL_ERRORS = {
   invalidRecipientType: new GraphQLError('Invalid recipient type.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
+  missingPermissions: new GraphQLError('Missing permissions.', {
+    extensions: { code: 'UNAUTHENTICATED' },
+  }),
+  missingToken: new GraphQLError('Missing token.', {
+    extensions: { code: 'UNAUTHENTICATED' },
+  }),
 };
