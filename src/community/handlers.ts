@@ -1,28 +1,43 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { Pagination, WriteCommunityInput } from '../generated';
-import { GraphQLError } from 'graphql';
+import {
+  ArchiveCommunityResponse,
+  CommunitiesResponse,
+  Community,
+  Pagination,
+  WriteCommunityInput,
+  WriteCommunityResponse,
+} from '../generated';
+import { GRAPHQL_ERRORS } from '../constants';
 
 export class CommunityDataHandler extends DataHandler<'community'> {
   constructor(context: Context) {
     super(context, 'community');
   }
 
-  async archive(id: string) {
-    const archivedDoc = await this.crud.update({
+  async archive(id: string): Promise<ArchiveCommunityResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
       include: { company: true },
     });
 
-    const formatted = this.formatCommunity(archivedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const { company, ...rest } = doc;
+
+    const formatted = {
+      ...this.formatDBCommunity(rest),
+      company: this.formatDBCompany(company),
+    };
 
     return this.generateArchiveResponse(formatted);
   }
 
-  async create(data: WriteCommunityInput) {
-    const newDoc = await this.crud.create({
+  async create(data: WriteCommunityInput): Promise<WriteCommunityResponse> {
+    const { company, ...rest } = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -31,39 +46,54 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       include: { company: true },
     });
 
-    const formatted = this.formatCommunity(newDoc);
+    const formatted = {
+      ...this.formatDBCommunity(rest),
+      company: this.formatDBCompany(company),
+    };
 
     return this.generateWriteResponse(formatted);
   }
 
-  async modify(id: string, data: WriteCommunityInput) {
-    const updatedDoc = await this.crud.update({
+  async modify(id: string, data: WriteCommunityInput): Promise<WriteCommunityResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
       include: { company: true },
     });
 
-    const formatted = this.formatCommunity(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const { company, ...rest } = doc;
+    const formatted = {
+      ...this.formatDBCommunity(rest),
+      company: this.formatDBCompany(company),
+    };
 
     return this.generateWriteResponse(formatted);
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Community> {
     const doc = await this.crud.findUnique({
       where: { id },
       include: { company: true },
     });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatCommunity(doc);
+    const { company, ...rest } = doc;
+    const formatted = {
+      ...this.formatDBCommunity(rest),
+      company: this.formatDBCompany(company),
+    };
+
+    return formatted;
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination) {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<CommunitiesResponse> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },
@@ -76,7 +106,10 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatCommunity(doc)),
+      data: docList.map((doc) => ({
+        ...this.formatDBCommunity(doc),
+        company: this.formatDBCompany(doc.company),
+      })),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }
