@@ -80,3 +80,10 @@ export const GRAPHQL_ERRORS = {
       extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
     }),
 };
+
+export const RESPONSES = {
+  archived: (value: string) => `Successfully archived ${value}.`,
+  created: (value: string) => `Successfully created ${value}.`,
+  deleted: (value: string) => `Successfully deleted ${value}.`,
+  updated: (value: string) => `Successfully updated ${value}.`,
+};

@@ -10,6 +10,7 @@ import {
   WriteAreaResponse,
 } from '../generated';
 import { GraphQLError } from 'graphql';
+import { RESPONSES } from '../constants';
 
 export class AreaDataHandler extends DataHandler<'area'> {
   constructor(context: Context) {
@@ -17,14 +18,15 @@ export class AreaDataHandler extends DataHandler<'area'> {
   }
 
   async archive(id: string): Promise<ArchiveAreaResponse> {
-    const archivedDoc = await this.crud.update({
+    const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
     });
 
-    const formatted = this.formatDBArea(archivedDoc);
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.areaDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteAreaInput): Promise<WriteAreaResponse> {
@@ -36,7 +38,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
       },
     });
 
-    const formatted = this.formatDBArea(newDoc);
+    const formatted = this.areaDTO(newDoc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -47,7 +49,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
       data: { ...data, updatedBy: this.userId },
     });
 
-    const formatted = this.formatDBArea(updatedDoc);
+    const formatted = this.areaDTO(updatedDoc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -61,7 +63,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
       });
     }
 
-    return this.formatDBArea(doc);
+    return this.areaDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<AreasResponse> {
@@ -76,7 +78,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatDBArea(doc)),
+      data: docList.map((doc) => this.areaDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

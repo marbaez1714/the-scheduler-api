@@ -8,7 +8,7 @@ import {
   WriteReporterInput,
   WriteReporterResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class ReporterDataHandler extends DataHandler<'reporter'> {
   constructor(context: Context) {
@@ -25,9 +25,10 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBReporter(doc);
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.reporterDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteReporterInput): Promise<WriteReporterResponse> {
@@ -39,7 +40,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       },
     });
 
-    const formatted = this.formatDBReporter(doc);
+    const formatted = this.reporterDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -54,7 +55,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBReporter(doc);
+    const formatted = this.reporterDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -66,7 +67,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatDBReporter(doc);
+    return this.reporterDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<ReportersResponse> {
@@ -81,7 +82,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatDBReporter(doc)),
+      data: docList.map((doc) => this.reporterDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

@@ -8,6 +8,16 @@ import {
   FilterInput,
   SortInput,
   SortDirection,
+  Area,
+  Builder,
+  Community,
+  Company,
+  Contractor,
+  JobLegacy,
+  Reporter,
+  Scope,
+  Supplier,
+  LineItemLegacy,
 } from '../generated';
 import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
 import { delay } from 'lodash';
@@ -125,10 +135,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     return response;
   }
 
-  generateArchiveResponse<TData extends BaseDocument>(data: TData) {
-    return { data, message: `${data.name} archived.` };
-  }
-
   generateWriteResponse<TData extends BaseDocument>(data: TData) {
     return { data, message: `${data.name} written.` };
   }
@@ -150,10 +156,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       direction: sort?.direction ?? SortDirection.Asc,
     };
   }
-
-  /******************************/
-  /* Formatting                 */
-  /******************************/
 
   //#region - DB Data Formatting
 
@@ -287,6 +289,93 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       createdTime: createdTime.toJSON(),
       updatedTime: updatedTime.toJSON(),
     };
+  }
+
+  //#endregion
+  //#region - GraphQL DTOs
+
+  areaDTO(data: PrismaModels['area']): Area {
+    return this.formatDBArea(data);
+  }
+
+  builderDTO(data: PrismaModels['builder'] & { company: PrismaModels['company'] }): Builder {
+    const { company, ...rest } = data;
+
+    return { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
+  }
+
+  communityDTO(data: PrismaModels['community'] & { company: PrismaModels['company'] }): Community {
+    const { company, ...rest } = data;
+
+    return { ...this.formatDBCommunity(rest), company: this.formatDBCompany(company) };
+  }
+
+  companyDTO(data: PrismaModels['company']): Company {
+    return this.formatDBCompany(data);
+  }
+
+  contractorDTO(
+    data: PrismaModels['contractor'] & {
+      jobsLegacy: (PrismaModels['jobLegacy'] & {
+        lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
+      })[];
+    }
+  ): Contractor {
+    const { jobsLegacy, ...contractorRest } = data;
+    const formattedJobsLegacy = jobsLegacy.map(({ lineItems, ...jobRest }) => {
+      return {
+        ...this.formatDBJobLegacy(jobRest),
+        lineItems: lineItems.map(({ supplier, ...lineItemRest }) => ({
+          ...this.formatDBLineItemLegacy(lineItemRest),
+          supplier: this.formatDBSupplier(supplier),
+        })),
+      };
+    });
+
+    return {
+      ...this.formatDBContractor(contractorRest),
+      jobsLegacy: formattedJobsLegacy,
+    };
+  }
+
+  jobLegacyDTO(
+    data: PrismaModels['jobLegacy'] & {
+      lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
+    }
+  ): JobLegacy {
+    const { lineItems, ...jobRest } = data;
+    const formattedLineItems = lineItems.map(({ supplier, ...lineItemRest }) => ({
+      ...this.formatDBLineItemLegacy(lineItemRest),
+      supplier: this.formatDBSupplier(supplier),
+    }));
+
+    return {
+      ...this.formatDBJobLegacy(jobRest),
+      lineItems: formattedLineItems,
+    };
+  }
+
+  lineItemLegacyDTO(
+    data: PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] }
+  ): LineItemLegacy {
+    const { supplier, ...lineItemRest } = data;
+
+    return {
+      ...this.formatDBLineItemLegacy(lineItemRest),
+      supplier: this.formatDBSupplier(supplier),
+    };
+  }
+
+  reporterDTO(data: PrismaModels['reporter']): Reporter {
+    return this.formatDBReporter(data);
+  }
+
+  scopeDTO(data: PrismaModels['scope']): Scope {
+    return this.formatDBScope(data);
+  }
+
+  supplierDTO(data: PrismaModels['supplier']): Supplier {
+    return this.formatDBSupplier(data);
   }
 
   //#endregion

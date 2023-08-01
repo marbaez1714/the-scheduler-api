@@ -8,7 +8,7 @@ import {
   WriteCompanyInput,
   WriteCompanyResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class CompanyDataHandler extends DataHandler<'company'> {
   constructor(context: Context) {
@@ -25,9 +25,10 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBCompany(doc);
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.companyDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteCompanyInput): Promise<WriteCompanyResponse> {
@@ -39,7 +40,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       },
     });
 
-    const formatted = this.formatDBCompany(newDoc);
+    const formatted = this.companyDTO(newDoc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -54,7 +55,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBCompany(doc);
+    const formatted = this.companyDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -66,7 +67,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatDBCompany(doc);
+    return this.companyDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<CompaniesResponse> {
@@ -81,7 +82,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatDBCompany(doc)),
+      data: docList.map((doc) => this.companyDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

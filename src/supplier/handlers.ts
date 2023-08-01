@@ -8,7 +8,7 @@ import {
   WriteSupplierInput,
   WriteSupplierResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class SupplierDataHandler extends DataHandler<'supplier'> {
   constructor(context: Context) {
@@ -25,9 +25,10 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBSupplier(doc);
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.supplierDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteSupplierInput): Promise<WriteSupplierResponse> {
@@ -39,7 +40,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       },
     });
 
-    const formatted = this.formatDBSupplier(doc);
+    const formatted = this.supplierDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -54,7 +55,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBSupplier(doc);
+    const formatted = this.supplierDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -66,7 +67,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatDBSupplier(doc);
+    return this.supplierDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<SuppliersResponse> {
@@ -81,7 +82,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatDBSupplier(doc)),
+      data: docList.map((doc) => this.supplierDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

@@ -9,7 +9,7 @@ import {
   WriteContractorInput,
   WriteContractorResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class ContractorDataHandler extends DataHandler<'contractor'> {
   constructor(context: Context) {
@@ -29,23 +29,14 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { jobsLegacy, ...contractorRest } = doc;
-    const formatted = {
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
+    return {
+      data: this.contractorDTO(doc),
+      message: RESPONSES.archived(doc.name),
     };
-
-    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteContractorInput): Promise<WriteContractorResponse> {
-    const { jobsLegacy, ...contractorRest } = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -56,16 +47,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    const formatted = {
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
-    };
+    const formatted = this.contractorDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -83,17 +65,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { jobsLegacy, ...contractorRest } = doc;
-    const formatted = {
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
-    };
+    const formatted = this.contractorDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -110,19 +82,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { jobsLegacy, ...contractorRest } = doc;
-    const formatted = {
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
-    };
-
-    return formatted;
+    return this.contractorDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<ContractorsResponse> {
@@ -141,19 +101,8 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    const formattedData = docList.map(({ jobsLegacy, ...contractorRest }) => ({
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
-    }));
-
     return {
-      data: formattedData,
+      data: docList.map((doc) => this.contractorDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }
@@ -174,17 +123,6 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    const formattedData = docList.map(({ jobsLegacy, ...contractorRest }) => ({
-      ...this.formatDBContractor(contractorRest),
-      jobsLegacy: jobsLegacy.map(({ lineItems, ...jobRest }) => ({
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...itemRest }) => ({
-          ...this.formatDBLineItemLegacy(itemRest),
-          supplier: this.formatDBSupplier(supplier),
-        })),
-      })),
-    }));
-
-    return { data: formattedData };
+    return { data: docList.map((doc) => this.contractorDTO(doc)) };
   }
 }

@@ -8,7 +8,7 @@ import {
   WriteScopeInput,
   WriteScopeResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class ScopeDataHandler extends DataHandler<'scope'> {
   constructor(context: Context) {
@@ -25,9 +25,10 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBScope(doc);
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.scopeDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteScopeInput): Promise<WriteScopeResponse> {
@@ -39,7 +40,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       },
     });
 
-    const formatted = this.formatDBScope(doc);
+    const formatted = this.scopeDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -54,7 +55,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBScope(doc);
+    const formatted = this.scopeDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -66,7 +67,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.formatDBScope(doc);
+    const formatted = this.scopeDTO(doc);
 
     return formatted;
   }
@@ -83,7 +84,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatDBScope(doc)),
+      data: docList.map((doc) => this.scopeDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

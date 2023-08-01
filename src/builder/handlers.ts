@@ -8,7 +8,7 @@ import {
   WriteBuilderInput,
   WriteBuilderResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class BuilderDataHandler extends DataHandler<'builder'> {
   constructor(context: Context) {
@@ -26,14 +26,14 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
-
-    return this.generateArchiveResponse(formatted);
+    return {
+      data: this.builderDTO(doc),
+      message: RESPONSES.archived(doc.name),
+    };
   }
 
   async create(data: WriteBuilderInput): Promise<WriteBuilderResponse> {
-    const { company, ...rest } = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -42,7 +42,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
+    const formatted = this.builderDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -58,8 +58,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
+    const formatted = this.builderDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -74,10 +73,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
-
-    return formatted;
+    return this.builderDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<BuildersResponse> {
@@ -93,10 +89,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     ]);
 
     return {
-      data: docList.map(({ company, ...rest }) => ({
-        ...this.formatDBBuilder(rest),
-        company: this.formatDBCompany(company),
-      })),
+      data: docList.map((doc) => this.builderDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

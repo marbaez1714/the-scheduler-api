@@ -8,7 +8,7 @@ import {
   WriteCommunityInput,
   WriteCommunityResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class CommunityDataHandler extends DataHandler<'community'> {
   constructor(context: Context) {
@@ -26,18 +26,14 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-
-    const formatted = {
-      ...this.formatDBCommunity(rest),
-      company: this.formatDBCompany(company),
+    return {
+      data: this.communityDTO(doc),
+      message: RESPONSES.archived(doc.name),
     };
-
-    return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteCommunityInput): Promise<WriteCommunityResponse> {
-    const { company, ...rest } = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -46,10 +42,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       include: { company: true },
     });
 
-    const formatted = {
-      ...this.formatDBCommunity(rest),
-      company: this.formatDBCompany(company),
-    };
+    const formatted = this.communityDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -65,11 +58,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-    const formatted = {
-      ...this.formatDBCommunity(rest),
-      company: this.formatDBCompany(company),
-    };
+    const formatted = this.communityDTO(doc);
 
     return this.generateWriteResponse(formatted);
   }
@@ -84,13 +73,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const { company, ...rest } = doc;
-    const formatted = {
-      ...this.formatDBCommunity(rest),
-      company: this.formatDBCompany(company),
-    };
-
-    return formatted;
+    return this.communityDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<CommunitiesResponse> {
@@ -106,10 +89,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     ]);
 
     return {
-      data: docList.map((doc) => ({
-        ...this.formatDBCommunity(doc),
-        company: this.formatDBCompany(doc.company),
-      })),
+      data: docList.map((doc) => this.communityDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

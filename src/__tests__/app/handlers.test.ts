@@ -275,17 +275,6 @@ describe('DataHandler', () => {
         });
       });
 
-      describe('generateArchiveResponse', () => {
-        const response = appHandler.generateArchiveResponse(mockBaseDocument);
-
-        it('should return an archive response', () => {
-          expect(response).toEqual({
-            data: mockBaseDocument,
-            message: `${mockBaseDocument.name} archived.`,
-          });
-        });
-      });
-
       describe('generateWriteResponse', () => {
         const response = appHandler.generateWriteResponse(mockBaseDocument);
 
