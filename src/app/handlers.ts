@@ -1,29 +1,10 @@
 import { Prisma, SMSConsent } from '@prisma/client';
 import { Context } from '../context';
+import { BaseDocument, PermissionsEnum, PrismaModels } from './types';
 import {
-  BaseDocument,
-  PermissionsEnum,
-  LineItemLegacyWithSupplierModel,
-  JobLegacyWithLineItemsModel,
-  ContractorWithJobsLegacyModel,
-  BuilderWithCompanyModel,
-  CommunityWithCompanyModel,
-  PrismaModels,
-} from './types';
-import {
-  Area,
-  Builder,
-  Community,
-  Company,
-  Contractor,
-  JobLegacy,
   JobLegacyStatus,
-  LineItemLegacy,
   PaginationResponse,
   Pagination,
-  Reporter,
-  Scope,
-  Supplier,
   FilterInput,
   SortInput,
   SortDirection,
@@ -174,103 +155,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   /* Formatting                 */
   /******************************/
 
-  formatContractor(data: ContractorWithJobsLegacyModel): Contractor {
-    const { jobsLegacy, createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      jobsLegacy: jobsLegacy.map((doc) => this.formatJobLegacy(doc)),
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
-  formatJobLegacy(data: JobLegacyWithLineItemsModel): JobLegacy {
-    const { lineItems, startDate, completedDate, createdTime, updatedTime, inProgress, ...rest } =
-      data;
-
-    // By default the job is will call
-    let status: JobLegacyStatus = JobLegacyStatus.WillCall;
-
-    // if the job is in progress, override all other statuses
-    if (inProgress) {
-      status = JobLegacyStatus.InProgress;
-    }
-
-    if (!inProgress && startDate) {
-      // todayDate > startDate = past due
-      // todayDate < startDate = planned
-      // todayDate === startDate = today
-      const isPastDue = this.todayDate.getTime() > startDate.getTime();
-      const isPlanned = this.todayDate.getTime() < startDate.getTime();
-      const isToday = this.todayDate.getTime() === startDate.getTime();
-
-      if (isPastDue) {
-        status = JobLegacyStatus.PastDue;
-      }
-
-      if (isPlanned) {
-        status = JobLegacyStatus.Planned;
-      }
-
-      if (isToday) {
-        status = JobLegacyStatus.Today;
-      }
-    }
-
-    return {
-      ...rest,
-      status,
-      inProgress,
-      lineItems: lineItems.map((doc) => this.formatLineItemLegacy(doc)),
-      startDate: startDate?.toJSON(),
-      completedDate: completedDate?.toJSON(),
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
-  formatLineItemLegacy(data: LineItemLegacyWithSupplierModel): LineItemLegacy {
-    const { createdTime, updatedTime, supplier, ...rest } = data;
-
-    return {
-      ...rest,
-      supplier: this.formatSupplier(supplier),
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
-  formatReporter(data: PrismaModels['reporter']): Reporter {
-    const { createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
-  formatScope(data: PrismaModels['scope']): Scope {
-    const { createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
-  formatSupplier(data: PrismaModels['supplier']): Supplier {
-    const { createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
   //#region - DB Data Formatting
 
   formatDBArea(data: PrismaModels['area']) {
@@ -406,7 +290,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   }
 
   //#endregion
-  //#region - Shared
+  //#region - Utils
 
   async sendSMS(
     recipient: { id: string; smsConsent: SMSConsent; primaryPhone: string },

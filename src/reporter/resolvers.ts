@@ -8,10 +8,7 @@ export const reporterResolvers: Resolvers = {
       return response;
     },
     reporters: async (_, { archived, pagination }, context) => {
-      const response = await new ReporterDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new ReporterDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },
