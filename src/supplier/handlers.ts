@@ -27,7 +27,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
 
     return {
       data: this.supplierDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -40,9 +40,10 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       },
     });
 
-    const formatted = this.supplierDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.supplierDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteSupplierInput): Promise<WriteSupplierResponse> {
@@ -55,9 +56,10 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.supplierDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.supplierDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Supplier> {

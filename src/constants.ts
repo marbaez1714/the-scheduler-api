@@ -82,8 +82,10 @@ export const GRAPHQL_ERRORS = {
 };
 
 export const RESPONSES = {
-  archived: (value: string) => `Successfully archived ${value}.`,
-  created: (value: string) => `Successfully created ${value}.`,
+  archiveSuccess: (value: string) => `Successfully archived ${value}.`,
+  createSuccess: (value: string) => `Successfully created ${value}.`,
+  modifySuccess: (value: string) => `Successfully modified ${value}.`,
+  jobLegacyReenableSuccess: (value: string) => `Successfully re-enabled ${value}.`,
   deleted: (value: string) => `Successfully deleted ${value}.`,
   updated: (value: string) => `Successfully updated ${value}.`,
 };

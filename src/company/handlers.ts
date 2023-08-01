@@ -27,12 +27,12 @@ export class CompanyDataHandler extends DataHandler<'company'> {
 
     return {
       data: this.companyDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
   async create(data: WriteCompanyInput): Promise<WriteCompanyResponse> {
-    const newDoc = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -40,9 +40,10 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       },
     });
 
-    const formatted = this.companyDTO(newDoc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.companyDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteCompanyInput): Promise<WriteCompanyResponse> {
@@ -55,9 +56,10 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.companyDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.companyDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Company> {

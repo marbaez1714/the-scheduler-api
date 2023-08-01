@@ -274,63 +274,6 @@ describe('DataHandler', () => {
           });
         });
       });
-
-      describe('generateWriteResponse', () => {
-        const response = appHandler.generateWriteResponse(mockBaseDocument);
-
-        it('should return a write response', () => {
-          expect(response).toEqual({
-            data: mockBaseDocument,
-            message: `${mockBaseDocument.name} written.`,
-          });
-        });
-      });
-
-      describe('generateDeleteResponse', () => {
-        const response = appHandler.generateDeleteResponse(mockBaseDocument);
-
-        it('should return a delete response', () => {
-          expect(response).toEqual({ message: `${mockBaseDocument.name} deleted.` });
-        });
-      });
-
-      describe('generateFilterResponse', () => {
-        describe('when filter is not passed', () => {
-          const response = appHandler.generateFilterResponse();
-
-          it('should return an empty filter response', () => {
-            expect(response).toEqual({ field: '', term: '' });
-          });
-        });
-
-        describe('when filter is passed', () => {
-          const input = { field: 'some-field', term: 'some-term' };
-          const response = appHandler.generateFilterResponse(input);
-
-          it('should return a filter response', () => {
-            expect(response).toEqual({ field: input.field, term: input.term });
-          });
-        });
-      });
-
-      describe('generateSortResponse', () => {
-        describe('when sort is not passed', () => {
-          const response = appHandler.generateSortResponse();
-
-          it('should return an empty sort response', () => {
-            expect(response).toEqual({ field: '', direction: SortDirection.Asc });
-          });
-        });
-
-        describe('when sort is passed', () => {
-          const input = generateSortInput();
-          const response = appHandler.generateSortResponse(input);
-
-          it('should return a sort response', () => {
-            expect(response).toEqual({ field: input.field, direction: input.direction });
-          });
-        });
-      });
     });
   });
 });

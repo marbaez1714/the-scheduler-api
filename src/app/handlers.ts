@@ -1,13 +1,12 @@
 import { Prisma, SMSConsent } from '@prisma/client';
 import { Context } from '../context';
-import { BaseDocument, PermissionsEnum, PrismaModels } from './types';
+import { PermissionsEnum, PrismaModels } from './types';
 import {
   JobLegacyStatus,
   PaginationResponse,
   Pagination,
   FilterInput,
   SortInput,
-  SortDirection,
   Area,
   Builder,
   Community,
@@ -133,28 +132,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     }
 
     return response;
-  }
-
-  generateWriteResponse<TData extends BaseDocument>(data: TData) {
-    return { data, message: `${data.name} written.` };
-  }
-
-  generateDeleteResponse<TData extends BaseDocument>(data: TData) {
-    return { message: `${data.name} deleted.` };
-  }
-
-  generateFilterResponse(filter?: FilterInput) {
-    return {
-      field: filter?.field ?? '',
-      term: filter?.term ?? '',
-    };
-  }
-
-  generateSortResponse(sort?: SortInput) {
-    return {
-      field: sort?.field ?? '',
-      direction: sort?.direction ?? SortDirection.Asc,
-    };
   }
 
   //#region - DB Data Formatting

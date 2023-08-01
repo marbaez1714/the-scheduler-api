@@ -25,12 +25,12 @@ export class AreaDataHandler extends DataHandler<'area'> {
 
     return {
       data: this.areaDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
   async create(data: WriteAreaInput): Promise<WriteAreaResponse> {
-    const newDoc = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -38,20 +38,22 @@ export class AreaDataHandler extends DataHandler<'area'> {
       },
     });
 
-    const formatted = this.areaDTO(newDoc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.areaDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteAreaInput): Promise<WriteAreaResponse> {
-    const updatedDoc = await this.crud.update({
+    const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
     });
 
-    const formatted = this.areaDTO(updatedDoc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.areaDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Area> {

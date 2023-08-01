@@ -27,7 +27,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
 
     return {
       data: this.scopeDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -40,9 +40,10 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       },
     });
 
-    const formatted = this.scopeDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.scopeDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteScopeInput): Promise<WriteScopeResponse> {
@@ -55,9 +56,10 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.scopeDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.scopeDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Scope> {

@@ -27,7 +27,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
 
     return {
       data: this.reporterDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -40,9 +40,10 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       },
     });
 
-    const formatted = this.reporterDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.reporterDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteReporterInput): Promise<WriteReporterResponse> {
@@ -55,9 +56,10 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.reporterDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.reporterDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Reporter> {

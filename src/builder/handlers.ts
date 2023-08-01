@@ -28,7 +28,7 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
 
     return {
       data: this.builderDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -42,9 +42,10 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = this.builderDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.builderDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteBuilderInput): Promise<WriteBuilderResponse> {
@@ -58,9 +59,10 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.builderDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.builderDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Builder> {

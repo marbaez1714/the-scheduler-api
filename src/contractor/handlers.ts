@@ -31,7 +31,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
 
     return {
       data: this.contractorDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -47,9 +47,10 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    const formatted = this.contractorDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.contractorDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify(id: string, data: WriteContractorInput): Promise<WriteContractorResponse> {
@@ -65,9 +66,10 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.contractorDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.contractorDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async getById(id: string): Promise<Contractor> {

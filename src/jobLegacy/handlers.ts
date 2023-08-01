@@ -16,6 +16,7 @@ import {
   QueryJobsLegacyByContractorIdArgs,
   MutationDeleteLineItemLegacyArgs,
   DeleteResponse,
+  SortDirection,
 } from '../generated';
 import { DataHandler } from '../app';
 import { Context } from '../context';
@@ -83,8 +84,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.jobLegacyDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
+      filter: {
+        field: filter?.field ?? '',
+        term: filter?.term ?? '',
+      },
+      sort: {
+        field: sort?.field ?? '',
+        direction: sort?.direction ?? SortDirection.Asc,
+      },
     };
   }
 
@@ -118,8 +125,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.jobLegacyDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
+      filter: {
+        field: filter?.field ?? '',
+        term: filter?.term ?? '',
+      },
+      sort: {
+        field: sort?.field ?? '',
+        direction: sort?.direction ?? SortDirection.Asc,
+      },
     };
   }
 
@@ -161,8 +174,14 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     return {
       data: docList.map((doc) => this.jobLegacyDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
+      filter: {
+        field: filter?.field ?? '',
+        term: filter?.term ?? '',
+      },
+      sort: {
+        field: sort?.field ?? '',
+        direction: sort?.direction ?? SortDirection.Asc,
+      },
     };
   }
 
@@ -182,7 +201,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
 
     return {
       data: this.jobLegacyDTO(doc),
-      message: RESPONSES.archived(doc.name),
+      message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
@@ -208,9 +227,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    const formatted = this.jobLegacyDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.jobLegacyDTO(doc),
+      message: RESPONSES.createSuccess(doc.name),
+    };
   }
 
   async modify({ id, data }: MutationModifyJobLegacyArgs): Promise<WriteJobLegacyResponse> {
@@ -267,9 +287,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.jobLegacyDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.jobLegacyDTO(doc),
+      message: RESPONSES.modifySuccess(doc.name),
+    };
   }
 
   async reenable({ id }: MutationReenableJobLegacyArgs): Promise<WriteJobLegacyResponse> {
@@ -286,9 +307,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.jobLegacyDTO(doc);
-
-    return this.generateWriteResponse(formatted);
+    return {
+      data: this.jobLegacyDTO(doc),
+      message: RESPONSES.jobLegacyReenableSuccess(doc.name),
+    };
   }
 
   async sendMessage({
