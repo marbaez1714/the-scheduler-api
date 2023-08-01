@@ -174,16 +174,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   /* Formatting                 */
   /******************************/
 
-  formatCompany(data: PrismaModels['company']): Company {
-    const { createdTime, updatedTime, ...rest } = data;
-
-    return {
-      ...rest,
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
   formatContractor(data: ContractorWithJobsLegacyModel): Contractor {
     const { jobsLegacy, createdTime, updatedTime, ...rest } = data;
 

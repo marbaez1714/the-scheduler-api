@@ -1,26 +1,36 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
-import { Pagination, WriteCompanyInput } from '../generated';
-import { GraphQLError } from 'graphql';
+import {
+  ArchiveCompanyResponse,
+  CompaniesResponse,
+  Company,
+  Pagination,
+  WriteCompanyInput,
+  WriteCompanyResponse,
+} from '../generated';
+import { GRAPHQL_ERRORS } from '../constants';
 
 export class CompanyDataHandler extends DataHandler<'company'> {
   constructor(context: Context) {
     super(context, 'company');
   }
 
-  async archive(id: string) {
-    const archivedDoc = await this.crud.update({
+  async archive(id: string): Promise<ArchiveCompanyResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
     });
 
-    const formatted = this.formatCompany(archivedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const formatted = this.formatDBCompany(doc);
 
     return this.generateArchiveResponse(formatted);
   }
 
-  async create(data: WriteCompanyInput) {
+  async create(data: WriteCompanyInput): Promise<WriteCompanyResponse> {
     const newDoc = await this.crud.create({
       data: {
         ...data,
@@ -29,35 +39,37 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       },
     });
 
-    const formatted = this.formatCompany(newDoc);
+    const formatted = this.formatDBCompany(newDoc);
 
     return this.generateWriteResponse(formatted);
   }
 
-  async modify(id: string, data: WriteCompanyInput) {
-    const updatedDoc = await this.crud.update({
+  async modify(id: string, data: WriteCompanyInput): Promise<WriteCompanyResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
     });
 
-    const formatted = this.formatCompany(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const formatted = this.formatDBCompany(doc);
 
     return this.generateWriteResponse(formatted);
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Company> {
     const doc = await this.crud.findUnique({ where: { id } });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatCompany(doc);
+    return this.formatDBCompany(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination) {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<CompaniesResponse> {
     const findArgs = {
       where: { archived: !!archived },
       ...this.generatePaginationArgs(pagination),
@@ -69,7 +81,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatCompany(doc)),
+      data: docList.map((doc) => this.formatDBCompany(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }
