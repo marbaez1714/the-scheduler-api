@@ -75,4 +75,8 @@ export const GRAPHQL_ERRORS = {
   missingToken: new GraphQLError('Missing token.', {
     extensions: { code: 'UNAUTHENTICATED' },
   }),
+  idNotFound: (id: string) =>
+    new GraphQLError(`${id} does not exist.`, {
+      extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+    }),
 };

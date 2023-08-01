@@ -174,17 +174,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   /* Formatting                 */
   /******************************/
 
-  formatBuilderWithCompany(data: BuilderWithCompanyModel): Builder {
-    const { createdTime, updatedTime, company, ...rest } = data;
-
-    return {
-      ...rest,
-      company: this.formatCompany(company),
-      createdTime: createdTime.toJSON(),
-      updatedTime: updatedTime.toJSON(),
-    };
-  }
-
   formatCommunity(data: CommunityWithCompanyModel): Community {
     const { createdTime, updatedTime, company, ...rest } = data;
 

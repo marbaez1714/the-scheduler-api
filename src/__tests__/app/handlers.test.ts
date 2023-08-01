@@ -343,35 +343,6 @@ describe('DataHandler', () => {
         });
       });
 
-      describe('formatArea', () => {
-        const formattedArea = appHandler.formatArea(mockArea);
-
-        it('should return a formatted area', () => {
-          expect(formattedArea).toEqual({
-            ...mockArea,
-            createdTime: mockArea.createdTime.toJSON(),
-            updatedTime: mockArea.updatedTime.toJSON(),
-          });
-        });
-      });
-
-      describe('formatBuilderWithCompany', () => {
-        const builder = {
-          ...mockBuilder,
-          company: mockCompany,
-        };
-        const formattedBuilder = appHandler.formatBuilderWithCompany(builder);
-
-        it('should return a formatted builder', () => {
-          expect(formattedBuilder).toEqual({
-            ...builder,
-            company: appHandler.formatCompany(builder.company),
-            createdTime: builder.createdTime.toJSON(),
-            updatedTime: builder.updatedTime.toJSON(),
-          });
-        });
-      });
-
       describe('formatCompany', () => {
         const formattedCompany = appHandler.formatCompany(mockCompany);
 

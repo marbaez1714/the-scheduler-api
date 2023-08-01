@@ -1,4 +1,3 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from '../app';
 import { Context } from '../context';
 import {
@@ -9,7 +8,7 @@ import {
   WriteBuilderInput,
   WriteBuilderResponse,
 } from '../generated';
-import { GraphQLError } from 'graphql';
+import { GRAPHQL_ERRORS } from '../constants';
 
 export class BuilderDataHandler extends DataHandler<'builder'> {
   constructor(context: Context) {
@@ -17,19 +16,24 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
   }
 
   async archive(id: string): Promise<ArchiveBuilderResponse> {
-    const archivedDoc = await this.crud.update({
+    const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
       include: { company: true },
     });
 
-    const formatted = this.formatBuilderWithCompany(archivedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const { company, ...rest } = doc;
+    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
 
     return this.generateArchiveResponse(formatted);
   }
 
   async create(data: WriteBuilderInput): Promise<WriteBuilderResponse> {
-    const newDoc = await this.crud.create({
+    const { company, ...rest } = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -38,19 +42,24 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    const formatted = this.formatBuilderWithCompany(newDoc);
+    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
 
     return this.generateWriteResponse(formatted);
   }
 
   async modify(id: string, data: WriteBuilderInput): Promise<WriteBuilderResponse> {
-    const updatedDoc = await this.crud.update({
+    const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
       include: { company: true },
     });
 
-    const formatted = this.formatBuilderWithCompany(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    const { company, ...rest } = doc;
+    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
 
     return this.generateWriteResponse(formatted);
   }
@@ -62,12 +71,13 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatBuilderWithCompany(doc);
+    const { company, ...rest } = doc;
+    const formatted = { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
+
+    return formatted;
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<BuildersResponse> {
@@ -83,7 +93,10 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.formatBuilderWithCompany(doc)),
+      data: docList.map(({ company, ...rest }) => ({
+        ...this.formatDBBuilder(rest),
+        company: this.formatDBCompany(company),
+      })),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }
