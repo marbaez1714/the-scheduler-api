@@ -372,26 +372,17 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       throw GRAPHQL_ERRORS.messageRequired;
     }
 
-    if (recipientType !== 'contractor' && recipientType !== 'reporter') {
-      throw GRAPHQL_ERRORS.invalidRecipientType;
-    }
-
     // Format phone number
     const formattedPhoneNumber = `+1${recipient.primaryPhone.replace(/\D/g, '')}`;
 
     // Check if the recipient has consented to receive SMS messages
     switch (recipient.smsConsent) {
       case SMSConsent.NEEDED:
-        await this.context.twilio.messages.create(
-          {
-            to: formattedPhoneNumber,
-            messagingServiceSid: this.messagingServiceSid,
-            body: SMS_MESSAGES.optInRequest,
-          },
-          (err) => {
-            if (err) throw GRAPHQL_ERRORS.smsConsentRequestFailed;
-          }
-        );
+        await this.context.twilio.messages.create({
+          to: formattedPhoneNumber,
+          messagingServiceSid: this.messagingServiceSid,
+          body: SMS_MESSAGES.optInRequest,
+        });
 
         if (recipientType === 'contractor') {
           await this.context.prisma.contractor.update({
@@ -409,16 +400,11 @@ export class DataHandler<TClient extends keyof PrismaModels> {
 
         break;
       case SMSConsent.PENDING:
-        await this.context.twilio.messages.create(
-          {
-            to: formattedPhoneNumber,
-            messagingServiceSid: this.messagingServiceSid,
-            body: SMS_MESSAGES.optInReminder,
-          },
-          (err) => {
-            if (err) throw GRAPHQL_ERRORS.smsConsentReminderFailed;
-          }
-        );
+        await this.context.twilio.messages.create({
+          to: formattedPhoneNumber,
+          messagingServiceSid: this.messagingServiceSid,
+          body: SMS_MESSAGES.optInReminder,
+        });
         break;
       case SMSConsent.OPTED_OUT:
         if (recipientType === 'contractor') {
@@ -439,18 +425,11 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     }, 500);
 
     // Send the message
-    return this.context.twilio.messages.create(
-      { to: formattedPhoneNumber, messagingServiceSid: this.messagingServiceSid, body: message },
-      (err) => {
-        if (err && recipientType === 'contractor') {
-          throw GRAPHQL_ERRORS.contractorSMSFailed;
-        }
-
-        if (err && recipientType === 'reporter') {
-          throw GRAPHQL_ERRORS.reporterSMSFailed;
-        }
-      }
-    );
+    return this.context.twilio.messages.create({
+      to: formattedPhoneNumber,
+      messagingServiceSid: this.messagingServiceSid,
+      body: message,
+    });
   }
 
   //#endregion
