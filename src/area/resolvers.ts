@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { AreaDataHandler } from './handlers';
+import { AreaDataHandler } from '../handlers';
 
 export const areaResolvers: Resolvers = {
   Query: {

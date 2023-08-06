@@ -1,5 +1,5 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { DataHandler } from '../handlers';
+import { DataHandler } from './DataHandler';
 import { Context } from '../context';
 import {
   ArchiveAreaResponse,
