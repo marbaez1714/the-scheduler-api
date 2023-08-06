@@ -1,6 +1,6 @@
 import { Prisma, SMSConsent } from '@prisma/client';
 import { Context } from '../context';
-import { PermissionsEnum, PrismaModels } from './types';
+import { PermissionsEnum, PrismaModels } from '../app/types';
 import {
   JobLegacyStatus,
   PaginationResponse,
@@ -21,6 +21,8 @@ import {
 import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
 
 export class DataHandler<TClient extends keyof PrismaModels> {
+  //#region - Properties
+
   context: Context;
   client: TClient;
   crud: Context['prisma'][TClient];
@@ -28,6 +30,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   archiveData: { archived: true; updatedBy: string };
   todayDate: Date;
   messagingServiceSid: string;
+
+  //#endregion
+  //#region - Constructor
 
   constructor(context: Context, client: TClient) {
     // Check to see if user has admin rights
@@ -52,9 +57,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     this.messagingServiceSid = `${process.env.TWILIO_MESSAGING_SERVICE_SID}`;
   }
 
-  /******************************/
-  /* Generate Responses         */
-  /******************************/
+  //#endregion
+  //#region - Arguments
+
   generatePaginationArgs(pagination?: Pagination) {
     if (pagination) {
       const { page, pageSize } = pagination;
@@ -120,6 +125,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     }
   }
 
+  //#endregion
+  //#region - Response
+
   generatePaginationResponse(totalCount: number, pagination?: Pagination): PaginationResponse {
     let response = {
       totalCount,
@@ -132,7 +140,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
 
     return response;
   }
-
+  //#endregion
   //#region - DB Data Formatting
 
   formatDBArea(data: PrismaModels['area']) {

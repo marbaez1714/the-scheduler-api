@@ -30,21 +30,3 @@ export interface PrismaModels {
   reporter: ReporterModel;
   scope: ScopeModel;
 }
-
-/******************************/
-/* Data                       */
-/******************************/
-export interface BaseDocument {
-  name: string;
-  id: string;
-}
-
-export type BuilderWithCompanyModel = BuilderModel & { company: CompanyModel };
-export type LineItemLegacyWithSupplierModel = LineItemLegacyModel & { supplier: SupplierModel };
-export type JobLegacyWithLineItemsModel = JobLegacyModel & {
-  lineItems: LineItemLegacyWithSupplierModel[];
-};
-export type ContractorWithJobsLegacyModel = ContractorModel & {
-  jobsLegacy: JobLegacyWithLineItemsModel[];
-};
-export type CommunityWithCompanyModel = CommunityModel & { company: CompanyModel };

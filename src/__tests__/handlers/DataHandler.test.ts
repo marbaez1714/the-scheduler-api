@@ -1,10 +1,10 @@
 import { MockData } from '../../__mocks__/data';
 import { createMockContext } from '../../__mocks__/context';
-import { DataHandler } from '../../app';
 import { PermissionsEnum } from '../../app/types';
 import { JobLegacyStatus } from '../../generated';
 import { SMSConsent } from '@prisma/client';
 import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../../constants';
+import { DataHandler } from '../../handlers';
 
 const mockClient = 'area';
 const mockTotalCount = 100;
@@ -618,6 +618,13 @@ describe('DataHandler', () => {
           await appHandler.context.prisma.$transaction([
             appHandler.context.prisma.contractor.create({ data: mockDBContractor }),
             appHandler.context.prisma.reporter.create({ data: mockDBReporter }),
+          ]);
+        });
+
+        afterAll(async () => {
+          await appHandler.context.prisma.$transaction([
+            appHandler.context.prisma.contractor.deleteMany(),
+            appHandler.context.prisma.reporter.deleteMany(),
           ]);
         });
 
