@@ -37,38 +37,41 @@ describe('DataHandler', () => {
 
   describe('when user is an admin', () => {
     const mockContext = createMockContext([PermissionsEnum.Admin]);
-    const appHandler = new DataHandler(mockContext, mockClient);
+    const dataHandler = new DataHandler(mockContext, mockClient);
 
     describe('appHandler fields', () => {
       it('should have a context field', () => {
-        expect(appHandler.context).toEqual(mockContext);
+        expect(dataHandler.context).toEqual(mockContext);
       });
 
       it('should have a client', () => {
-        expect(appHandler.client).toEqual(mockClient);
+        expect(dataHandler.client).toEqual(mockClient);
       });
 
       it('should have a crud', () => {
-        expect(appHandler.crud).toEqual(mockContext.prisma[mockClient]);
+        expect(dataHandler.crud).toEqual(mockContext.prisma[mockClient]);
       });
 
       it('should have a userId', () => {
-        expect(appHandler.userId).toEqual(mockContext.user.sub);
+        expect(dataHandler.userId).toEqual(mockContext.user.sub);
       });
 
       it('should have a archiveData', () => {
-        expect(appHandler.archiveData).toEqual({ archived: true, updatedBy: mockContext.user.sub });
+        expect(dataHandler.archiveData).toEqual({
+          archived: true,
+          updatedBy: mockContext.user.sub,
+        });
       });
 
       it('should have a todayDate', () => {
-        expect(appHandler.todayDate).toEqual(MockData.dates.today);
+        expect(dataHandler.todayDate).toEqual(MockData.dates.today);
       });
     });
 
     describe('appHandler methods', () => {
       describe('generatePaginationArgs', () => {
         describe('when pagination is not passed', () => {
-          const args = appHandler.generatePaginationArgs();
+          const args = dataHandler.generatePaginationArgs();
 
           it('returns undefined', () => {
             expect(args).toBeUndefined();
@@ -76,7 +79,7 @@ describe('DataHandler', () => {
         });
 
         describe('when pagination is passed', () => {
-          const args = appHandler.generatePaginationArgs(MockData.paginationInput());
+          const args = dataHandler.generatePaginationArgs(MockData.paginationInput());
 
           it('returns pagination args if pagination is passed', () => {
             expect(args).toEqual({ take: 10, skip: 0 });
@@ -86,7 +89,7 @@ describe('DataHandler', () => {
 
       describe('generateFilterArgs', () => {
         describe('when filter is not passed', () => {
-          const args = appHandler.generateFilterArgs();
+          const args = dataHandler.generateFilterArgs();
 
           it('returns undefined', () => {
             expect(args).toBeUndefined();
@@ -95,7 +98,7 @@ describe('DataHandler', () => {
 
         describe('when filter is passed', () => {
           const input = { field: 'some-field', term: 'some-term' };
-          const args = appHandler.generateFilterArgs(input);
+          const args = dataHandler.generateFilterArgs(input);
 
           it('returns filter args', () => {
             const expectedFilterArgs = {
@@ -114,7 +117,7 @@ describe('DataHandler', () => {
 
       describe('generateSortingArgs', () => {
         describe('when sorting is not passed', () => {
-          const args = appHandler.generateSortingArgs();
+          const args = dataHandler.generateSortingArgs();
 
           it('returns undefined', () => {
             expect(args).toBeUndefined();
@@ -124,7 +127,7 @@ describe('DataHandler', () => {
         describe('when sorting is passed', () => {
           describe('when sort.field is area', () => {
             const input = MockData.sortInput({ field: 'area' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns area sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -135,7 +138,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is builder', () => {
             const input = MockData.sortInput({ field: 'builder' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns builder sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -146,7 +149,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is community', () => {
             const input = MockData.sortInput({ field: 'community' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns community sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -157,7 +160,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is company', () => {
             const input = MockData.sortInput({ field: 'company' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns company sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -168,7 +171,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is contractor', () => {
             const input = MockData.sortInput({ field: 'contractor' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns contractor sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -179,7 +182,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is jobLegacy', () => {
             const input = MockData.sortInput({ field: 'jobLegacy' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns jobLegacy sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -190,7 +193,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is reporter', () => {
             const input = MockData.sortInput({ field: 'reporter' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns reporter sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -201,7 +204,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is scope', () => {
             const input = MockData.sortInput({ field: 'scope' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns scope sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -212,7 +215,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is supplier', () => {
             const input = MockData.sortInput({ field: 'supplier' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns supplier sort args', () => {
               const expectedSortArgs = { [input.field]: { name: input.direction } };
@@ -223,7 +226,7 @@ describe('DataHandler', () => {
 
           describe('when sort.field is some-field', () => {
             const input = MockData.sortInput({ field: 'some-field' });
-            const args = appHandler.generateSortingArgs(input);
+            const args = dataHandler.generateSortingArgs(input);
 
             it('returns default sort args', () => {
               const expectedSortArgs = { [input.field]: input.direction };
@@ -236,7 +239,7 @@ describe('DataHandler', () => {
 
       describe('generatePaginationResponse', () => {
         describe('when pagination is not passed', () => {
-          const response = appHandler.generatePaginationResponse(mockTotalCount);
+          const response = dataHandler.generatePaginationResponse(mockTotalCount);
 
           it('returns a response with only totalCount and totalPages', () => {
             expect(response).toEqual({ totalCount: mockTotalCount, totalPages: 1 });
@@ -244,7 +247,7 @@ describe('DataHandler', () => {
         });
 
         describe('when pagination is passed', () => {
-          const response = appHandler.generatePaginationResponse(
+          const response = dataHandler.generatePaginationResponse(
             mockTotalCount,
             MockData.paginationInput()
           );
@@ -260,7 +263,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBArea', () => {
-        const formattedArea = appHandler.formatDBArea(mockDBArea);
+        const formattedArea = dataHandler.formatDBArea(mockDBArea);
 
         it('returns a formatted area', () => {
           expect(formattedArea).toEqual({
@@ -272,7 +275,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBBuilder', () => {
-        const formattedBuilder = appHandler.formatDBBuilder(mockDBBuilder);
+        const formattedBuilder = dataHandler.formatDBBuilder(mockDBBuilder);
 
         it('returns a formatted builder', () => {
           expect(formattedBuilder).toEqual({
@@ -284,7 +287,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBCommunity', () => {
-        const formattedCommunity = appHandler.formatDBCommunity(mockDBCommunity);
+        const formattedCommunity = dataHandler.formatDBCommunity(mockDBCommunity);
 
         it('returns a formatted community', () => {
           expect(formattedCommunity).toEqual({
@@ -296,7 +299,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBCompany', () => {
-        const formattedCompany = appHandler.formatDBCompany(mockDBCompany);
+        const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
 
         it('returns a formatted company', () => {
           expect(formattedCompany).toEqual({
@@ -308,7 +311,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBContractor', () => {
-        const formattedContractor = appHandler.formatDBContractor(mockDBContractor);
+        const formattedContractor = dataHandler.formatDBContractor(mockDBContractor);
 
         it('returns a formatted contractor', () => {
           expect(formattedContractor).toEqual({
@@ -322,7 +325,7 @@ describe('DataHandler', () => {
       describe('formatDBJobLegacy', () => {
         describe('when inProgress is true', () => {
           const mockDBJobLegacy = MockData.dBJobLegacy(0, { inProgress: true });
-          const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+          const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
           it('returns a formatted jobLegacy with status = JobLegacyStatus.InProgress', () => {
             expect(formattedJobLegacy).toEqual({
@@ -337,7 +340,7 @@ describe('DataHandler', () => {
         describe('when inProgress is false', () => {
           describe('when startDate is null', () => {
             const mockDBJobLegacy = MockData.dBJobLegacy(0, { inProgress: false, startDate: null });
-            const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+            const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
             it('returns a formatted jobLegacy with status = JobLegacyStatus.WillCall', () => {
               expect(formattedJobLegacy).toEqual({
@@ -355,7 +358,7 @@ describe('DataHandler', () => {
                 inProgress: false,
                 startDate: MockData.dates.yesterday,
               });
-              const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+              const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
               it('returns a formatted jobLegacy with status = JobLegacyStatus.PastDue', () => {
                 expect(formattedJobLegacy).toEqual({
@@ -374,7 +377,7 @@ describe('DataHandler', () => {
                 startDate: MockData.dates.tomorrow,
               });
 
-              const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+              const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
               it('returns a formatted jobLegacy with status = JobLegacyStatus.Planned', () => {
                 expect(formattedJobLegacy).toEqual({
@@ -393,7 +396,7 @@ describe('DataHandler', () => {
                 startDate: MockData.dates.today,
               });
 
-              const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+              const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
               it('returns a formatted jobLegacy with status = JobLegacyStatus.Today', () => {
                 expect(formattedJobLegacy).toEqual({
@@ -412,7 +415,7 @@ describe('DataHandler', () => {
           const mockDBJobLegacy = MockData.dBJobLegacy(0, {
             completedDate: MockData.dates.yesterday,
           });
-          const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
+          const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
 
           it('returns a formatted jobLegacy with a completedDate', () => {
             expect(formattedJobLegacy).toEqual({
@@ -427,7 +430,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBReporter', () => {
-        const formattedReporter = appHandler.formatDBReporter(mockDBReporter);
+        const formattedReporter = dataHandler.formatDBReporter(mockDBReporter);
 
         it('returns a formatted reporter', () => {
           expect(formattedReporter).toEqual({
@@ -439,7 +442,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBScope', () => {
-        const formattedScope = appHandler.formatDBScope(mockDBScope);
+        const formattedScope = dataHandler.formatDBScope(mockDBScope);
 
         it('returns a formatted scope', () => {
           expect(formattedScope).toEqual({
@@ -451,7 +454,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBSupplier', () => {
-        const formattedSupplier = appHandler.formatDBSupplier(mockDBSupplier);
+        const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
         it('returns a formatted supplier', () => {
           expect(formattedSupplier).toEqual({
@@ -463,7 +466,7 @@ describe('DataHandler', () => {
       });
 
       describe('formatDBLineItemLegacy', () => {
-        const formattedLineItemLegacy = appHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
+        const formattedLineItemLegacy = dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
 
         it('returns a formatted lineItemLegacy', () => {
           expect(formattedLineItemLegacy).toEqual({
@@ -475,9 +478,9 @@ describe('DataHandler', () => {
       });
 
       describe('areaDTO', () => {
-        const areaDTO = appHandler.areaDTO(mockDBArea);
+        const areaDTO = dataHandler.areaDTO(mockDBArea);
 
-        const formattedArea = appHandler.formatDBArea(mockDBArea);
+        const formattedArea = dataHandler.formatDBArea(mockDBArea);
 
         it('returns an Area', () => {
           expect(areaDTO).toEqual(formattedArea);
@@ -485,10 +488,10 @@ describe('DataHandler', () => {
       });
 
       describe('builderDTO', () => {
-        const builderDTO = appHandler.builderDTO({ ...mockDBBuilder, company: mockDBCompany });
+        const builderDTO = dataHandler.builderDTO({ ...mockDBBuilder, company: mockDBCompany });
 
-        const formattedCompany = appHandler.formatDBCompany(mockDBCompany);
-        const formattedBuilder = appHandler.formatDBBuilder(mockDBBuilder);
+        const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
+        const formattedBuilder = dataHandler.formatDBBuilder(mockDBBuilder);
 
         it('returns a Builder', () => {
           expect(builderDTO).toEqual({ ...formattedBuilder, company: formattedCompany });
@@ -496,9 +499,9 @@ describe('DataHandler', () => {
       });
 
       describe('companyDTO', () => {
-        const companyDTO = appHandler.companyDTO(mockDBCompany);
+        const companyDTO = dataHandler.companyDTO(mockDBCompany);
 
-        const formattedCompany = appHandler.formatDBCompany(mockDBCompany);
+        const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
 
         it('returns a Company', () => {
           expect(companyDTO).toEqual(formattedCompany);
@@ -506,13 +509,13 @@ describe('DataHandler', () => {
       });
 
       describe('communityDTO', () => {
-        const communityDTO = appHandler.communityDTO({
+        const communityDTO = dataHandler.communityDTO({
           ...mockDBCommunity,
           company: mockDBCompany,
         });
 
-        const formattedCompany = appHandler.formatDBCompany(mockDBCompany);
-        const formattedCommunity = appHandler.formatDBCommunity(mockDBCommunity);
+        const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
+        const formattedCommunity = dataHandler.formatDBCommunity(mockDBCommunity);
 
         it('returns a Community', () => {
           expect(communityDTO).toEqual({ ...formattedCommunity, company: formattedCompany });
@@ -520,7 +523,7 @@ describe('DataHandler', () => {
       });
 
       describe('contractorDTO', () => {
-        const contractorDTO = appHandler.contractorDTO({
+        const contractorDTO = dataHandler.contractorDTO({
           ...mockDBContractor,
           jobsLegacy: [
             {
@@ -530,10 +533,10 @@ describe('DataHandler', () => {
           ],
         });
 
-        const formattedContractor = appHandler.formatDBContractor(mockDBContractor);
-        const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
-        const formattedLineItemLegacy = appHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-        const formattedSupplier = appHandler.formatDBSupplier(mockDBSupplier);
+        const formattedContractor = dataHandler.formatDBContractor(mockDBContractor);
+        const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
+        const formattedLineItemLegacy = dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
+        const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
         it('returns a Contractor', () => {
           expect(contractorDTO).toEqual({
@@ -549,14 +552,14 @@ describe('DataHandler', () => {
       });
 
       describe('jobLegacyDTO', () => {
-        const jobLegacyDTO = appHandler.jobLegacyDTO({
+        const jobLegacyDTO = dataHandler.jobLegacyDTO({
           ...mockDBJobLegacy,
           lineItems: [{ ...mockDBLineItemLegacy, supplier: mockDBSupplier }],
         });
 
-        const formattedJobLegacy = appHandler.formatDBJobLegacy(mockDBJobLegacy);
-        const formattedLineItemLegacy = appHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-        const formattedSupplier = appHandler.formatDBSupplier(mockDBSupplier);
+        const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
+        const formattedLineItemLegacy = dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
+        const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
         it('returns a JobLegacy', () => {
           expect(jobLegacyDTO).toEqual({
@@ -567,13 +570,13 @@ describe('DataHandler', () => {
       });
 
       describe('lineItemLegacyDTO', () => {
-        const lineItemLegacyDTO = appHandler.lineItemLegacyDTO({
+        const lineItemLegacyDTO = dataHandler.lineItemLegacyDTO({
           ...mockDBLineItemLegacy,
           supplier: mockDBSupplier,
         });
 
-        const formattedLineItemLegacy = appHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-        const formattedSupplier = appHandler.formatDBSupplier(mockDBSupplier);
+        const formattedLineItemLegacy = dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
+        const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
         it('returns a LineItemLegacy', () => {
           expect(lineItemLegacyDTO).toEqual({
@@ -584,9 +587,9 @@ describe('DataHandler', () => {
       });
 
       describe('reporterDTO', () => {
-        const reporterDTO = appHandler.reporterDTO(mockDBReporter);
+        const reporterDTO = dataHandler.reporterDTO(mockDBReporter);
 
-        const formattedReporter = appHandler.formatDBReporter(mockDBReporter);
+        const formattedReporter = dataHandler.formatDBReporter(mockDBReporter);
 
         it('returns a Reporter', () => {
           expect(reporterDTO).toEqual(formattedReporter);
@@ -594,9 +597,9 @@ describe('DataHandler', () => {
       });
 
       describe('scopeDTO', () => {
-        const scopeDTO = appHandler.scopeDTO(mockDBScope);
+        const scopeDTO = dataHandler.scopeDTO(mockDBScope);
 
-        const formattedScope = appHandler.formatDBScope(mockDBScope);
+        const formattedScope = dataHandler.formatDBScope(mockDBScope);
 
         it('returns a Scope', () => {
           expect(scopeDTO).toEqual(formattedScope);
@@ -604,9 +607,9 @@ describe('DataHandler', () => {
       });
 
       describe('supplierDTO', () => {
-        const supplierDTO = appHandler.supplierDTO(mockDBSupplier);
+        const supplierDTO = dataHandler.supplierDTO(mockDBSupplier);
 
-        const formattedSupplier = appHandler.formatDBSupplier(mockDBSupplier);
+        const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
         it('returns a Supplier', () => {
           expect(supplierDTO).toEqual(formattedSupplier);
@@ -615,23 +618,23 @@ describe('DataHandler', () => {
 
       describe('sendSMS', () => {
         beforeAll(async () => {
-          await appHandler.context.prisma.$transaction([
-            appHandler.context.prisma.contractor.create({ data: mockDBContractor }),
-            appHandler.context.prisma.reporter.create({ data: mockDBReporter }),
+          await dataHandler.context.prisma.$transaction([
+            dataHandler.context.prisma.contractor.create({ data: mockDBContractor }),
+            dataHandler.context.prisma.reporter.create({ data: mockDBReporter }),
           ]);
         });
 
         afterAll(async () => {
-          await appHandler.context.prisma.$transaction([
-            appHandler.context.prisma.contractor.deleteMany(),
-            appHandler.context.prisma.reporter.deleteMany(),
+          await dataHandler.context.prisma.$transaction([
+            dataHandler.context.prisma.contractor.deleteMany(),
+            dataHandler.context.prisma.reporter.deleteMany(),
           ]);
         });
 
         describe('when the recipient.primaryPhone is empty', () => {
           it('throws an error', async () => {
             await expect(
-              appHandler.sendSMS(
+              dataHandler.sendSMS(
                 { id: '', primaryPhone: '', smsConsent: SMSConsent.NEEDED },
                 'contractor',
                 mockSMSMessage
@@ -643,7 +646,7 @@ describe('DataHandler', () => {
         describe('when the message is empty', () => {
           it('throws an error', async () => {
             await expect(
-              appHandler.sendSMS(
+              dataHandler.sendSMS(
                 {
                   id: '',
                   primaryPhone: mockDBContractor.primaryPhone,
@@ -659,7 +662,7 @@ describe('DataHandler', () => {
         describe('when recipient.smsConsent = SMSConsent.NEEDED', () => {
           describe('when recipientType = contractor', () => {
             beforeEach(async () => {
-              await appHandler.sendSMS(
+              await dataHandler.sendSMS(
                 { ...mockDBContractor, smsConsent: SMSConsent.NEEDED },
                 'contractor',
                 mockSMSMessage
@@ -669,13 +672,13 @@ describe('DataHandler', () => {
             it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
                 to: '+10',
-                messagingServiceSid: appHandler.messagingServiceSid,
+                messagingServiceSid: dataHandler.messagingServiceSid,
                 body: SMS_MESSAGES.optInRequest,
               });
             });
 
             it('updates the contractor with smsConsent = SMSConsent.PENDING', async () => {
-              const doc = await appHandler.context.prisma.contractor.findUnique({
+              const doc = await dataHandler.context.prisma.contractor.findUnique({
                 where: { id: mockDBContractor.id },
               });
 
@@ -685,7 +688,7 @@ describe('DataHandler', () => {
             it('calls this.context.twilio.messages.create with body = message', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
                 to: '+10',
-                messagingServiceSid: appHandler.messagingServiceSid,
+                messagingServiceSid: dataHandler.messagingServiceSid,
                 body: mockSMSMessage,
               });
             });
@@ -693,7 +696,7 @@ describe('DataHandler', () => {
 
           describe('when recipientType = reporter', () => {
             beforeEach(async () => {
-              await appHandler.sendSMS(
+              await dataHandler.sendSMS(
                 { ...mockDBReporter, smsConsent: SMSConsent.NEEDED },
                 'reporter',
                 mockSMSMessage
@@ -703,13 +706,13 @@ describe('DataHandler', () => {
             it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
                 to: '+10',
-                messagingServiceSid: appHandler.messagingServiceSid,
+                messagingServiceSid: dataHandler.messagingServiceSid,
                 body: SMS_MESSAGES.optInRequest,
               });
             });
 
             it('updates the reporter with smsConsent = SMSConsent.PENDING', async () => {
-              const doc = await appHandler.context.prisma.reporter.findUnique({
+              const doc = await dataHandler.context.prisma.reporter.findUnique({
                 where: { id: mockDBReporter.id },
               });
 
@@ -719,7 +722,7 @@ describe('DataHandler', () => {
             it('calls this.context.twilio.messages.create with body = message', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
                 to: '+10',
-                messagingServiceSid: appHandler.messagingServiceSid,
+                messagingServiceSid: dataHandler.messagingServiceSid,
                 body: mockSMSMessage,
               });
             });
@@ -728,7 +731,7 @@ describe('DataHandler', () => {
 
         describe('when recipient.smsConsent = SMSConsent.PENDING', () => {
           beforeEach(async () => {
-            await appHandler.sendSMS(
+            await dataHandler.sendSMS(
               { ...mockDBContractor, smsConsent: SMSConsent.PENDING },
               'contractor',
               mockSMSMessage
@@ -738,7 +741,7 @@ describe('DataHandler', () => {
           it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInReminder', () => {
             expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
               to: '+10',
-              messagingServiceSid: appHandler.messagingServiceSid,
+              messagingServiceSid: dataHandler.messagingServiceSid,
               body: SMS_MESSAGES.optInReminder,
             });
           });
@@ -746,7 +749,7 @@ describe('DataHandler', () => {
           it('calls this.context.twilio.messages.create with body = message', () => {
             expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
               to: '+10',
-              messagingServiceSid: appHandler.messagingServiceSid,
+              messagingServiceSid: dataHandler.messagingServiceSid,
               body: mockSMSMessage,
             });
           });
@@ -755,7 +758,7 @@ describe('DataHandler', () => {
         describe('when recipient.smsConsent = SMSConsent.OPTED_OUT', () => {
           it('throws an error', async () => {
             await expect(
-              appHandler.sendSMS(
+              dataHandler.sendSMS(
                 { ...mockDBContractor, smsConsent: SMSConsent.OPTED_OUT },
                 'contractor',
                 mockSMSMessage
@@ -766,7 +769,7 @@ describe('DataHandler', () => {
 
         describe('when recipient.smsConsent = SMSConsent.OPTED_IN', () => {
           beforeEach(async () => {
-            await appHandler.sendSMS(
+            await dataHandler.sendSMS(
               { ...mockDBContractor, smsConsent: SMSConsent.OPTED_IN },
               'contractor',
               mockSMSMessage
@@ -776,7 +779,7 @@ describe('DataHandler', () => {
           it('calls this.context.twilio.messages.create with body = message', () => {
             expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
               to: '+10',
-              messagingServiceSid: appHandler.messagingServiceSid,
+              messagingServiceSid: dataHandler.messagingServiceSid,
               body: mockSMSMessage,
             });
           });
