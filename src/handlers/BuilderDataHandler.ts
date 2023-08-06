@@ -1,21 +1,21 @@
-import { DataHandler } from '../handlers';
+import { DataHandler } from '.';
 import { Context } from '../context';
 import {
-  ArchiveCommunityResponse,
-  CommunitiesResponse,
-  Community,
+  ArchiveBuilderResponse,
+  Builder,
+  BuildersResponse,
   Pagination,
-  WriteCommunityInput,
-  WriteCommunityResponse,
+  WriteBuilderInput,
+  WriteBuilderResponse,
 } from '../generated';
 import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
-export class CommunityDataHandler extends DataHandler<'community'> {
+export class BuilderDataHandler extends DataHandler<'builder'> {
   constructor(context: Context) {
-    super(context, 'community');
+    super(context, 'builder');
   }
 
-  async archive(id: string): Promise<ArchiveCommunityResponse> {
+  async archive(id: string): Promise<ArchiveBuilderResponse> {
     const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
@@ -27,12 +27,12 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     }
 
     return {
-      data: this.communityDTO(doc),
+      data: this.builderDTO(doc),
       message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
-  async create(data: WriteCommunityInput): Promise<WriteCommunityResponse> {
+  async create(data: WriteBuilderInput): Promise<WriteBuilderResponse> {
     const doc = await this.crud.create({
       data: {
         ...data,
@@ -43,12 +43,12 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     });
 
     return {
-      data: this.communityDTO(doc),
+      data: this.builderDTO(doc),
       message: RESPONSES.createSuccess(doc.name),
     };
   }
 
-  async modify(id: string, data: WriteCommunityInput): Promise<WriteCommunityResponse> {
+  async modify(id: string, data: WriteBuilderInput): Promise<WriteBuilderResponse> {
     const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
@@ -60,12 +60,12 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     }
 
     return {
-      data: this.communityDTO(doc),
+      data: this.builderDTO(doc),
       message: RESPONSES.modifySuccess(doc.name),
     };
   }
 
-  async getById(id: string): Promise<Community> {
+  async getById(id: string): Promise<Builder> {
     const doc = await this.crud.findUnique({
       where: { id },
       include: { company: true },
@@ -75,10 +75,10 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.communityDTO(doc);
+    return this.builderDTO(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination): Promise<CommunitiesResponse> {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<BuildersResponse> {
     const findArgs = {
       include: { company: true },
       where: { archived: !!archived },
@@ -91,7 +91,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.communityDTO(doc)),
+      data: docList.map((doc) => this.builderDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

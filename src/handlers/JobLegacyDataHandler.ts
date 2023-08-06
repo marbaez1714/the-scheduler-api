@@ -18,7 +18,7 @@ import {
   DeleteResponse,
   SortDirection,
 } from '../generated';
-import { DataHandler } from '../handlers';
+import { DataHandler } from '.';
 import { Context } from '../context';
 import { checkDelete } from '../utils';
 import { GRAPHQL_ERRORS, RESPONSES } from '../constants';

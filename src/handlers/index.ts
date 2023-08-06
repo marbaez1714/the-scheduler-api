@@ -1,2 +1,10 @@
 export { DataHandler } from './DataHandler';
 export { AreaDataHandler } from './AreaDataHandler';
+export { ContractorDataHandler } from './ContractorDataHandler';
+export { CompanyDataHandler } from './CompanyDataHandler';
+export { CommunityDataHandler } from './CommunityDataHandler';
+export { BuilderDataHandler } from './BuilderDataHandler';
+export { JobLegacyDataHandler, LineItemLegacyDataHandler } from './JobLegacyDataHandler';
+export { ReporterDataHandler } from './ReporterDataHandler';
+export { ScopeDataHandler } from './ScopeDataHandler';
+export { SupplierDataHandler } from './SupplierDataHandler';

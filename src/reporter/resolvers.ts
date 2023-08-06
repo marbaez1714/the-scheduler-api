@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { ReporterDataHandler } from './handlers';
+import { ReporterDataHandler } from '../handlers';
 
 export const reporterResolvers: Resolvers = {
   Query: {

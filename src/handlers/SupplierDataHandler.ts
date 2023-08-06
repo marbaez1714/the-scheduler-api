@@ -1,21 +1,21 @@
-import { DataHandler } from '../handlers';
+import { DataHandler } from '.';
 import { Context } from '../context';
 import {
-  ArchiveReporterResponse,
+  ArchiveSupplierResponse,
   Pagination,
-  Reporter,
-  ReportersResponse,
-  WriteReporterInput,
-  WriteReporterResponse,
+  Supplier,
+  SuppliersResponse,
+  WriteSupplierInput,
+  WriteSupplierResponse,
 } from '../generated';
 import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
-export class ReporterDataHandler extends DataHandler<'reporter'> {
+export class SupplierDataHandler extends DataHandler<'supplier'> {
   constructor(context: Context) {
-    super(context, 'reporter');
+    super(context, 'supplier');
   }
 
-  async archive(id: string): Promise<ArchiveReporterResponse> {
+  async archive(id: string): Promise<ArchiveSupplierResponse> {
     const doc = await this.crud.update({
       where: { id },
       data: this.archiveData,
@@ -26,12 +26,12 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     }
 
     return {
-      data: this.reporterDTO(doc),
+      data: this.supplierDTO(doc),
       message: RESPONSES.archiveSuccess(doc.name),
     };
   }
 
-  async create(data: WriteReporterInput): Promise<WriteReporterResponse> {
+  async create(data: WriteSupplierInput): Promise<WriteSupplierResponse> {
     const doc = await this.crud.create({
       data: {
         ...data,
@@ -41,12 +41,12 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     });
 
     return {
-      data: this.reporterDTO(doc),
+      data: this.supplierDTO(doc),
       message: RESPONSES.createSuccess(doc.name),
     };
   }
 
-  async modify(id: string, data: WriteReporterInput): Promise<WriteReporterResponse> {
+  async modify(id: string, data: WriteSupplierInput): Promise<WriteSupplierResponse> {
     const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
@@ -57,22 +57,22 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     }
 
     return {
-      data: this.reporterDTO(doc),
+      data: this.supplierDTO(doc),
       message: RESPONSES.modifySuccess(doc.name),
     };
   }
 
-  async getById(id: string): Promise<Reporter> {
+  async getById(id: string): Promise<Supplier> {
     const doc = await this.crud.findUnique({ where: { id } });
 
     if (!doc) {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.reporterDTO(doc);
+    return this.supplierDTO(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination): Promise<ReportersResponse> {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<SuppliersResponse> {
     const findArgs = {
       where: { archived: !!archived },
       ...this.generatePaginationArgs(pagination),
@@ -84,7 +84,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
     ]);
 
     return {
-      data: docList.map((doc) => this.reporterDTO(doc)),
+      data: docList.map((doc) => this.supplierDTO(doc)),
       pagination: this.generatePaginationResponse(count, pagination),
     };
   }

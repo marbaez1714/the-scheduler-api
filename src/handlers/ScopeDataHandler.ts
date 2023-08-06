@@ -1,4 +1,4 @@
-import { DataHandler } from '../handlers';
+import { DataHandler } from '.';
 import { Context } from '../context';
 import {
   ArchiveScopeResponse,
