@@ -26,13 +26,7 @@ export const GRAPHQL_ERRORS = {
   contractorNotFound: new GraphQLError('Contractor not found.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
-  contractorSMSOptedOut: new GraphQLError('Contractor has opted out of receiving text messages.', {
-    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-  }),
   reporterNotFound: new GraphQLError('Reporter not found.', {
-    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-  }),
-  reporterSMSOptedOut: new GraphQLError('Reporter has opted out of receiving text messages.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
   phoneNumberMustBeString: new GraphQLError('Phone Number must be a string', {

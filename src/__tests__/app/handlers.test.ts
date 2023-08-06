@@ -23,6 +23,10 @@ const mockDBJobLegacy = MockData.dBJobLegacy();
 const mockSMSMessage = 'some-message';
 
 describe('DataHandler', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('when user is not an admin', () => {
     const mockContext = createMockContext();
 
@@ -647,9 +651,14 @@ describe('DataHandler', () => {
 
         describe('when recipient.smsConsent = SMSConsent.NEEDED', () => {
           describe('when recipientType = contractor', () => {
-            beforeAll(async () => {
-              await appHandler.sendSMS(mockDBContractor, 'contractor', mockSMSMessage);
+            beforeEach(async () => {
+              await appHandler.sendSMS(
+                { ...mockDBContractor, smsConsent: SMSConsent.NEEDED },
+                'contractor',
+                mockSMSMessage
+              );
             });
+
             it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
                 to: '+10',
@@ -658,8 +667,12 @@ describe('DataHandler', () => {
               });
             });
 
-            it('updates the contractor with smsConsent = SMSConsent.PENDING', () => {
-              //
+            it('updates the contractor with smsConsent = SMSConsent.PENDING', async () => {
+              const doc = await appHandler.context.prisma.contractor.findUnique({
+                where: { id: mockDBContractor.id },
+              });
+
+              expect(doc?.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {
@@ -672,47 +685,93 @@ describe('DataHandler', () => {
           });
 
           describe('when recipientType = reporter', () => {
-            it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
-              //
+            beforeEach(async () => {
+              await appHandler.sendSMS(
+                { ...mockDBReporter, smsConsent: SMSConsent.NEEDED },
+                'reporter',
+                mockSMSMessage
+              );
             });
 
-            it('updates the reporter with smsConsent = SMSConsent.PENDING', () => {
-              //
+            it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
+              expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
+                to: '+10',
+                messagingServiceSid: appHandler.messagingServiceSid,
+                body: SMS_MESSAGES.optInRequest,
+              });
+            });
+
+            it('updates the reporter with smsConsent = SMSConsent.PENDING', async () => {
+              const doc = await appHandler.context.prisma.reporter.findUnique({
+                where: { id: mockDBReporter.id },
+              });
+
+              expect(doc?.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {
-              //
+              expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
+                to: '+10',
+                messagingServiceSid: appHandler.messagingServiceSid,
+                body: mockSMSMessage,
+              });
             });
           });
         });
 
         describe('when recipient.smsConsent = SMSConsent.PENDING', () => {
+          beforeEach(async () => {
+            await appHandler.sendSMS(
+              { ...mockDBContractor, smsConsent: SMSConsent.PENDING },
+              'contractor',
+              mockSMSMessage
+            );
+          });
+
           it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInReminder', () => {
-            //
+            expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
+              to: '+10',
+              messagingServiceSid: appHandler.messagingServiceSid,
+              body: SMS_MESSAGES.optInReminder,
+            });
           });
 
           it('calls this.context.twilio.messages.create with body = message', () => {
-            //
+            expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
+              to: '+10',
+              messagingServiceSid: appHandler.messagingServiceSid,
+              body: mockSMSMessage,
+            });
           });
         });
 
         describe('when recipient.smsConsent = SMSConsent.OPTED_OUT', () => {
-          describe('when recipientType = contractor', () => {
-            it('throws an error', async () => {
-              //
-            });
-          });
-
-          describe('when recipientType = reporter', () => {
-            it('throws an error', async () => {
-              //
-            });
+          it('throws an error', async () => {
+            await expect(
+              appHandler.sendSMS(
+                { ...mockDBContractor, smsConsent: SMSConsent.OPTED_OUT },
+                'contractor',
+                mockSMSMessage
+              )
+            ).rejects.toThrowError(GRAPHQL_ERRORS.userSMSOptedOut);
           });
         });
 
         describe('when recipient.smsConsent = SMSConsent.OPTED_IN', () => {
+          beforeEach(async () => {
+            await appHandler.sendSMS(
+              { ...mockDBContractor, smsConsent: SMSConsent.OPTED_IN },
+              'contractor',
+              mockSMSMessage
+            );
+          });
+
           it('calls this.context.twilio.messages.create with body = message', () => {
-            //
+            expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
+              to: '+10',
+              messagingServiceSid: appHandler.messagingServiceSid,
+              body: mockSMSMessage,
+            });
           });
         });
       });

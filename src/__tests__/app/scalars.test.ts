@@ -1,4 +1,5 @@
 import { ScalarDefs } from '../../app/scalars';
+import { GRAPHQL_ERRORS } from '../../constants';
 
 const phoneNumberDef = ScalarDefs.PhoneNumber;
 
@@ -8,14 +9,16 @@ describe('ScalarDefs', () => {
       describe('when value is not a string', () => {
         it('throws an error', () => {
           expect(() => phoneNumberDef.parseValue(123)).toThrowError(
-            'Phone Number must be a string'
+            GRAPHQL_ERRORS.phoneNumberMustBeString
           );
         });
       });
 
       describe('when value is not a valid phone number', () => {
         it('throws an error', () => {
-          expect(() => phoneNumberDef.parseValue('123')).toThrowError('Invalid phone format - 123');
+          expect(() => phoneNumberDef.parseValue('123')).toThrowError(
+            GRAPHQL_ERRORS.phoneNumberFormatInvalid('123')
+          );
         });
       });
 

@@ -19,7 +19,6 @@ import {
   LineItemLegacy,
 } from '../generated';
 import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
-import { delay } from 'lodash';
 
 export class DataHandler<TClient extends keyof PrismaModels> {
   context: Context;
@@ -407,22 +406,8 @@ export class DataHandler<TClient extends keyof PrismaModels> {
         });
         break;
       case SMSConsent.OPTED_OUT:
-        if (recipientType === 'contractor') {
-          throw GRAPHQL_ERRORS.contractorSMSOptedOut;
-        }
-
-        if (recipientType === 'reporter') {
-          throw GRAPHQL_ERRORS.reporterSMSOptedOut;
-        }
-
-        break;
-      default:
-        break;
+        throw GRAPHQL_ERRORS.userSMSOptedOut;
     }
-
-    delay(() => {
-      // delay the message by 500ms to ensure the consent request is sent first
-    }, 500);
 
     // Send the message
     return this.context.twilio.messages.create({
