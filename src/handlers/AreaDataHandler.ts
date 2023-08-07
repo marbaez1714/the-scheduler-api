@@ -10,7 +10,7 @@ import {
   WriteAreaResponse,
 } from '../generated';
 import { GraphQLError } from 'graphql';
-import { RESPONSES } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class AreaDataHandler extends DataHandler<'area'> {
   constructor(context: Context) {
@@ -60,9 +60,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     const doc = await this.crud.findUnique({ where: { id } });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
     return this.areaDTO(doc);

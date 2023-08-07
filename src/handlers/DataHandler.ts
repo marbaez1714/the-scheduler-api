@@ -48,7 +48,7 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     // Set the user's id
     this.userId = context.user.sub;
     // Set generic archive data
-    this.archiveData = { archived: true, updatedBy: context.user.sub };
+    this.archiveData = { archived: true, updatedBy: this.userId };
     // Set today's date to midnight
     const today = new Date();
     today.setHours(0, 0, 0, 0);

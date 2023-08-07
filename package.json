@@ -57,7 +57,7 @@
     "seed:parse": "ts-node-dev --transpile-only --no-notify --exit-child prisma/parseData.ts",
     "seed": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seedTables.ts",
     "prisma:deploy:test": "wait-on tcp:localhost:5433 && dotenv -e .env.test -- yarn prisma:deploy",
-    "jest:test": "dotenv -e .env.test -- jest --coverage --bail --detectOpenHandles --forceExit",
+    "jest:test": "dotenv -e .env.test -- jest --coverage --detectOpenHandles --forceExit",
     "test": "docker-compose up -d && yarn prisma:deploy:test && yarn jest:test && docker-compose down && open coverage/lcov-report/index.html"
   }
 }

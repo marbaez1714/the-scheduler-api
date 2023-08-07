@@ -23,14 +23,14 @@ const mockDBJobLegacy = MockData.dBJobLegacy();
 const mockSMSMessage = 'some-message';
 
 describe('DataHandler', () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.resetAllMocks();
   });
 
   describe('when user is not an admin', () => {
     const mockContext = createMockContext();
 
-    it('should throw an error', () => {
+    it('throws an error', () => {
       expect(() => new DataHandler(mockContext, mockClient)).toThrowError();
     });
   });
@@ -39,36 +39,36 @@ describe('DataHandler', () => {
     const mockContext = createMockContext([PermissionsEnum.Admin]);
     const dataHandler = new DataHandler(mockContext, mockClient);
 
-    describe('appHandler fields', () => {
-      it('should have a context field', () => {
+    describe('fields', () => {
+      it('has a context field', () => {
         expect(dataHandler.context).toEqual(mockContext);
       });
 
-      it('should have a client', () => {
+      it('has a client field', () => {
         expect(dataHandler.client).toEqual(mockClient);
       });
 
-      it('should have a crud', () => {
+      it('has a crud field', () => {
         expect(dataHandler.crud).toEqual(mockContext.prisma[mockClient]);
       });
 
-      it('should have a userId', () => {
+      it('has a userId field', () => {
         expect(dataHandler.userId).toEqual(mockContext.user.sub);
       });
 
-      it('should have a archiveData', () => {
+      it('has an archiveData field', () => {
         expect(dataHandler.archiveData).toEqual({
           archived: true,
           updatedBy: mockContext.user.sub,
         });
       });
 
-      it('should have a todayDate', () => {
+      it('has a todayDate field', () => {
         expect(dataHandler.todayDate).toEqual(MockData.dates.today);
       });
     });
 
-    describe('appHandler methods', () => {
+    describe('methods', () => {
       describe('generatePaginationArgs', () => {
         describe('when pagination is not passed', () => {
           const args = dataHandler.generatePaginationArgs();
@@ -617,20 +617,6 @@ describe('DataHandler', () => {
       });
 
       describe('sendSMS', () => {
-        beforeAll(async () => {
-          await dataHandler.context.prisma.$transaction([
-            dataHandler.context.prisma.contractor.create({ data: mockDBContractor }),
-            dataHandler.context.prisma.reporter.create({ data: mockDBReporter }),
-          ]);
-        });
-
-        afterAll(async () => {
-          await dataHandler.context.prisma.$transaction([
-            dataHandler.context.prisma.contractor.deleteMany(),
-            dataHandler.context.prisma.reporter.deleteMany(),
-          ]);
-        });
-
         describe('when the recipient.primaryPhone is empty', () => {
           it('throws an error', async () => {
             await expect(
@@ -660,34 +646,57 @@ describe('DataHandler', () => {
         });
 
         describe('when recipient.smsConsent = SMSConsent.NEEDED', () => {
+          const mockContactorRecipient = MockData.dBContractor(0, {
+            smsConsent: SMSConsent.NEEDED,
+            primaryPhone: '123-456-7890',
+          });
+
+          const mockReporterRecipient = MockData.dBReporter(0, {
+            smsConsent: SMSConsent.NEEDED,
+            primaryPhone: '123-456-7890',
+          });
+
+          beforeAll(async () => {
+            // Create contractor and reporter in the database
+            await mockContext.prisma.$transaction([
+              mockContext.prisma.contractor.create({ data: mockContactorRecipient }),
+              mockContext.prisma.reporter.create({ data: mockReporterRecipient }),
+            ]);
+          });
+
+          afterAll(async () => {
+            // Delete the contractor and reporter from the database
+            await mockContext.prisma.$transaction([
+              mockContext.prisma.contractor.delete({ where: { id: mockContactorRecipient.id } }),
+              mockContext.prisma.reporter.delete({ where: { id: mockReporterRecipient.id } }),
+            ]);
+          });
+
           describe('when recipientType = contractor', () => {
             beforeEach(async () => {
-              await dataHandler.sendSMS(
-                { ...mockDBContractor, smsConsent: SMSConsent.NEEDED },
-                'contractor',
-                mockSMSMessage
-              );
+              // Send the SMS
+              await dataHandler.sendSMS(mockContactorRecipient, 'contractor', mockSMSMessage);
             });
 
             it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
-                to: '+10',
+                to: '+11234567890',
                 messagingServiceSid: dataHandler.messagingServiceSid,
                 body: SMS_MESSAGES.optInRequest,
               });
             });
 
             it('updates the contractor with smsConsent = SMSConsent.PENDING', async () => {
-              const doc = await dataHandler.context.prisma.contractor.findUnique({
-                where: { id: mockDBContractor.id },
+              const updatedRecipient = await mockContext.prisma.contractor.findUnique({
+                where: { id: mockContactorRecipient.id },
               });
 
-              expect(doc?.smsConsent).toBe(SMSConsent.PENDING);
+              expect(updatedRecipient?.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
-                to: '+10',
+                to: '+11234567890',
                 messagingServiceSid: dataHandler.messagingServiceSid,
                 body: mockSMSMessage,
               });
@@ -696,32 +705,29 @@ describe('DataHandler', () => {
 
           describe('when recipientType = reporter', () => {
             beforeEach(async () => {
-              await dataHandler.sendSMS(
-                { ...mockDBReporter, smsConsent: SMSConsent.NEEDED },
-                'reporter',
-                mockSMSMessage
-              );
+              // Send the SMS
+              await dataHandler.sendSMS(mockReporterRecipient, 'reporter', mockSMSMessage);
             });
 
             it('calls this.context.twilio.messages.create with body = SMS_MESSAGES.optInRequest', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(1, {
-                to: '+10',
+                to: '+11234567890',
                 messagingServiceSid: dataHandler.messagingServiceSid,
                 body: SMS_MESSAGES.optInRequest,
               });
             });
 
             it('updates the reporter with smsConsent = SMSConsent.PENDING', async () => {
-              const doc = await dataHandler.context.prisma.reporter.findUnique({
-                where: { id: mockDBReporter.id },
+              const updatedRecipient = await mockContext.prisma.reporter.findUnique({
+                where: { id: mockReporterRecipient.id },
               });
 
-              expect(doc?.smsConsent).toBe(SMSConsent.PENDING);
+              expect(updatedRecipient?.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {
               expect(mockContext.twilio.messages.create).toHaveBeenNthCalledWith(2, {
-                to: '+10',
+                to: '+11234567890',
                 messagingServiceSid: dataHandler.messagingServiceSid,
                 body: mockSMSMessage,
               });
