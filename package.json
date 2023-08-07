@@ -55,6 +55,6 @@
     "postinstall": "yarn prisma:generate && yarn generate",
     "seed:parse": "ts-node-dev --transpile-only --no-notify --exit-child prisma/parseData.ts",
     "seed": "ts-node-dev --transpile-only --no-notify --exit-child prisma/seedTables.ts",
-    "test": "./run-tests.sh"
+    "test": "./scripts/run-tests.sh"
   }
 }
