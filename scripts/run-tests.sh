@@ -18,7 +18,7 @@ docker-compose up -d
 echo "Waiting for the service on port 5433 to be up and running..."
 until [ "$(docker-compose ps db | grep healthy)" ]; do
   echo "Waiting..."
-  sleep 0.5
+  sleep 1
 done
 
 echo "Loading environment variables..."

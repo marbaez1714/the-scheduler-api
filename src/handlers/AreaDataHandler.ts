@@ -1,4 +1,3 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { DataHandler } from './DataHandler';
 import { Context } from '../context';
 import {
@@ -9,7 +8,6 @@ import {
   WriteAreaInput,
   WriteAreaResponse,
 } from '../generated';
-import { GraphQLError } from 'graphql';
 import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class AreaDataHandler extends DataHandler<'area'> {
@@ -66,7 +64,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
     return this.areaDTO(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination): Promise<AreasResponse> {
+  async getMany(archived = false, pagination?: Pagination): Promise<AreasResponse> {
     const findArgs = {
       where: { archived: !!archived },
       ...this.generatePaginationArgs(pagination),
