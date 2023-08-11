@@ -43,7 +43,7 @@ describe('AreaDataHandler', () => {
       });
 
       it('updates the archive field of the area to true', async () => {
-        expect(updatedDoc?.archived).toBe(true);
+        expect(updatedDoc.archived).toBe(true);
       });
     });
 

@@ -1,5 +1,5 @@
 import { SMSConsent } from '@prisma/client';
-import { Pagination, SortDirection, SortInput } from '../generated';
+import { FilterInput, Pagination, SortDirection, SortInput } from '../generated';
 import { PrismaModels } from '../app/types';
 
 const today = new Date();
@@ -249,6 +249,13 @@ export class MockData {
     return {
       ...defaultData,
       ...data,
+    };
+  }
+
+  static filterInput(data?: Partial<FilterInput>): FilterInput {
+    return {
+      field: data?.field || '',
+      term: data?.term || '',
     };
   }
 }

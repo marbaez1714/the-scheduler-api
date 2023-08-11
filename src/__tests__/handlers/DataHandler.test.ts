@@ -1,7 +1,7 @@
 import { MockData } from '../../__mocks__/data';
 import { createMockContext } from '../../__mocks__/context';
 import { PermissionsEnum } from '../../app/types';
-import { JobLegacyStatus } from '../../generated';
+import { JobLegacyStatus, SortDirection } from '../../generated';
 import { SMSConsent } from '@prisma/client';
 import { GRAPHQL_ERRORS, RESPONSES, SMS_MESSAGES } from '../../constants';
 import { DataHandler } from '../../handlers';
@@ -9,17 +9,6 @@ import { DataHandler } from '../../handlers';
 const mockClient = 'area';
 const mockTotalCount = 100;
 const mockPaginationInput = MockData.paginationInput();
-
-const mockDBArea = MockData.dBArea();
-const mockDBBuilder = MockData.dBBuilder();
-const mockDBCompany = MockData.dBCompany();
-const mockDBContractor = MockData.dBContractor();
-const mockDBCommunity = MockData.dBCommunity();
-const mockDBReporter = MockData.dBReporter();
-const mockDBScope = MockData.dBScope();
-const mockDBSupplier = MockData.dBSupplier();
-const mockDBLineItemLegacy = MockData.dBLineItemLegacy();
-const mockDBJobLegacy = MockData.dBJobLegacy();
 const mockMessage = 'some-message';
 const mockSMSMessage = 'some-sms-message';
 
@@ -242,6 +231,7 @@ describe('DataHandler', () => {
 
       describe('DB Formatting', () => {
         describe('formatDBArea', () => {
+          const mockDBArea = MockData.dBArea();
           const formattedArea = dataHandler.formatDBArea(mockDBArea);
 
           it('returns a formatted area', () => {
@@ -254,6 +244,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBBuilder', () => {
+          const mockDBBuilder = MockData.dBBuilder();
           const formattedBuilder = dataHandler.formatDBBuilder(mockDBBuilder);
 
           it('returns a formatted builder', () => {
@@ -266,6 +257,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBCommunity', () => {
+          const mockDBCommunity = MockData.dBCommunity();
           const formattedCommunity = dataHandler.formatDBCommunity(mockDBCommunity);
 
           it('returns a formatted community', () => {
@@ -278,6 +270,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBCompany', () => {
+          const mockDBCompany = MockData.dBCompany();
           const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
 
           it('returns a formatted company', () => {
@@ -290,6 +283,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBContractor', () => {
+          const mockDBContractor = MockData.dBContractor();
           const formattedContractor = dataHandler.formatDBContractor(mockDBContractor);
 
           it('returns a formatted contractor', () => {
@@ -412,6 +406,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBReporter', () => {
+          const mockDBReporter = MockData.dBReporter();
           const formattedReporter = dataHandler.formatDBReporter(mockDBReporter);
 
           it('returns a formatted reporter', () => {
@@ -424,6 +419,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBScope', () => {
+          const mockDBScope = MockData.dBScope();
           const formattedScope = dataHandler.formatDBScope(mockDBScope);
 
           it('returns a formatted scope', () => {
@@ -436,6 +432,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBSupplier', () => {
+          const mockDBSupplier = MockData.dBSupplier();
           const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
 
           it('returns a formatted supplier', () => {
@@ -448,6 +445,7 @@ describe('DataHandler', () => {
         });
 
         describe('formatDBLineItemLegacy', () => {
+          const mockDBLineItemLegacy = MockData.dBLineItemLegacy();
           const formattedLineItemLegacy = dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
 
           it('returns a formatted lineItemLegacy', () => {
@@ -483,40 +481,85 @@ describe('DataHandler', () => {
           });
         });
 
+        describe('sortResponseDTO', () => {
+          describe('when sort is not passed', () => {
+            const response = dataHandler.sortResponseDTO();
+
+            it('returns a default SortResponse', () => {
+              expect(response).toEqual({
+                field: '',
+                direction: SortDirection.Asc,
+              });
+            });
+          });
+
+          describe('when sort is passed', () => {
+            const input = { field: 'some-field', direction: SortDirection.Desc };
+            const response = dataHandler.sortResponseDTO(input);
+
+            it('returns a SortResponse', () => {
+              expect(response).toEqual({
+                field: input.field,
+                direction: input.direction,
+              });
+            });
+          });
+        });
+
+        describe('filterResponseDTO', () => {
+          describe('when filter is not passed', () => {
+            const response = dataHandler.filterResponseDTO();
+
+            it('returns a default FilterResponse', () => {
+              expect(response).toEqual({ field: '', term: '' });
+            });
+          });
+
+          describe('when filter is passed', () => {
+            const input = { field: 'some-field', term: 'some-term' };
+            const response = dataHandler.filterResponseDTO(input);
+
+            it('returns a FilterResponse', () => {
+              expect(response).toEqual({ field: input.field, term: input.term });
+            });
+          });
+        });
+
         describe('Area', () => {
+          const mockDoc = MockData.dBArea();
+          const mockDocList = [mockDoc, MockData.dBArea(1), MockData.dBArea(2)];
+
           describe('areaDTO', () => {
-            const areaDTO = dataHandler.areaDTO(mockDBArea);
+            const areaDTO = dataHandler.areaDTO(mockDoc);
 
             it('returns an Area', () => {
-              expect(areaDTO).toEqual(dataHandler.formatDBArea(mockDBArea));
+              expect(areaDTO).toEqual(dataHandler.formatDBArea(mockDoc));
             });
           });
 
           describe('archiveAreaResponseDTO', () => {
-            const archiveAreaResponseDTO = dataHandler.archiveAreaResponseDTO(mockDBArea);
+            const archiveAreaResponseDTO = dataHandler.archiveAreaResponseDTO(mockDoc);
 
             it('returns an ArchiveAreaResponse', () => {
               expect(archiveAreaResponseDTO).toEqual({
-                data: dataHandler.areaDTO(mockDBArea),
-                message: RESPONSES.archiveSuccess(mockDBArea.name),
+                data: dataHandler.areaDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
               });
             });
           });
 
           describe('writeAreaResponseDTO', () => {
-            const writeAreaResponseDTO = dataHandler.writeAreaResponseDTO(mockDBArea, mockMessage);
+            const writeAreaResponseDTO = dataHandler.writeAreaResponseDTO(mockDoc, mockMessage);
 
             it('returns a WriteAreaResponse', () => {
               expect(writeAreaResponseDTO).toEqual({
-                data: dataHandler.areaDTO(mockDBArea),
+                data: dataHandler.areaDTO(mockDoc),
                 message: mockMessage,
               });
             });
           });
 
           describe('areasResponseDTO', () => {
-            const mockDocList = [mockDBArea, MockData.dBArea(1), MockData.dBArea(2)];
-
             describe('when pagination is not passed', () => {
               const areasResponseDTO = dataHandler.areasResponseDTO(mockDocList, mockTotalCount);
 
@@ -549,157 +592,712 @@ describe('DataHandler', () => {
         });
 
         describe('Builder', () => {
-          describe('builderDTO', () => {
-            const builderDTO = dataHandler.builderDTO({ ...mockDBBuilder, company: mockDBCompany });
+          const mockBuilderDoc = MockData.dBBuilder();
+          const mockCompanyDoc = MockData.dBCompany();
+          const mockDoc = { ...mockBuilderDoc, company: mockCompanyDoc };
+          const mockDocList = [
+            mockDoc,
+            { ...MockData.dBBuilder(1), company: MockData.dBCompany(1) },
+            { ...MockData.dBBuilder(2), company: MockData.dBCompany(2) },
+          ];
 
-            const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
-            const formattedBuilder = dataHandler.formatDBBuilder(mockDBBuilder);
+          describe('builderDTO', () => {
+            const builderDTO = dataHandler.builderDTO(mockDoc);
 
             it('returns a Builder', () => {
-              expect(builderDTO).toEqual({ ...formattedBuilder, company: formattedCompany });
+              expect(builderDTO).toEqual({
+                ...dataHandler.formatDBBuilder(mockBuilderDoc),
+                company: dataHandler.formatDBCompany(mockCompanyDoc),
+              });
+            });
+          });
+
+          describe('archiveBuilderResponseDTO', () => {
+            const archiveBuilderResponseDTO = dataHandler.archiveBuilderResponseDTO(mockDoc);
+
+            it('returns an ArchiveBuilderResponse', () => {
+              expect(archiveBuilderResponseDTO).toEqual({
+                data: dataHandler.builderDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeBuilderResponseDTO', () => {
+            const writeBuilderResponseDTO = dataHandler.writeBuilderResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteBuilderResponse', () => {
+              expect(writeBuilderResponseDTO).toEqual({
+                data: dataHandler.builderDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('buildersResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const buildersResponseDTO = dataHandler.buildersResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a BuildersResponse', () => {
+                expect(buildersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.builderDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const buildersResponseDTO = dataHandler.buildersResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a BuildersResponse', () => {
+                expect(buildersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.builderDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
 
         describe('Company', () => {
-          describe('companyDTO', () => {
-            const companyDTO = dataHandler.companyDTO(mockDBCompany);
+          const mockDoc = MockData.dBCompany();
+          const mockDocList = [mockDoc, MockData.dBCompany(1), MockData.dBCompany(2)];
 
-            const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
+          describe('companyDTO', () => {
+            const companyDTO = dataHandler.companyDTO(mockDoc);
 
             it('returns a Company', () => {
-              expect(companyDTO).toEqual(formattedCompany);
+              expect(companyDTO).toEqual(dataHandler.formatDBCompany(mockDoc));
+            });
+          });
+
+          describe('archiveCompanyResponseDTO', () => {
+            const archiveCompanyResponseDTO = dataHandler.archiveCompanyResponseDTO(mockDoc);
+
+            it('returns an ArchiveCompanyResponse', () => {
+              expect(archiveCompanyResponseDTO).toEqual({
+                data: dataHandler.companyDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeCompanyResponseDTO', () => {
+            const writeCompanyResponseDTO = dataHandler.writeCompanyResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteCompanyResponse', () => {
+              expect(writeCompanyResponseDTO).toEqual({
+                data: dataHandler.companyDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('companiesResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const companiesResponseDTO = dataHandler.companiesResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a CompaniesResponse', () => {
+                expect(companiesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.companyDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const companiesResponseDTO = dataHandler.companiesResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a CompaniesResponse', () => {
+                expect(companiesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.companyDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
 
         describe('Community', () => {
-          describe('communityDTO', () => {
-            const communityDTO = dataHandler.communityDTO({
-              ...mockDBCommunity,
-              company: mockDBCompany,
-            });
+          const mockCommunityDoc = MockData.dBCommunity();
+          const mockCompanyDoc = MockData.dBCompany();
+          const mockDoc = { ...mockCommunityDoc, company: mockCompanyDoc };
+          const mockDocList = [
+            mockDoc,
+            { ...MockData.dBCommunity(1), company: MockData.dBCompany(1) },
+            { ...MockData.dBCommunity(2), company: MockData.dBCompany(2) },
+          ];
 
-            const formattedCompany = dataHandler.formatDBCompany(mockDBCompany);
-            const formattedCommunity = dataHandler.formatDBCommunity(mockDBCommunity);
+          describe('communityDTO', () => {
+            const communityDTO = dataHandler.communityDTO(mockDoc);
 
             it('returns a Community', () => {
-              expect(communityDTO).toEqual({ ...formattedCommunity, company: formattedCompany });
+              expect(communityDTO).toEqual({
+                ...dataHandler.formatDBCommunity(mockCommunityDoc),
+                company: dataHandler.formatDBCompany(mockCompanyDoc),
+              });
+            });
+          });
+
+          describe('archiveCommunityResponseDTO', () => {
+            const archiveCommunityResponseDTO = dataHandler.archiveCommunityResponseDTO(mockDoc);
+
+            it('returns an ArchiveCommunityResponse', () => {
+              expect(archiveCommunityResponseDTO).toEqual({
+                data: dataHandler.communityDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeCommunityResponseDTO', () => {
+            const writeCommunityResponseDTO = dataHandler.writeCommunityResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteCommunityResponse', () => {
+              expect(writeCommunityResponseDTO).toEqual({
+                data: dataHandler.communityDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('communitiesResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const communitiesResponseDTO = dataHandler.communitiesResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a CommunitiesResponse', () => {
+                expect(communitiesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.communityDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const communitiesResponseDTO = dataHandler.communitiesResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a CommunitiesResponse', () => {
+                expect(communitiesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.communityDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
 
         describe('Contactor', () => {
-          describe('contractorDTO', () => {
-            const contractorDTO = dataHandler.contractorDTO({
-              ...mockDBContractor,
+          const mockSupplierDoc = MockData.dBSupplier();
+          const mockLineItemLegacyDoc = MockData.dBLineItemLegacy();
+          const mockJobLegacyDoc = MockData.dBJobLegacy();
+          const mockContractorDoc = MockData.dBContractor();
+          const mockDoc = {
+            ...mockContractorDoc,
+            jobsLegacy: [
+              {
+                ...mockJobLegacyDoc,
+                lineItems: [{ ...mockLineItemLegacyDoc, supplier: mockSupplierDoc }],
+              },
+            ],
+          };
+          const mockDocList = [
+            mockDoc,
+            {
+              ...MockData.dBContractor(1),
               jobsLegacy: [
                 {
-                  ...mockDBJobLegacy,
-                  lineItems: [{ ...mockDBLineItemLegacy, supplier: mockDBSupplier }],
+                  ...MockData.dBJobLegacy(1),
+                  lineItems: [
+                    { ...MockData.dBLineItemLegacy(1), supplier: MockData.dBSupplier(1) },
+                  ],
                 },
               ],
-            });
+            },
+            {
+              ...MockData.dBContractor(2),
+              jobsLegacy: [
+                {
+                  ...MockData.dBJobLegacy(2),
+                  lineItems: [
+                    { ...MockData.dBLineItemLegacy(2), supplier: MockData.dBSupplier(2) },
+                  ],
+                },
+              ],
+            },
+          ];
 
-            const formattedContractor = dataHandler.formatDBContractor(mockDBContractor);
-            const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
-            const formattedLineItemLegacy =
-              dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-            const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
+          describe('contractorDTO', () => {
+            const contractorDTO = dataHandler.contractorDTO(mockDoc);
 
             it('returns a Contractor', () => {
               expect(contractorDTO).toEqual({
-                ...formattedContractor,
+                ...dataHandler.formatDBContractor(mockContractorDoc),
                 jobsLegacy: [
                   {
-                    ...formattedJobLegacy,
-                    lineItems: [{ ...formattedLineItemLegacy, supplier: formattedSupplier }],
+                    ...dataHandler.formatDBJobLegacy(mockJobLegacyDoc),
+                    lineItems: [
+                      {
+                        ...dataHandler.formatDBLineItemLegacy(mockLineItemLegacyDoc),
+                        supplier: dataHandler.formatDBSupplier(mockSupplierDoc),
+                      },
+                    ],
                   },
                 ],
+              });
+            });
+          });
+
+          describe('archiveContractorResponseDTO', () => {
+            const archiveContractorResponseDTO = dataHandler.archiveContractorResponseDTO(mockDoc);
+
+            it('returns an ArchiveContractorResponse', () => {
+              expect(archiveContractorResponseDTO).toEqual({
+                data: dataHandler.contractorDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeContractorResponseDTO', () => {
+            const writeContractorResponseDTO = dataHandler.writeContractorResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteContractorResponse', () => {
+              expect(writeContractorResponseDTO).toEqual({
+                data: dataHandler.contractorDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('contractorsResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const contractorsResponseDTO = dataHandler.contractorsResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a ContractorsResponse', () => {
+                expect(contractorsResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.contractorDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const contractorsResponseDTO = dataHandler.contractorsResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a ContractorsResponse', () => {
+                expect(contractorsResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.contractorDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
+            });
+          });
+
+          describe('assignedContractorsResponseDTO', () => {
+            const assignedContractorsResponseDTO =
+              dataHandler.assignedContractorsResponseDTO(mockDocList);
+
+            it('returns an AssignedContractorsResponse', () => {
+              expect(assignedContractorsResponseDTO).toEqual({
+                data: mockDocList.map((doc) => dataHandler.contractorDTO(doc)),
               });
             });
           });
         });
 
         describe('JobLegacy', () => {
-          describe('jobLegacyDTO', () => {
-            const jobLegacyDTO = dataHandler.jobLegacyDTO({
-              ...mockDBJobLegacy,
-              lineItems: [{ ...mockDBLineItemLegacy, supplier: mockDBSupplier }],
-            });
+          const mockSupplierDoc = MockData.dBSupplier();
+          const mockLineItemLegacyDoc = MockData.dBLineItemLegacy();
+          const mockJobLegacyDoc = MockData.dBJobLegacy();
+          const mockFilterInput = MockData.filterInput({
+            field: 'some-filter-field',
+            term: 'some-filter-term',
+          });
+          const mockSortInput = MockData.sortInput({
+            field: 'some-sort-field',
+            direction: SortDirection.Desc,
+          });
+          const mockDoc = {
+            ...mockJobLegacyDoc,
+            lineItems: [{ ...mockLineItemLegacyDoc, supplier: mockSupplierDoc }],
+          };
+          const mockDocList = [
+            mockDoc,
+            {
+              ...MockData.dBJobLegacy(1),
+              lineItems: [{ ...MockData.dBLineItemLegacy(1), supplier: MockData.dBSupplier(1) }],
+            },
+            {
+              ...MockData.dBJobLegacy(2),
+              lineItems: [{ ...MockData.dBLineItemLegacy(2), supplier: MockData.dBSupplier(2) }],
+            },
+          ];
 
-            const formattedJobLegacy = dataHandler.formatDBJobLegacy(mockDBJobLegacy);
-            const formattedLineItemLegacy =
-              dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-            const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
+          describe('jobLegacyDTO', () => {
+            const jobLegacyDTO = dataHandler.jobLegacyDTO(mockDoc);
 
             it('returns a JobLegacy', () => {
               expect(jobLegacyDTO).toEqual({
-                ...formattedJobLegacy,
-                lineItems: [{ ...formattedLineItemLegacy, supplier: formattedSupplier }],
+                ...dataHandler.formatDBJobLegacy(mockJobLegacyDoc),
+                lineItems: [
+                  {
+                    ...dataHandler.formatDBLineItemLegacy(mockLineItemLegacyDoc),
+                    supplier: dataHandler.formatDBSupplier(mockSupplierDoc),
+                  },
+                ],
+              });
+            });
+          });
+
+          describe('archiveJobLegacyResponseDTO', () => {
+            const archiveJobLegacyResponseDTO = dataHandler.archiveJobLegacyResponseDTO(mockDoc);
+
+            it('returns an ArchiveJobLegacyResponse', () => {
+              expect(archiveJobLegacyResponseDTO).toEqual({
+                data: dataHandler.jobLegacyDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeJobLegacyResponseDTO', () => {
+            const writeJobLegacyResponseDTO = dataHandler.writeJobLegacyResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteJobLegacyResponse', () => {
+              expect(writeJobLegacyResponseDTO).toEqual({
+                data: dataHandler.jobLegacyDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('jobsLegacyResponseDTO', () => {
+            describe('when pagination, filterInput, and sortInput are not passed', () => {
+              const jobsLegacyResponseDTO = dataHandler.jobsLegacyResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a JobsLegacyResponse', () => {
+                expect(jobsLegacyResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.jobLegacyDTO(doc)),
+                  filter: dataHandler.filterResponseDTO(),
+                  sort: dataHandler.sortResponseDTO(),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination, filterInput, and sortInput are passed', () => {
+              const jobsLegacyResponseDTO = dataHandler.jobsLegacyResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput,
+                mockFilterInput,
+                mockSortInput
+              );
+
+              it('returns a JobsLegacyResponse', () => {
+                expect(jobsLegacyResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.jobLegacyDTO(doc)),
+                  filter: dataHandler.filterResponseDTO(mockFilterInput),
+                  sort: dataHandler.sortResponseDTO(mockSortInput),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
               });
             });
           });
         });
 
         describe('LineItemLegacy', () => {
-          describe('lineItemLegacyDTO', () => {
-            const lineItemLegacyDTO = dataHandler.lineItemLegacyDTO({
-              ...mockDBLineItemLegacy,
-              supplier: mockDBSupplier,
-            });
+          const mockSupplierDoc = MockData.dBSupplier();
+          const mockLineItemLegacyDoc = MockData.dBLineItemLegacy();
+          const mockDoc = { ...mockLineItemLegacyDoc, supplier: mockSupplierDoc };
 
-            const formattedLineItemLegacy =
-              dataHandler.formatDBLineItemLegacy(mockDBLineItemLegacy);
-            const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
+          describe('lineItemLegacyDTO', () => {
+            const lineItemLegacyDTO = dataHandler.lineItemLegacyDTO(mockDoc);
 
             it('returns a LineItemLegacy', () => {
               expect(lineItemLegacyDTO).toEqual({
-                ...formattedLineItemLegacy,
-                supplier: formattedSupplier,
+                ...dataHandler.formatDBLineItemLegacy(mockLineItemLegacyDoc),
+                supplier: dataHandler.formatDBSupplier(mockSupplierDoc),
               });
             });
           });
         });
 
         describe('Reporter', () => {
-          describe('reporterDTO', () => {
-            const reporterDTO = dataHandler.reporterDTO(mockDBReporter);
+          const mockDoc = MockData.dBReporter();
+          const mockDocList = [mockDoc, MockData.dBReporter(1), MockData.dBReporter(2)];
 
-            const formattedReporter = dataHandler.formatDBReporter(mockDBReporter);
+          describe('reporterDTO', () => {
+            const reporterDTO = dataHandler.reporterDTO(mockDoc);
 
             it('returns a Reporter', () => {
-              expect(reporterDTO).toEqual(formattedReporter);
+              expect(reporterDTO).toEqual(dataHandler.formatDBReporter(mockDoc));
+            });
+          });
+
+          describe('archiveReporterResponseDTO', () => {
+            const archiveReporterResponseDTO = dataHandler.archiveReporterResponseDTO(mockDoc);
+
+            it('returns an ArchiveReporterResponse', () => {
+              expect(archiveReporterResponseDTO).toEqual({
+                data: dataHandler.reporterDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeReporterResponseDTO', () => {
+            const writeReporterResponseDTO = dataHandler.writeReporterResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteReporterResponse', () => {
+              expect(writeReporterResponseDTO).toEqual({
+                data: dataHandler.reporterDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('reportersResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const reportersResponseDTO = dataHandler.reportersResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a ReportersResponse', () => {
+                expect(reportersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.reporterDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const reportersResponseDTO = dataHandler.reportersResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a ReportersResponse', () => {
+                expect(reportersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.reporterDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
 
         describe('Scope', () => {
-          describe('scopeDTO', () => {
-            const scopeDTO = dataHandler.scopeDTO(mockDBScope);
+          const mockDoc = MockData.dBScope();
+          const mockDocList = [mockDoc, MockData.dBScope(1), MockData.dBScope(2)];
 
-            const formattedScope = dataHandler.formatDBScope(mockDBScope);
+          describe('scopeDTO', () => {
+            const scopeDTO = dataHandler.scopeDTO(mockDoc);
 
             it('returns a Scope', () => {
-              expect(scopeDTO).toEqual(formattedScope);
+              expect(scopeDTO).toEqual(dataHandler.formatDBScope(mockDoc));
+            });
+          });
+
+          describe('archiveScopeResponseDTO', () => {
+            const archiveScopeResponseDTO = dataHandler.archiveScopeResponseDTO(mockDoc);
+
+            it('returns an ArchiveScopeResponse', () => {
+              expect(archiveScopeResponseDTO).toEqual({
+                data: dataHandler.scopeDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeScopeResponseDTO', () => {
+            const writeScopeResponseDTO = dataHandler.writeScopeResponseDTO(mockDoc, mockMessage);
+
+            it('returns a WriteScopeResponse', () => {
+              expect(writeScopeResponseDTO).toEqual({
+                data: dataHandler.scopeDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('scopesResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const scopesResponseDTO = dataHandler.scopesResponseDTO(mockDocList, mockTotalCount);
+
+              it('returns a ScopesResponse', () => {
+                expect(scopesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.scopeDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const scopesResponseDTO = dataHandler.scopesResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a ScopesResponse', () => {
+                expect(scopesResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.scopeDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
 
         describe('Supplier', () => {
-          describe('supplierDTO', () => {
-            const supplierDTO = dataHandler.supplierDTO(mockDBSupplier);
+          const mockDoc = MockData.dBSupplier();
+          const mockDocList = [mockDoc, MockData.dBSupplier(1), MockData.dBSupplier(2)];
 
-            const formattedSupplier = dataHandler.formatDBSupplier(mockDBSupplier);
+          describe('supplierDTO', () => {
+            const supplierDTO = dataHandler.supplierDTO(mockDoc);
 
             it('returns a Supplier', () => {
-              expect(supplierDTO).toEqual(formattedSupplier);
+              expect(supplierDTO).toEqual(dataHandler.formatDBSupplier(mockDoc));
+            });
+          });
+
+          describe('archiveSupplierResponseDTO', () => {
+            const archiveSupplierResponseDTO = dataHandler.archiveSupplierResponseDTO(mockDoc);
+
+            it('returns an ArchiveSupplierResponse', () => {
+              expect(archiveSupplierResponseDTO).toEqual({
+                data: dataHandler.supplierDTO(mockDoc),
+                message: RESPONSES.archiveSuccess(mockDoc.name),
+              });
+            });
+          });
+
+          describe('writeSupplierResponseDTO', () => {
+            const writeSupplierResponseDTO = dataHandler.writeSupplierResponseDTO(
+              mockDoc,
+              mockMessage
+            );
+
+            it('returns a WriteSupplierResponse', () => {
+              expect(writeSupplierResponseDTO).toEqual({
+                data: dataHandler.supplierDTO(mockDoc),
+                message: mockMessage,
+              });
+            });
+          });
+
+          describe('suppliersResponseDTO', () => {
+            describe('when pagination is not passed', () => {
+              const suppliersResponseDTO = dataHandler.suppliersResponseDTO(
+                mockDocList,
+                mockTotalCount
+              );
+
+              it('returns a SuppliersResponse', () => {
+                expect(suppliersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.supplierDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(mockTotalCount),
+                });
+              });
+            });
+
+            describe('when pagination is passed', () => {
+              const suppliersResponseDTO = dataHandler.suppliersResponseDTO(
+                mockDocList,
+                mockTotalCount,
+                mockPaginationInput
+              );
+
+              it('returns a SuppliersResponse', () => {
+                expect(suppliersResponseDTO).toEqual({
+                  data: mockDocList.map((doc) => dataHandler.supplierDTO(doc)),
+                  pagination: dataHandler.paginationResponseDTO(
+                    mockTotalCount,
+                    mockPaginationInput
+                  ),
+                });
+              });
             });
           });
         });
       });
 
       describe('sendSMS', () => {
+        const mockDBContractor = MockData.dBContractor();
+
         describe('when the recipient.primaryPhone is empty', () => {
           it('throws an error', async () => {
             await expect(

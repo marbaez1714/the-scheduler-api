@@ -53,6 +53,8 @@ import {
   SortDirection,
   ArchiveJobLegacyResponse,
   WriteJobLegacyResponse,
+  SortResponse,
+  FilterResponse,
 } from '../generated';
 import { GRAPHQL_ERRORS, RESPONSES, SMS_MESSAGES } from '../constants';
 
@@ -299,7 +301,25 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   //#endregion
   //#region - GraphQL DTOs
 
-  // Pagination
+  //#region - Pagination
+
+  sortResponseDTO(input?: SortInput): SortResponse {
+    return {
+      field: input?.field || '',
+      direction: input?.direction || SortDirection.Asc,
+    };
+  }
+
+  filterResponseDTO(input?: FilterInput): FilterResponse {
+    return {
+      field: input?.field || '',
+      term: input?.term || '',
+    };
+  }
+
+  //#endregion
+  //#region - Pagination
+
   paginationResponseDTO(totalCount: number, pagination?: Pagination): PaginationResponse {
     let response = {
       totalCount,
@@ -313,7 +333,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     return response;
   }
 
-  // Areas
+  //#endregion
+  //#region - Areas
+
   areaDTO(doc: PrismaModels['area']): Area {
     return this.formatDBArea(doc);
   }
@@ -343,7 +365,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Builders
+  //#endregion
+  //#region - Builders
+
   builderDTO(doc: BuilderDTOArgs): Builder {
     const { company, ...rest } = doc;
 
@@ -375,7 +399,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Communities
+  //#endregion
+  //#region - Communities
+
   communityDTO(doc: CommunityDTOArgs): Community {
     const { company, ...rest } = doc;
 
@@ -407,7 +433,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Companies
+  //#endregion
+  //#region - Companies
+
   companyDTO(doc: PrismaModels['company']): Company {
     return this.formatDBCompany(doc);
   }
@@ -437,7 +465,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Contractors
+  //#endregion
+  //#region - Contractors
+
   contractorDTO(doc: ContractorDTOArgs): Contractor {
     const { jobsLegacy, ...contractorDocRest } = doc;
 
@@ -488,7 +518,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Jobs Legacy
+  //#endregion
+  //#region - JobsLegacy
+
   jobLegacyDTO(doc: JobLegacyDTOArgs): JobLegacy {
     const { lineItems, ...jobRest } = doc;
     const formattedLineItems = lineItems.map(({ supplier, ...lineItemRest }) => ({
@@ -526,18 +558,14 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     return {
       data: docList.map((doc) => this.jobLegacyDTO(doc)),
       pagination: this.paginationResponseDTO(count, pagination),
-      filter: {
-        field: filterInput?.field ?? '',
-        term: filterInput?.term ?? '',
-      },
-      sort: {
-        field: sortInput?.field ?? '',
-        direction: sortInput?.direction ?? SortDirection.Asc,
-      },
+      filter: this.filterResponseDTO(filterInput),
+      sort: this.sortResponseDTO(sortInput),
     };
   }
 
-  // Line Items Legacy
+  //#endregion
+  //#region - LineItemsLegacy
+
   lineItemLegacyDTO(
     data: PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] }
   ): LineItemLegacy {
@@ -549,7 +577,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Reporters
+  //#endregion
+  //#region - Reporters
+
   reporterDTO(doc: PrismaModels['reporter']): Reporter {
     return this.formatDBReporter(doc);
   }
@@ -579,7 +609,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Scopes
+  //#endregion
+  //#region - Scopes
+
   scopeDTO(data: PrismaModels['scope']): Scope {
     return this.formatDBScope(data);
   }
@@ -609,7 +641,9 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  // Suppliers
+  //#endregion
+  //#region - Suppliers
+
   supplierDTO(doc: PrismaModels['supplier']): Supplier {
     return this.formatDBSupplier(doc);
   }
@@ -638,6 +672,8 @@ export class DataHandler<TClient extends keyof PrismaModels> {
       pagination: this.paginationResponseDTO(count, pagination),
     };
   }
+
+  //#endregion
 
   //#endregion
   //#region - Utils
