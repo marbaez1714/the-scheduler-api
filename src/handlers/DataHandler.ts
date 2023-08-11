@@ -1,6 +1,13 @@
 import { Prisma, SMSConsent } from '@prisma/client';
 import { Context } from '../context';
-import { PermissionsEnum, PrismaModels } from '../app/types';
+import {
+  BuilderDTOArgs,
+  CommunityDTOArgs,
+  ContractorDTOArgs,
+  JobLegacyDTOArgs,
+  PermissionsEnum,
+  PrismaModels,
+} from '../app/types';
 import {
   JobLegacyStatus,
   PaginationResponse,
@@ -17,8 +24,37 @@ import {
   Scope,
   Supplier,
   LineItemLegacy,
+  ArchiveAreaResponse,
+  WriteAreaResponse,
+  AreasResponse,
+  ArchiveBuilderResponse,
+  WriteBuilderResponse,
+  BuildersResponse,
+  ArchiveCommunityResponse,
+  WriteCommunityResponse,
+  CommunitiesResponse,
+  ArchiveCompanyResponse,
+  WriteCompanyResponse,
+  CompaniesResponse,
+  ArchiveContractorResponse,
+  WriteContractorResponse,
+  ContractorsResponse,
+  AssignedContractorsResponse,
+  ArchiveReporterResponse,
+  WriteReporterResponse,
+  ReportersResponse,
+  ArchiveScopeResponse,
+  WriteScopeResponse,
+  ScopesResponse,
+  ArchiveSupplierResponse,
+  WriteSupplierResponse,
+  SuppliersResponse,
+  JobsLegacyResponse,
+  SortDirection,
+  ArchiveJobLegacyResponse,
+  WriteJobLegacyResponse,
 } from '../generated';
-import { GRAPHQL_ERRORS, SMS_MESSAGES } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES, SMS_MESSAGES } from '../constants';
 
 export class DataHandler<TClient extends keyof PrismaModels> {
   //#region - Properties
@@ -125,21 +161,6 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     }
   }
 
-  //#endregion
-  //#region - Response
-
-  generatePaginationResponse(totalCount: number, pagination?: Pagination): PaginationResponse {
-    let response = {
-      totalCount,
-      totalPages: pagination?.pageSize ? Math.ceil(totalCount / pagination.pageSize) : 1,
-    };
-
-    if (pagination) {
-      response = { ...response, ...pagination };
-    }
-
-    return response;
-  }
   //#endregion
   //#region - DB Data Formatting
 
@@ -278,56 +299,198 @@ export class DataHandler<TClient extends keyof PrismaModels> {
   //#endregion
   //#region - GraphQL DTOs
 
-  areaDTO(data: PrismaModels['area']): Area {
-    return this.formatDBArea(data);
+  // Pagination
+  paginationResponseDTO(totalCount: number, pagination?: Pagination): PaginationResponse {
+    let response = {
+      totalCount,
+      totalPages: pagination?.pageSize ? Math.ceil(totalCount / pagination.pageSize) : 1,
+    };
+
+    if (pagination) {
+      response = { ...response, ...pagination };
+    }
+
+    return response;
   }
 
-  builderDTO(data: PrismaModels['builder'] & { company: PrismaModels['company'] }): Builder {
-    const { company, ...rest } = data;
+  // Areas
+  areaDTO(doc: PrismaModels['area']): Area {
+    return this.formatDBArea(doc);
+  }
+
+  archiveAreaResponseDTO(doc: PrismaModels['area']): ArchiveAreaResponse {
+    return {
+      data: this.areaDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeAreaResponseDTO(doc: PrismaModels['area'], message: string): WriteAreaResponse {
+    return {
+      data: this.areaDTO(doc),
+      message,
+    };
+  }
+
+  areasResponseDTO(
+    docList: PrismaModels['area'][],
+    count: number,
+    pagination?: Pagination
+  ): AreasResponse {
+    return {
+      data: docList.map((doc) => this.areaDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Builders
+  builderDTO(doc: BuilderDTOArgs): Builder {
+    const { company, ...rest } = doc;
 
     return { ...this.formatDBBuilder(rest), company: this.formatDBCompany(company) };
   }
 
-  communityDTO(data: PrismaModels['community'] & { company: PrismaModels['company'] }): Community {
-    const { company, ...rest } = data;
+  archiveBuilderResponseDTO(doc: BuilderDTOArgs): ArchiveBuilderResponse {
+    return {
+      data: this.builderDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeBuilderResponseDTO(doc: BuilderDTOArgs, message: string): WriteBuilderResponse {
+    return {
+      data: this.builderDTO(doc),
+      message,
+    };
+  }
+
+  buildersResponseDTO(
+    docList: BuilderDTOArgs[],
+    count: number,
+    pagination?: Pagination
+  ): BuildersResponse {
+    return {
+      data: docList.map((doc) => this.builderDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Communities
+  communityDTO(doc: CommunityDTOArgs): Community {
+    const { company, ...rest } = doc;
 
     return { ...this.formatDBCommunity(rest), company: this.formatDBCompany(company) };
   }
 
-  companyDTO(data: PrismaModels['company']): Company {
-    return this.formatDBCompany(data);
+  archiveCommunityResponseDTO(data: CommunityDTOArgs): ArchiveCommunityResponse {
+    return {
+      data: this.communityDTO(data),
+      message: RESPONSES.archiveSuccess(data.name),
+    };
   }
 
-  contractorDTO(
-    data: PrismaModels['contractor'] & {
-      jobsLegacy: (PrismaModels['jobLegacy'] & {
-        lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
-      })[];
-    }
-  ): Contractor {
-    const { jobsLegacy, ...contractorRest } = data;
-    const formattedJobsLegacy = jobsLegacy.map(({ lineItems, ...jobRest }) => {
+  writeCommunityResponseDTO(data: CommunityDTOArgs, message: string): WriteCommunityResponse {
+    return {
+      data: this.communityDTO(data),
+      message,
+    };
+  }
+
+  communitiesResponseDTO(
+    docList: CommunityDTOArgs[],
+    count: number,
+    pagination?: Pagination
+  ): CommunitiesResponse {
+    return {
+      data: docList.map((doc) => this.communityDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Companies
+  companyDTO(doc: PrismaModels['company']): Company {
+    return this.formatDBCompany(doc);
+  }
+
+  archiveCompanyResponseDTO(doc: PrismaModels['company']): ArchiveCompanyResponse {
+    return {
+      data: this.companyDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeCompanyResponseDTO(doc: PrismaModels['company'], message: string): WriteCompanyResponse {
+    return {
+      data: this.companyDTO(doc),
+      message,
+    };
+  }
+
+  companiesResponseDTO(
+    docList: PrismaModels['company'][],
+    count: number,
+    pagination?: Pagination
+  ): CompaniesResponse {
+    return {
+      data: docList.map((doc) => this.companyDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Contractors
+  contractorDTO(doc: ContractorDTOArgs): Contractor {
+    const { jobsLegacy, ...contractorDocRest } = doc;
+
+    const formattedJobsLegacy = jobsLegacy.map(({ lineItems, ...jobDocRest }) => {
       return {
-        ...this.formatDBJobLegacy(jobRest),
-        lineItems: lineItems.map(({ supplier, ...lineItemRest }) => ({
-          ...this.formatDBLineItemLegacy(lineItemRest),
+        ...this.formatDBJobLegacy(jobDocRest),
+        lineItems: lineItems.map(({ supplier, ...lineItemDocRest }) => ({
+          ...this.formatDBLineItemLegacy(lineItemDocRest),
           supplier: this.formatDBSupplier(supplier),
         })),
       };
     });
 
     return {
-      ...this.formatDBContractor(contractorRest),
+      ...this.formatDBContractor(contractorDocRest),
       jobsLegacy: formattedJobsLegacy,
     };
   }
 
-  jobLegacyDTO(
-    data: PrismaModels['jobLegacy'] & {
-      lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
-    }
-  ): JobLegacy {
-    const { lineItems, ...jobRest } = data;
+  archiveContractorResponseDTO(doc: ContractorDTOArgs): ArchiveContractorResponse {
+    return {
+      data: this.contractorDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeContractorResponseDTO(doc: ContractorDTOArgs, message: string): WriteContractorResponse {
+    return {
+      data: this.contractorDTO(doc),
+      message,
+    };
+  }
+
+  contractorsResponseDTO(
+    docList: ContractorDTOArgs[],
+    count: number,
+    pagination?: Pagination
+  ): ContractorsResponse {
+    return {
+      data: docList.map((doc) => this.contractorDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  assignedContractorsResponseDTO(docList: ContractorDTOArgs[]): AssignedContractorsResponse {
+    return {
+      data: docList.map((doc) => this.contractorDTO(doc)),
+    };
+  }
+
+  // Jobs Legacy
+  jobLegacyDTO(doc: JobLegacyDTOArgs): JobLegacy {
+    const { lineItems, ...jobRest } = doc;
     const formattedLineItems = lineItems.map(({ supplier, ...lineItemRest }) => ({
       ...this.formatDBLineItemLegacy(lineItemRest),
       supplier: this.formatDBSupplier(supplier),
@@ -339,6 +502,42 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
+  archiveJobLegacyResponseDTO(doc: JobLegacyDTOArgs): ArchiveJobLegacyResponse {
+    return {
+      data: this.jobLegacyDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeJobLegacyResponseDTO(doc: JobLegacyDTOArgs, message: string): WriteJobLegacyResponse {
+    return {
+      data: this.jobLegacyDTO(doc),
+      message,
+    };
+  }
+
+  jobsLegacyResponseDTO(
+    docList: JobLegacyDTOArgs[],
+    count: number,
+    pagination?: Pagination,
+    filterInput?: FilterInput,
+    sortInput?: SortInput
+  ): JobsLegacyResponse {
+    return {
+      data: docList.map((doc) => this.jobLegacyDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+      filter: {
+        field: filterInput?.field ?? '',
+        term: filterInput?.term ?? '',
+      },
+      sort: {
+        field: sortInput?.field ?? '',
+        direction: sortInput?.direction ?? SortDirection.Asc,
+      },
+    };
+  }
+
+  // Line Items Legacy
   lineItemLegacyDTO(
     data: PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] }
   ): LineItemLegacy {
@@ -350,16 +549,94 @@ export class DataHandler<TClient extends keyof PrismaModels> {
     };
   }
 
-  reporterDTO(data: PrismaModels['reporter']): Reporter {
-    return this.formatDBReporter(data);
+  // Reporters
+  reporterDTO(doc: PrismaModels['reporter']): Reporter {
+    return this.formatDBReporter(doc);
   }
 
+  archiveReporterResponseDTO(doc: PrismaModels['reporter']): ArchiveReporterResponse {
+    return {
+      data: this.reporterDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeReporterResponseDTO(doc: PrismaModels['reporter'], message: string): WriteReporterResponse {
+    return {
+      data: this.reporterDTO(doc),
+      message,
+    };
+  }
+
+  reportersResponseDTO(
+    docList: PrismaModels['reporter'][],
+    count: number,
+    pagination?: Pagination
+  ): ReportersResponse {
+    return {
+      data: docList.map((doc) => this.reporterDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Scopes
   scopeDTO(data: PrismaModels['scope']): Scope {
     return this.formatDBScope(data);
   }
 
-  supplierDTO(data: PrismaModels['supplier']): Supplier {
-    return this.formatDBSupplier(data);
+  archiveScopeResponseDTO(data: PrismaModels['scope']): ArchiveScopeResponse {
+    return {
+      data: this.scopeDTO(data),
+      message: RESPONSES.archiveSuccess(data.name),
+    };
+  }
+
+  writeScopeResponseDTO(data: PrismaModels['scope'], message: string): WriteScopeResponse {
+    return {
+      data: this.scopeDTO(data),
+      message,
+    };
+  }
+
+  scopesResponseDTO(
+    docList: PrismaModels['scope'][],
+    count: number,
+    pagination?: Pagination
+  ): ScopesResponse {
+    return {
+      data: docList.map((doc) => this.scopeDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
+  }
+
+  // Suppliers
+  supplierDTO(doc: PrismaModels['supplier']): Supplier {
+    return this.formatDBSupplier(doc);
+  }
+
+  archiveSupplierResponseDTO(doc: PrismaModels['supplier']): ArchiveSupplierResponse {
+    return {
+      data: this.supplierDTO(doc),
+      message: RESPONSES.archiveSuccess(doc.name),
+    };
+  }
+
+  writeSupplierResponseDTO(doc: PrismaModels['supplier'], message: string): WriteSupplierResponse {
+    return {
+      data: this.supplierDTO(doc),
+      message,
+    };
+  }
+
+  suppliersResponseDTO(
+    docList: PrismaModels['supplier'][],
+    count: number,
+    pagination?: Pagination
+  ): SuppliersResponse {
+    return {
+      data: docList.map((doc) => this.supplierDTO(doc)),
+      pagination: this.paginationResponseDTO(count, pagination),
+    };
   }
 
   //#endregion

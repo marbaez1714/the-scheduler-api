@@ -25,10 +25,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.reporterDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveReporterResponseDTO(doc);
   }
 
   async create(data: WriteReporterInput): Promise<WriteReporterResponse> {
@@ -40,10 +37,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       },
     });
 
-    return {
-      data: this.reporterDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeReporterResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteReporterInput): Promise<WriteReporterResponse> {
@@ -56,10 +50,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.reporterDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeReporterResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Reporter> {
@@ -83,9 +74,6 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.reporterDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.reportersResponseDTO(docList, count, pagination);
   }
 }

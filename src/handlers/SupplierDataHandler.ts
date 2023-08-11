@@ -25,10 +25,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.supplierDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveSupplierResponseDTO(doc);
   }
 
   async create(data: WriteSupplierInput): Promise<WriteSupplierResponse> {
@@ -40,10 +37,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       },
     });
 
-    return {
-      data: this.supplierDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeSupplierResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteSupplierInput): Promise<WriteSupplierResponse> {
@@ -56,10 +50,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.supplierDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeSupplierResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Supplier> {
@@ -83,9 +74,6 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.supplierDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.suppliersResponseDTO(docList, count, pagination);
   }
 }

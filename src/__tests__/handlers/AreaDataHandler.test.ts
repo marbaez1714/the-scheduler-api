@@ -39,10 +39,7 @@ describe('AreaDataHandler', () => {
       });
 
       it('returns an ArchiveAreaResponse', () => {
-        expect(response).toEqual({
-          data: areaDataHandler.areaDTO(updatedDoc),
-          message: RESPONSES.archiveSuccess(updatedDoc.name),
-        });
+        expect(response).toEqual(areaDataHandler.archiveAreaResponseDTO(updatedDoc));
       });
 
       it('updates the archive field of the area to true', async () => {
@@ -70,10 +67,9 @@ describe('AreaDataHandler', () => {
       });
 
       it('returns a WriteAreaResponse', () => {
-        expect(response).toEqual({
-          data: areaDataHandler.areaDTO(createdDoc),
-          message: RESPONSES.createSuccess(createdDoc.name),
-        });
+        expect(response).toEqual(
+          areaDataHandler.writeAreaResponseDTO(createdDoc, RESPONSES.createSuccess(createdDoc.name))
+        );
       });
 
       it('creates a new area in the database', async () => {
@@ -105,10 +101,9 @@ describe('AreaDataHandler', () => {
       });
 
       it('returns a WriteAreaResponse', () => {
-        expect(response).toEqual({
-          data: areaDataHandler.areaDTO(updatedDoc),
-          message: RESPONSES.modifySuccess(updatedDoc.name),
-        });
+        expect(response).toEqual(
+          areaDataHandler.writeAreaResponseDTO(updatedDoc, RESPONSES.modifySuccess(updatedDoc.name))
+        );
       });
 
       it('updates the area in the database', async () => {
@@ -187,10 +182,7 @@ describe('AreaDataHandler', () => {
         });
 
         it('returns an AreasResponse', () => {
-          expect(response).toEqual({
-            data: areaDocs.map((doc) => areaDataHandler.areaDTO(doc)),
-            pagination: areaDataHandler.generatePaginationResponse(areasCount),
-          });
+          expect(response).toEqual(areaDataHandler.areasResponseDTO(areaDocs, areasCount));
         });
       });
 
@@ -212,10 +204,7 @@ describe('AreaDataHandler', () => {
           });
 
           it('returns an AreasResponse', () => {
-            expect(response).toEqual({
-              data: areaDocs.map((doc) => areaDataHandler.areaDTO(doc)),
-              pagination: areaDataHandler.generatePaginationResponse(areasCount),
-            });
+            expect(response).toEqual(areaDataHandler.areasResponseDTO(areaDocs, areasCount));
           });
         });
 
@@ -241,10 +230,9 @@ describe('AreaDataHandler', () => {
           });
 
           it('returns an AreasResponse', () => {
-            expect(response).toEqual({
-              data: areaDocs.map((doc) => areaDataHandler.areaDTO(doc)),
-              pagination: areaDataHandler.generatePaginationResponse(areasCount, pagination),
-            });
+            expect(response).toEqual(
+              areaDataHandler.areasResponseDTO(areaDocs, areasCount, pagination)
+            );
           });
         });
       });

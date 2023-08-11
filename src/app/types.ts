@@ -30,3 +30,10 @@ export interface PrismaModels {
   reporter: ReporterModel;
   scope: ScopeModel;
 }
+
+export type BuilderDTOArgs = PrismaModels['builder'] & { company: PrismaModels['company'] };
+export type CommunityDTOArgs = PrismaModels['community'] & { company: PrismaModels['company'] };
+export type ContractorDTOArgs = PrismaModels['contractor'] & { jobsLegacy: JobLegacyDTOArgs[] };
+export type JobLegacyDTOArgs = PrismaModels['jobLegacy'] & {
+  lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
+};

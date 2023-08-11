@@ -25,10 +25,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.companyDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveCompanyResponseDTO(doc);
   }
 
   async create(data: WriteCompanyInput): Promise<WriteCompanyResponse> {
@@ -40,10 +37,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       },
     });
 
-    return {
-      data: this.companyDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeCompanyResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteCompanyInput): Promise<WriteCompanyResponse> {
@@ -56,10 +50,7 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.companyDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeCompanyResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Company> {
@@ -83,9 +74,6 @@ export class CompanyDataHandler extends DataHandler<'company'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.companyDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.companiesResponseDTO(docList, count, pagination);
   }
 }

@@ -26,10 +26,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.communityDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveCommunityResponseDTO(doc);
   }
 
   async create(data: WriteCommunityInput): Promise<WriteCommunityResponse> {
@@ -42,10 +39,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       include: { company: true },
     });
 
-    return {
-      data: this.communityDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeCommunityResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteCommunityInput): Promise<WriteCommunityResponse> {
@@ -59,10 +53,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.communityDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeCommunityResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Community> {
@@ -90,9 +81,6 @@ export class CommunityDataHandler extends DataHandler<'community'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.communityDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.communitiesResponseDTO(docList, count, pagination);
   }
 }

@@ -25,10 +25,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.scopeDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveScopeResponseDTO(doc);
   }
 
   async create(data: WriteScopeInput): Promise<WriteScopeResponse> {
@@ -40,10 +37,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       },
     });
 
-    return {
-      data: this.scopeDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeScopeResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteScopeInput): Promise<WriteScopeResponse> {
@@ -56,10 +50,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.scopeDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeScopeResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Scope> {
@@ -69,9 +60,7 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    const formatted = this.scopeDTO(doc);
-
-    return formatted;
+    return this.scopeDTO(doc);
   }
 
   async getMany(archived?: boolean, pagination?: Pagination): Promise<ScopesResponse> {
@@ -85,9 +74,6 @@ export class ScopeDataHandler extends DataHandler<'scope'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.scopeDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.scopesResponseDTO(docList, count, pagination);
   }
 }

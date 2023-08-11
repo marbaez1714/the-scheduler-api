@@ -29,10 +29,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.contractorDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveContractorResponseDTO(doc);
   }
 
   async create(data: WriteContractorInput): Promise<WriteContractorResponse> {
@@ -47,10 +44,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    return {
-      data: this.contractorDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    return this.writeContractorResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
   async modify(id: string, data: WriteContractorInput): Promise<WriteContractorResponse> {
@@ -66,10 +60,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return {
-      data: this.contractorDTO(doc),
-      message: RESPONSES.modifySuccess(doc.name),
-    };
+    return this.writeContractorResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
   async getById(id: string): Promise<Contractor> {
@@ -103,10 +94,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.contractorDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.contractorsResponseDTO(docList, count, pagination);
   }
 
   async getAssigned(): Promise<AssignedContractorsResponse> {
@@ -125,6 +113,6 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    return { data: docList.map((doc) => this.contractorDTO(doc)) };
+    return this.assignedContractorsResponseDTO(docList);
   }
 }

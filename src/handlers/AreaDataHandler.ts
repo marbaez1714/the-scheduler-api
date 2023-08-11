@@ -21,10 +21,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
       data: this.archiveData,
     });
 
-    return {
-      data: this.areaDTO(doc),
-      message: RESPONSES.archiveSuccess(doc.name),
-    };
+    return this.archiveAreaResponseDTO(doc);
   }
 
   async create(data: WriteAreaInput): Promise<WriteAreaResponse> {
@@ -36,10 +33,9 @@ export class AreaDataHandler extends DataHandler<'area'> {
       },
     });
 
-    return {
-      data: this.areaDTO(doc),
-      message: RESPONSES.createSuccess(doc.name),
-    };
+    const message = RESPONSES.createSuccess(doc.name);
+
+    return this.writeAreaResponseDTO(doc, message);
   }
 
   async modify(id: string, data: WriteAreaInput): Promise<WriteAreaResponse> {
@@ -75,9 +71,6 @@ export class AreaDataHandler extends DataHandler<'area'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.areaDTO(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.areasResponseDTO(docList, count, pagination);
   }
 }
