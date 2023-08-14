@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { MockData } from '../../__mocks__/data';
 import { createMockContext } from '../../__mocks__/context';
 import { PermissionsEnum } from '../../app/types';
@@ -1368,11 +1369,11 @@ describe('DataHandler', () => {
             });
 
             it('updates the contractor with smsConsent = SMSConsent.PENDING', async () => {
-              const updatedRecipient = await mockContext.prisma.contractor.findUnique({
+              const updatedRecipient = (await mockContext.prisma.contractor.findUnique({
                 where: { id: mockContactorRecipient.id },
-              });
+              }))!;
 
-              expect(updatedRecipient?.smsConsent).toBe(SMSConsent.PENDING);
+              expect(updatedRecipient.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {
@@ -1399,11 +1400,11 @@ describe('DataHandler', () => {
             });
 
             it('updates the reporter with smsConsent = SMSConsent.PENDING', async () => {
-              const updatedRecipient = await mockContext.prisma.reporter.findUnique({
+              const updatedRecipient = (await mockContext.prisma.reporter.findUnique({
                 where: { id: mockReporterRecipient.id },
-              });
+              }))!;
 
-              expect(updatedRecipient?.smsConsent).toBe(SMSConsent.PENDING);
+              expect(updatedRecipient.smsConsent).toBe(SMSConsent.PENDING);
             });
 
             it('calls this.context.twilio.messages.create with body = message', () => {

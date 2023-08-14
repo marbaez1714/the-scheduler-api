@@ -10,11 +10,9 @@ const mockContext = createMockContext([PermissionsEnum.Admin]);
 const areaDataHandler = new AreaDataHandler(mockContext);
 
 describe('AreaDataHandler', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   afterEach(async () => {
+    jest.resetAllMocks();
+
     // Delete area from mock database
     await mockContext.prisma.area.deleteMany();
   });
@@ -42,7 +40,7 @@ describe('AreaDataHandler', () => {
         expect(response).toEqual(areaDataHandler.archiveAreaResponseDTO(updatedDoc));
       });
 
-      it('updates the archive field of the area to true', async () => {
+      it('updates the archive field of the area to true', () => {
         expect(updatedDoc.archived).toBe(true);
       });
     });

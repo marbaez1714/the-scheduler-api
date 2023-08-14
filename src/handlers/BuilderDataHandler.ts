@@ -22,10 +22,6 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       include: { company: true },
     });
 
-    if (!doc) {
-      throw GRAPHQL_ERRORS.idNotFound(id);
-    }
-
     return this.archiveBuilderResponseDTO(doc);
   }
 
@@ -48,10 +44,6 @@ export class BuilderDataHandler extends DataHandler<'builder'> {
       data: { ...data, updatedBy: this.userId },
       include: { company: true },
     });
-
-    if (!doc) {
-      throw GRAPHQL_ERRORS.idNotFound(id);
-    }
 
     return this.writeBuilderResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
