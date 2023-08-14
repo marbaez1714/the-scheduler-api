@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { CommunityDataHandler } from './handlers';
+import { CommunityDataHandler } from '../handlers';
 
 export const communityResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const communityResolvers: Resolvers = {
       return response;
     },
     communities: async (_, { archived, pagination }, context) => {
-      const response = await new CommunityDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new CommunityDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { ScopeDataHandler } from './handlers';
+import { ScopeDataHandler } from '../handlers';
 
 export const scopeResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const scopeResolvers: Resolvers = {
       return response;
     },
     scopes: async (_, { archived, pagination }, context) => {
-      const response = await new ScopeDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new ScopeDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

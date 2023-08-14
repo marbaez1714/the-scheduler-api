@@ -1,8 +1,10 @@
-import { MutationReenableJobLegacyArgs } from './../generated';
-import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { DataHandler } from '../app';
-import { Context } from '../context';
 import {
+  ArchiveJobLegacyResponse,
+  JobLegacy,
+  JobsLegacyResponse,
+  JobsLegacySendMessageResponse,
+  MutationReenableJobLegacyArgs,
+  WriteJobLegacyResponse,
   JobsLegacyMessageRecipient,
   MutationCreateJobLegacyArgs,
   MutationModifyJobLegacyArgs,
@@ -12,11 +14,12 @@ import {
   QueryJobsLegacyArgs,
   QueryJobsLegacyByActiveStatusArgs,
   QueryJobsLegacyByContractorIdArgs,
-  MutationDeleteLineItemLegacyArgs,
+  SortDirection,
 } from '../generated';
+import { DataHandler } from '.';
+import { Context } from '../context';
 import { checkDelete } from '../utils';
-import { GraphQLError } from 'graphql';
-import { GRAPHQL_ERRORS } from '../constants';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   constructor(context: Context) {
@@ -26,19 +29,17 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   /******************************/
   /* Getters                    */
   /******************************/
-  async getById({ id }: QueryJobLegacyByIdArgs) {
+  async getById({ id }: QueryJobLegacyByIdArgs): Promise<JobLegacy> {
     const doc = await this.crud.findUnique({
       where: { id },
       include: { lineItems: { include: { supplier: true } } },
     });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatJobLegacy(doc);
+    return this.jobLegacyDTO(doc);
   }
 
   async getByContractorId({
@@ -47,7 +48,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     pagination,
     filter,
     sort,
-  }: QueryJobsLegacyByContractorIdArgs) {
+  }: QueryJobsLegacyByContractorIdArgs): Promise<JobsLegacyResponse> {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
         where: {
@@ -78,15 +79,15 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
-    };
+    return this.jobsLegacyResponseDTO(docList, count, pagination, filter, sort);
   }
 
-  async getMany({ archived, pagination, filter, sort }: QueryJobsLegacyArgs) {
+  async getMany({
+    archived,
+    pagination,
+    filter,
+    sort,
+  }: QueryJobsLegacyArgs): Promise<JobsLegacyResponse> {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
         where: {
@@ -108,12 +109,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       this.crud.count({ where: { archived: !!archived } }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
-    };
+    return this.jobsLegacyResponseDTO(docList, count, pagination, filter, sort);
   }
 
   async getByActiveStatus({
@@ -122,7 +118,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
     pagination,
     filter,
     sort,
-  }: QueryJobsLegacyByActiveStatusArgs) {
+  }: QueryJobsLegacyByActiveStatusArgs): Promise<JobsLegacyResponse> {
     const [docList, count] = await this.context.prisma.$transaction([
       this.crud.findMany({
         where: {
@@ -151,28 +147,24 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.formatJobLegacy(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-      filter: this.generateFilterResponse(filter),
-      sort: this.generateSortResponse(sort),
-    };
+    return this.jobsLegacyResponseDTO(docList, count, pagination, filter, sort);
   }
 
-  /******************************/
-  /* Setters                    */
-  /******************************/
-  async archive({ id }: MutationArchiveJobLegacyArgs) {
-    const archivedDoc = await this.crud.update({
+  async archive({ id }: MutationArchiveJobLegacyArgs): Promise<ArchiveJobLegacyResponse> {
+    const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
       include: { lineItems: { include: { supplier: true } } },
     });
-    const formatted = this.formatJobLegacy(archivedDoc);
-    return this.generateArchiveResponse(formatted);
+
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
+
+    return this.archiveJobLegacyResponseDTO(doc);
   }
 
-  async create({ data }: MutationCreateJobLegacyArgs) {
+  async create({ data }: MutationCreateJobLegacyArgs): Promise<WriteJobLegacyResponse> {
     const { lineItems, startDate, ...rest } = data;
 
     const startDateTime = startDate ? new Date(startDate) : null;
@@ -183,7 +175,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       createdBy: this.userId,
     }));
 
-    const newJob = await this.crud.create({
+    const doc = await this.crud.create({
       data: {
         ...rest,
         startDate: startDateTime,
@@ -194,12 +186,10 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    const formatted = this.formatJobLegacy(newJob);
-
-    return this.generateWriteResponse(formatted);
+    return this.writeJobLegacyResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
-  async modify({ id, data }: MutationModifyJobLegacyArgs) {
+  async modify({ id, data }: MutationModifyJobLegacyArgs): Promise<WriteJobLegacyResponse> {
     const {
       lineItems,
       startDate,
@@ -228,7 +218,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       ?.filter((item) => item.id && item.delete)
       .map((item) => item.id ?? '');
 
-    const updatedDoc = await this.crud.update({
+    const doc = await this.crud.update({
       where: { id },
       data: {
         ...rest,
@@ -249,13 +239,15 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    const formatted = this.formatJobLegacy(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
 
-    return this.generateWriteResponse(formatted);
+    return this.writeJobLegacyResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
-  async reenable({ id }: MutationReenableJobLegacyArgs) {
-    const updatedDoc = await this.crud.update({
+  async reenable({ id }: MutationReenableJobLegacyArgs): Promise<WriteJobLegacyResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: {
         active: true,
@@ -264,12 +256,18 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
       include: { lineItems: { include: { supplier: true } } },
     });
 
-    const formatted = this.formatJobLegacy(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
 
-    return this.generateWriteResponse(formatted);
+    return this.writeJobLegacyResponseDTO(doc, RESPONSES.jobLegacyReenableSuccess(doc.name));
   }
 
-  async sendMessage({ id, message, recipient }: MutationSendMessageJobLegacyArgs) {
+  async sendMessage({
+    id,
+    message,
+    recipient,
+  }: MutationSendMessageJobLegacyArgs): Promise<JobsLegacySendMessageResponse> {
     // Find associated job
     const jobDoc = await this.crud.findUnique({
       where: { id },
@@ -287,30 +285,19 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
           throw GRAPHQL_ERRORS.contractorNotFound;
         }
 
-        await this.sendContractorSMSById(jobDoc.contractor.id, message);
+        await this.sendSMS(jobDoc.contractor, recipient, message);
         break;
       case JobsLegacyMessageRecipient.Reporter:
         if (!jobDoc.reporter) {
           throw GRAPHQL_ERRORS.reporterNotFound;
         }
 
-        await this.sendReporterSMSById(jobDoc.reporter.id, message);
+        await this.sendSMS(jobDoc.reporter, recipient, message);
         break;
       default:
         throw GRAPHQL_ERRORS.invalidRecipient;
     }
 
     return { message, recipient };
-  }
-}
-
-export class LineItemLegacyDataHandler extends DataHandler<'lineItemLegacy'> {
-  constructor(context: Context) {
-    super(context, 'lineItemLegacy');
-  }
-
-  async delete({ id }: MutationDeleteLineItemLegacyArgs) {
-    const deletedDoc = await this.crud.delete({ where: { id: id } });
-    return { message: `${deletedDoc.orderNumber} deleted.` };
   }
 }

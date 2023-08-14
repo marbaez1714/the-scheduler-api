@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { CompanyDataHandler } from './handlers';
+import { CompanyDataHandler } from '../handlers';
 
 export const companyResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const companyResolvers: Resolvers = {
       return response;
     },
     companies: async (_, { archived, pagination }, context) => {
-      const response = await new CompanyDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new CompanyDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },
