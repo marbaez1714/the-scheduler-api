@@ -18,7 +18,7 @@ export class SupplierDataHandler extends DataHandler<'supplier'> {
   async archive(id: string): Promise<ArchiveSupplierResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
     });
 
     if (!doc) {

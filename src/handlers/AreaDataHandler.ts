@@ -18,7 +18,7 @@ export class AreaDataHandler extends DataHandler<'area'> {
   async archive(id: string): Promise<ArchiveAreaResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
     });
 
     return this.archiveAreaResponseDTO(doc);

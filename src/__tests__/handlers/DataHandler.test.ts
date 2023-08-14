@@ -47,13 +47,6 @@ describe('DataHandler', () => {
         expect(dataHandler.userId).toEqual(mockContext.user.sub);
       });
 
-      it('has an archiveData field', () => {
-        expect(dataHandler.archiveData).toEqual({
-          archived: true,
-          updatedBy: mockContext.user.sub,
-        });
-      });
-
       it('has a todayDate field', () => {
         expect(dataHandler.todayDate).toEqual(MockData.dates.today);
       });

@@ -19,7 +19,7 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
   async archive(id: string): Promise<ArchiveContractorResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
       include: {
         jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
       },

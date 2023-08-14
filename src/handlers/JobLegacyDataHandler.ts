@@ -153,7 +153,7 @@ export class JobLegacyDataHandler extends DataHandler<'jobLegacy'> {
   async archive({ id }: MutationArchiveJobLegacyArgs): Promise<ArchiveJobLegacyResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
       include: { lineItems: { include: { supplier: true } } },
     });
 

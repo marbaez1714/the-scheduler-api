@@ -18,7 +18,7 @@ export class CommunityDataHandler extends DataHandler<'community'> {
   async archive(id: string): Promise<ArchiveCommunityResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
       include: { company: true },
     });
 

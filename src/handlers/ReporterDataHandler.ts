@@ -18,7 +18,7 @@ export class ReporterDataHandler extends DataHandler<'reporter'> {
   async archive(id: string): Promise<ArchiveReporterResponse> {
     const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
     });
 
     if (!doc) {

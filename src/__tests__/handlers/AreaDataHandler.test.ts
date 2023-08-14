@@ -7,7 +7,7 @@ import { ArchiveAreaResponse, Area, AreasResponse, WriteAreaResponse } from '../
 import { GRAPHQL_ERRORS, RESPONSES } from '../../constants';
 
 const mockContext = createMockContext([PermissionsEnum.Admin]);
-const areaDataHandler = new AreaDataHandler(mockContext);
+const handler = new AreaDataHandler(mockContext);
 
 describe('AreaDataHandler', () => {
   afterEach(async () => {
@@ -30,18 +30,20 @@ describe('AreaDataHandler', () => {
         await mockContext.prisma.area.create({ data: mockArea });
 
         // Call the archive method
-        response = await areaDataHandler.archive(mockArea.id);
+        response = await handler.archive(mockArea.id);
 
         // Get the updated area from the mock database
         updatedDoc = (await mockContext.prisma.area.findUnique({ where: { id: mockArea.id } }))!;
       });
 
       it('returns an ArchiveAreaResponse', () => {
-        expect(response).toEqual(areaDataHandler.archiveAreaResponseDTO(updatedDoc));
+        expect(response).toEqual(handler.archiveAreaResponseDTO(updatedDoc));
       });
 
-      it('updates the archive field of the area to true', () => {
-        expect(updatedDoc.archived).toBe(true);
+      it('updates the archived and updatedBy fields', () => {
+        expect(updatedDoc).toEqual(
+          expect.objectContaining({ archived: true, updatedBy: handler.userId })
+        );
       });
     });
 
@@ -56,7 +58,7 @@ describe('AreaDataHandler', () => {
 
       beforeEach(async () => {
         // Call the create method
-        response = await areaDataHandler.create(mockInput);
+        response = await handler.create(mockInput);
 
         // Get the created area from the mock database
         createdDoc = (await mockContext.prisma.area.findUnique({
@@ -66,12 +68,18 @@ describe('AreaDataHandler', () => {
 
       it('returns a WriteAreaResponse', () => {
         expect(response).toEqual(
-          areaDataHandler.writeAreaResponseDTO(createdDoc, RESPONSES.createSuccess(createdDoc.name))
+          handler.writeAreaResponseDTO(createdDoc, RESPONSES.createSuccess(createdDoc.name))
         );
       });
 
       it('creates a new area in the database', async () => {
-        expect(createdDoc).toEqual(expect.objectContaining({ ...mockInput }));
+        expect(createdDoc).toEqual(
+          expect.objectContaining({
+            ...mockInput,
+            updatedBy: handler.userId,
+            createdBy: handler.userId,
+          })
+        );
       });
     });
 
@@ -92,7 +100,7 @@ describe('AreaDataHandler', () => {
         await mockContext.prisma.area.create({ data: mockArea });
 
         // Call the modify method
-        response = await areaDataHandler.modify(mockArea.id, mockInput);
+        response = await handler.modify(mockArea.id, mockInput);
 
         // Get the updated area from the mock database
         updatedDoc = (await mockContext.prisma.area.findUnique({ where: { id: mockArea.id } }))!;
@@ -100,13 +108,13 @@ describe('AreaDataHandler', () => {
 
       it('returns a WriteAreaResponse', () => {
         expect(response).toEqual(
-          areaDataHandler.writeAreaResponseDTO(updatedDoc, RESPONSES.modifySuccess(updatedDoc.name))
+          handler.writeAreaResponseDTO(updatedDoc, RESPONSES.modifySuccess(updatedDoc.name))
         );
       });
 
       it('updates the area in the database', async () => {
         expect(updatedDoc).toEqual(
-          expect.objectContaining({ ...mockInput, updatedBy: areaDataHandler.userId })
+          expect.objectContaining({ ...mockInput, updatedBy: handler.userId })
         );
       });
     });
@@ -116,9 +124,7 @@ describe('AreaDataHandler', () => {
         it('throws an error', async () => {
           const mockId = 'some-id';
 
-          await expect(areaDataHandler.getById(mockId)).rejects.toThrow(
-            GRAPHQL_ERRORS.idNotFound(mockId)
-          );
+          await expect(handler.getById(mockId)).rejects.toThrow(GRAPHQL_ERRORS.idNotFound(mockId));
         });
       });
 
@@ -131,11 +137,11 @@ describe('AreaDataHandler', () => {
           await mockContext.prisma.area.create({ data: mockArea });
 
           // Call the getById method
-          response = await areaDataHandler.getById(mockArea.id);
+          response = await handler.getById(mockArea.id);
         });
 
         it('returns an Area', () => {
-          expect(response).toEqual(areaDataHandler.areaDTO(mockArea));
+          expect(response).toEqual(handler.areaDTO(mockArea));
         });
       });
     });
@@ -170,7 +176,7 @@ describe('AreaDataHandler', () => {
 
         beforeEach(async () => {
           // Call the getMany method
-          response = await areaDataHandler.getMany();
+          response = await handler.getMany();
 
           // Get the areas from the mock database
           [areaDocs, areasCount] = await mockContext.prisma.$transaction([
@@ -180,7 +186,7 @@ describe('AreaDataHandler', () => {
         });
 
         it('returns an AreasResponse', () => {
-          expect(response).toEqual(areaDataHandler.areasResponseDTO(areaDocs, areasCount));
+          expect(response).toEqual(handler.areasResponseDTO(areaDocs, areasCount));
         });
       });
 
@@ -192,7 +198,7 @@ describe('AreaDataHandler', () => {
 
           beforeEach(async () => {
             // Call the getMany method
-            response = await areaDataHandler.getMany(true);
+            response = await handler.getMany(true);
 
             // Get the areas from the mock database
             [areaDocs, areasCount] = await mockContext.prisma.$transaction([
@@ -202,7 +208,7 @@ describe('AreaDataHandler', () => {
           });
 
           it('returns an AreasResponse', () => {
-            expect(response).toEqual(areaDataHandler.areasResponseDTO(areaDocs, areasCount));
+            expect(response).toEqual(handler.areasResponseDTO(areaDocs, areasCount));
           });
         });
 
@@ -215,22 +221,20 @@ describe('AreaDataHandler', () => {
 
           beforeEach(async () => {
             // Call the getMany method
-            response = await areaDataHandler.getMany(false, pagination);
+            response = await handler.getMany(false, pagination);
 
             // Get the areas from the mock database
             [areaDocs, areasCount] = await mockContext.prisma.$transaction([
               mockContext.prisma.area.findMany({
                 where: { archived: false },
-                ...areaDataHandler.generatePaginationArgs(pagination),
+                ...handler.generatePaginationArgs(pagination),
               }),
               mockContext.prisma.area.count({ where: { archived: false } }),
             ]);
           });
 
           it('returns an AreasResponse', () => {
-            expect(response).toEqual(
-              areaDataHandler.areasResponseDTO(areaDocs, areasCount, pagination)
-            );
+            expect(response).toEqual(handler.areasResponseDTO(areaDocs, areasCount, pagination));
           });
         });
       });
