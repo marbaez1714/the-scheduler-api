@@ -5,6 +5,7 @@ import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import twilio, { Twilio } from 'twilio';
+import { GRAPHQL_ERRORS } from './constants';
 
 export type DecodedUserToken = {
   permissions: string[];
@@ -38,15 +39,14 @@ const authGetKey: jwt.GetPublicKeyOrSecret = async (header, callback) => {
   callback(null, signingKey);
 };
 
-export const context: ContextFunction<
-  [StandaloneServerContextFunctionArgument],
-  Context | {}
-> = async ({ req }) => {
-  const authHeader = req.headers.authorization?.split(' ');
-  const token = authHeader?.[1];
+export const context: ContextFunction<[StandaloneServerContextFunctionArgument], Context> = async ({
+  req,
+}) => {
+  const authHeader = req.headers.authorization?.split(' ') ?? ['', ''];
+  const token = authHeader[1];
 
   if (!token) {
-    return {};
+    throw GRAPHQL_ERRORS.missingToken;
   }
 
   const decodedToken = await new Promise<DecodedUserToken>((resolve, reject) => {

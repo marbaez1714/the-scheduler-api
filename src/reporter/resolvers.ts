@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { ReporterDataHandler } from './handlers';
+import { ReporterDataHandler } from '../handlers';
 
 export const reporterResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const reporterResolvers: Resolvers = {
       return response;
     },
     reporters: async (_, { archived, pagination }, context) => {
-      const response = await new ReporterDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new ReporterDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

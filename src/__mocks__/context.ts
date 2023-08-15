@@ -1,13 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { mockDeep } from 'jest-mock-extended';
 import { Twilio } from 'twilio';
-import { DecodedUserToken, Context } from '../context';
-
-export type MockContext = {
-  prisma: PrismaClient;
-  twilio: DeepMockProxy<Twilio>;
-  user: DecodedUserToken;
-};
+import { Context } from '../context';
 
 export const createMockContext = (permissions?: string[]) =>
   ({

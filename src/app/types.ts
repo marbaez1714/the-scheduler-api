@@ -31,20 +31,9 @@ export interface PrismaModels {
   scope: ScopeModel;
 }
 
-/******************************/
-/* Data                       */
-/******************************/
-export interface BaseDocument {
-  name: string;
-  id: string;
-}
-
-export type BuilderWithCompanyModel = BuilderModel & { company: CompanyModel };
-export type LineItemLegacyWithSupplierModel = LineItemLegacyModel & { supplier: SupplierModel };
-export type JobLegacyWithLineItemsModel = JobLegacyModel & {
-  lineItems: LineItemLegacyWithSupplierModel[];
+export type BuilderDTOArgs = PrismaModels['builder'] & { company: PrismaModels['company'] };
+export type CommunityDTOArgs = PrismaModels['community'] & { company: PrismaModels['company'] };
+export type ContractorDTOArgs = PrismaModels['contractor'] & { jobsLegacy: JobLegacyDTOArgs[] };
+export type JobLegacyDTOArgs = PrismaModels['jobLegacy'] & {
+  lineItems: (PrismaModels['lineItemLegacy'] & { supplier: PrismaModels['supplier'] })[];
 };
-export type ContractorWithJobsLegacyModel = ContractorModel & {
-  jobsLegacy: JobLegacyWithLineItemsModel[];
-};
-export type CommunityWithCompanyModel = CommunityModel & { company: CompanyModel };

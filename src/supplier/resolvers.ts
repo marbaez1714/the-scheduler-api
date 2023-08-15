@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { SupplierDataHandler } from './handlers';
+import { SupplierDataHandler } from '../handlers';
 
 export const supplierResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const supplierResolvers: Resolvers = {
       return response;
     },
     suppliers: async (_, { archived, pagination }, context) => {
-      const response = await new SupplierDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new SupplierDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

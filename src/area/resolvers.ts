@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { AreaDataHandler } from './handlers';
+import { AreaDataHandler } from '../handlers';
 
 export const areaResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const areaResolvers: Resolvers = {
       return response;
     },
     areas: async (_, { archived, pagination }, context) => {
-      const response = await new AreaDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new AreaDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

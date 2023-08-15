@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { JobLegacyDataHandler, LineItemLegacyDataHandler } from './handlers';
+import { JobLegacyDataHandler, LineItemLegacyDataHandler } from '../handlers';
 
 export const jobLegacyResolvers: Resolvers = {
   Query: {
@@ -8,9 +8,7 @@ export const jobLegacyResolvers: Resolvers = {
       return response;
     },
     jobsLegacyByContractorId: async (_, args, context) => {
-      const response = await new JobLegacyDataHandler(
-        context
-      ).getByContractorId(args);
+      const response = await new JobLegacyDataHandler(context).getByContractorId(args);
 
       return response;
     },
@@ -19,9 +17,7 @@ export const jobLegacyResolvers: Resolvers = {
       return response;
     },
     jobsLegacyByActiveStatus: async (_, args, context) => {
-      const response = await new JobLegacyDataHandler(
-        context
-      ).getByActiveStatus(args);
+      const response = await new JobLegacyDataHandler(context).getByActiveStatus(args);
       return response;
     },
   },
@@ -39,15 +35,11 @@ export const jobLegacyResolvers: Resolvers = {
       return response;
     },
     deleteLineItemLegacy: async (_, args, context) => {
-      const response = await new LineItemLegacyDataHandler(context).delete(
-        args
-      );
+      const response = await new LineItemLegacyDataHandler(context).delete(args);
       return response;
     },
     sendMessageJobLegacy: async (_, args, context) => {
-      const response = await new JobLegacyDataHandler(context).sendMessage(
-        args
-      );
+      const response = await new JobLegacyDataHandler(context).sendMessage(args);
       return response;
     },
     reenableJobLegacy: async (_, args, context) => {

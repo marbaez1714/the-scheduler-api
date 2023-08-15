@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { BuilderDataHandler } from './handlers';
+import { BuilderDataHandler } from '../handlers';
 
 export const builderResolvers: Resolvers = {
   Query: {
@@ -8,10 +8,7 @@ export const builderResolvers: Resolvers = {
       return response;
     },
     builders: async (_, { archived, pagination }, context) => {
-      const response = await new BuilderDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new BuilderDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },

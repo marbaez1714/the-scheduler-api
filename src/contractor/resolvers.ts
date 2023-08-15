@@ -1,5 +1,5 @@
 import { Resolvers } from '../generated';
-import { ContractorDataHandler } from './handlers';
+import { ContractorDataHandler } from '../handlers';
 
 export const contractorResolvers: Resolvers = {
   Query: {
@@ -12,10 +12,7 @@ export const contractorResolvers: Resolvers = {
       return response;
     },
     contractors: async (_, { archived, pagination }, context) => {
-      const response = await new ContractorDataHandler(context).getMany(
-        archived,
-        pagination
-      );
+      const response = await new ContractorDataHandler(context).getMany(archived, pagination);
       return response;
     },
   },
@@ -29,10 +26,7 @@ export const contractorResolvers: Resolvers = {
       return response;
     },
     modifyContractor: async (_, { id, data }, context) => {
-      const response = await new ContractorDataHandler(context).modify(
-        id,
-        data
-      );
+      const response = await new ContractorDataHandler(context).modify(id, data);
       return response;
     },
   },

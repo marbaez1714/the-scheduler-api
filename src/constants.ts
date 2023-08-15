@@ -26,13 +26,7 @@ export const GRAPHQL_ERRORS = {
   contractorNotFound: new GraphQLError('Contractor not found.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
-  contractorSMSOptedOut: new GraphQLError('Contractor has opted out of receiving text messages.', {
-    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-  }),
   reporterNotFound: new GraphQLError('Reporter not found.', {
-    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-  }),
-  reporterSMSOptedOut: new GraphQLError('Reporter has opted out of receiving text messages.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
   phoneNumberMustBeString: new GraphQLError('Phone Number must be a string', {
@@ -66,4 +60,26 @@ export const GRAPHQL_ERRORS = {
   jobNotFound: new GraphQLError('Job not found.', {
     extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
   }),
+  invalidRecipientType: new GraphQLError('Invalid recipient type.', {
+    extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+  }),
+  missingPermissions: new GraphQLError('Missing permissions.', {
+    extensions: { code: 'UNAUTHENTICATED' },
+  }),
+  missingToken: new GraphQLError('Missing token.', {
+    extensions: { code: 'UNAUTHENTICATED' },
+  }),
+  idNotFound: (id: string) =>
+    new GraphQLError(`${id} does not exist.`, {
+      extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
+    }),
+};
+
+export const RESPONSES = {
+  archiveSuccess: (value: string) => `Successfully archived ${value}.`,
+  createSuccess: (value: string) => `Successfully created ${value}.`,
+  modifySuccess: (value: string) => `Successfully modified ${value}.`,
+  jobLegacyReenableSuccess: (value: string) => `Successfully re-enabled ${value}.`,
+  deleted: (value: string) => `Successfully deleted ${value}.`,
+  updated: (value: string) => `Successfully updated ${value}.`,
 };

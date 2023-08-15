@@ -1,30 +1,39 @@
-import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { DataHandler } from '../app';
+import { DataHandler } from '.';
 import { Context } from '../context';
-import { Pagination, WriteContractorInput } from '../generated';
-import { GraphQLError } from 'graphql';
+import {
+  ArchiveContractorResponse,
+  AssignedContractorsResponse,
+  Contractor,
+  ContractorsResponse,
+  Pagination,
+  WriteContractorInput,
+  WriteContractorResponse,
+} from '../generated';
+import { GRAPHQL_ERRORS, RESPONSES } from '../constants';
 
 export class ContractorDataHandler extends DataHandler<'contractor'> {
   constructor(context: Context) {
     super(context, 'contractor');
   }
 
-  async archive(id: string) {
-    const archivedDoc = await this.crud.update({
+  async archive(id: string): Promise<ArchiveContractorResponse> {
+    const doc = await this.crud.update({
       where: { id },
-      data: this.archiveData,
+      data: { archived: true, updatedBy: this.userId },
       include: {
         jobsLegacy: { include: { lineItems: { include: { supplier: true } } } },
       },
     });
 
-    const formatted = this.formatContractor(archivedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
 
-    return this.generateArchiveResponse(formatted);
+    return this.archiveContractorResponseDTO(doc);
   }
 
-  async create(data: WriteContractorInput) {
-    const newDoc = await this.crud.create({
+  async create(data: WriteContractorInput): Promise<WriteContractorResponse> {
+    const doc = await this.crud.create({
       data: {
         ...data,
         updatedBy: this.userId,
@@ -35,13 +44,11 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    const formatted = this.formatContractor(newDoc);
-
-    return this.generateWriteResponse(formatted);
+    return this.writeContractorResponseDTO(doc, RESPONSES.createSuccess(doc.name));
   }
 
-  async modify(id: string, data: WriteContractorInput) {
-    const updatedDoc = await this.crud.update({
+  async modify(id: string, data: WriteContractorInput): Promise<WriteContractorResponse> {
+    const doc = await this.crud.update({
       where: { id },
       data: { ...data, updatedBy: this.userId },
       include: {
@@ -49,12 +56,14 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    const formatted = this.formatContractor(updatedDoc);
+    if (!doc) {
+      throw GRAPHQL_ERRORS.idNotFound(id);
+    }
 
-    return this.generateWriteResponse(formatted);
+    return this.writeContractorResponseDTO(doc, RESPONSES.modifySuccess(doc.name));
   }
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Contractor> {
     const doc = await this.crud.findUnique({
       where: { id },
       include: {
@@ -63,15 +72,13 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
     });
 
     if (!doc) {
-      throw new GraphQLError(`${id} does not exist.`, {
-        extensions: { code: ApolloServerErrorCode.BAD_USER_INPUT },
-      });
+      throw GRAPHQL_ERRORS.idNotFound(id);
     }
 
-    return this.formatContractor(doc);
+    return this.contractorDTO(doc);
   }
 
-  async getMany(archived?: boolean, pagination?: Pagination) {
+  async getMany(archived?: boolean, pagination?: Pagination): Promise<ContractorsResponse> {
     const findArgs = {
       include: {
         jobsLegacy: {
@@ -87,13 +94,10 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       this.crud.count({ where: findArgs.where }),
     ]);
 
-    return {
-      data: docList.map((doc) => this.formatContractor(doc)),
-      pagination: this.generatePaginationResponse(count, pagination),
-    };
+    return this.contractorsResponseDTO(docList, count, pagination);
   }
 
-  async getAssigned() {
+  async getAssigned(): Promise<AssignedContractorsResponse> {
     const docList = await this.crud.findMany({
       where: {
         jobsLegacy: { some: { archived: false, active: true } },
@@ -109,6 +113,6 @@ export class ContractorDataHandler extends DataHandler<'contractor'> {
       },
     });
 
-    return { data: docList.map((doc) => this.formatContractor(doc)) };
+    return this.assignedContractorsResponseDTO(docList);
   }
 }

@@ -7,7 +7,7 @@ import { Server } from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 
-import { context, Context } from './context';
+import { context } from './context';
 import { resolvers } from './resolvers';
 
 export const setupApolloServer = async (httpServer: Server) => {
@@ -19,7 +19,7 @@ export const setupApolloServer = async (httpServer: Server) => {
     const typeDefs = await loadFiles('src/**/*.graphql');
 
     // setup apollo server with ApolloServerPluginDrainHttpServer
-    const apolloServer = new ApolloServer<Context | {}>({
+    const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
       cache: 'bounded',
